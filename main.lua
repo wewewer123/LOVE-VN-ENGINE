@@ -1,3 +1,4 @@
+require "sprites.t3x"
 function love.load()
 
 	rooms = {
@@ -22,7 +23,10 @@ end
 
 function love.gamepadpressed(joystick, button)
 	if button == "a" then
-	love.keyboard.setTextInput( enable )
+		love.keyboard.setTextInput( enable )
+	end
+	if button == "b" then
+		new image = love.graphics.newImage("sprites.t3x")
 	end
 end
 
@@ -36,6 +40,7 @@ end
 	
 function love.draw()
 
+	love.graphics.draw(image, 0, 0);
 		love.graphics.print(rooms[room].desc..". You can go to:",0,20) 
 		for i=1, (#rooms[room].options)/2 do
 			love.graphics.print(i.." - "..rooms[room].options[i*2],0,20+i*20) 
