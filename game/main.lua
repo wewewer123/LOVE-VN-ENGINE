@@ -1,6 +1,9 @@
 --require "sprites.t3x"
 function love.load()
 
+	TestImage = love.graphics.newImage("test.t3x")
+	script = love.filesystem.read("script.txt")
+
 	rooms = {
 		green	= { desc = "You are in a Green room", options = {"red", "An exit to a Red room", "blue", "An exit to a Blue Room" }},
 		red		= { desc = "You are in a Red room", options = {"blue", "An exit to a Blue room", "green", "An exit to a Green Room"}},
@@ -15,12 +18,6 @@ end
 function love.update()
 
 end
-
-function love.load()
-	{
-		TestImage = love.graphics.newImage("test.t3x")
-		love.filesystem.read("script.txt")
-	}
 
 function love.touchpressed(a, b, c, d, e, f)
 	love.keyboard.setTextInput( enable )
@@ -48,6 +45,9 @@ function love.draw()
 if room == "green" then
 	love.graphics.draw(TestImage, 0, 0)
 end
+
+love.graphics.print(script)
+
 	love.graphics.print(rooms[room].desc..". You can go to:",0,20) 
 		for i=1, (#rooms[room].options)/2 do
 			love.graphics.print(i.." - "..rooms[room].options[i*2],0,20+i*20) 
