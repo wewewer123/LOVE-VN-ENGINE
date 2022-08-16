@@ -1,2 +1,5 @@
 .vscode
 .vscode/
+*.icn
+*.cia
+*.smdh
