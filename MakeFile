@@ -44,11 +44,11 @@ BUILD           := $(TOPDIR)
 
 ROMFS           := game/
 
-APP_TITLE       := DDLC-3DS
-APP_AUTHOR      := LukeeGD
+APP_TITLE       := Love-VN-3DS
+APP_AUTHOR      := wewewer123
 APP_TITLEID     := 0xDDFC
-APP_VERSION     := 0.3.2
-APP_DESCRIPTION := An unofficial DDLC port for the 3DS!
+APP_VERSION     := 0.0.1
+APP_DESCRIPTION := A vn engine for the 3DS!
 
 ICON            := icon.png
 
@@ -68,7 +68,7 @@ BANNER_IMAGE    := cia/banner.png
 
 ICON_FLAGS      := nosavebackups,visible
 UNIQUE_ID       := 0xDDFC # must be unique!
-PRODUCT_CODE    := CTR-H-DDLC # change this too
+PRODUCT_CODE    := CTR-H-VN # change this too
 
 #---------------------------------------------------------------------------------
 # build options
