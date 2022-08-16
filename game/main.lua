@@ -1,10 +1,16 @@
 function love.load()
-
-	TestImage = love.graphics.newImage("test.t3x")
 	UneditedScript = love.filesystem.read("script.txt")
+	UneditedImageList = love.filesystem.read("image.txt")
 
 	Line = 1;
 	LineString = tostring(Line)
+
+	ImageLocation = UneditedImageList:find(" 1 ")
+	ImageName = UneditedImageList.sub(UneditedImageList, 1, ImageLocation-1)
+	OldImageLocation = ImageLocation
+
+	Image = love.graphics.newImage(ImageName)
+
 	MoreLocation = UneditedScript:find("1")
 	MoreLocationString = tostring(MoreLocation)
 	OldMoreLocation = 0
@@ -29,6 +35,13 @@ function love.gamepadpressed(joystick, button)
 		ToRemove = UneditedScript:find(LineString)
 		Line = 1 + Line
 		LineString = tostring(Line)
+
+		ImageLocation = UneditedImageList:find(" "..LineString.." ")
+		ImageName = UneditedImageList.sub(UneditedImageList, OldImageLocation+4, ImageLocation-1)
+		OldImageLocation = ImageLocation
+
+		Image = love.graphics.newImage(ImageName)
+
 		MoreLocation = UneditedScript:find(LineString)
 		MoreLocationString = tostring(MoreLocation)
 		script = UneditedScript.sub(UneditedScript, OldMoreLocation+1, MoreLocation-1)
@@ -41,8 +54,8 @@ function love.textinput(key)
 end
 	
 function love.draw()
-love.graphics.draw(TestImage, 0, 0)
-love.graphics.print(LineString)
+love.graphics.draw(Image, 0, 0)
+love.graphics.print(LineString,10,10)
 love.graphics.print(script,100,10)
 
 love.graphics.print(MoreLocationString)
