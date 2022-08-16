@@ -23,13 +23,13 @@ function love.update()
 end
 
 function love.touchpressed(a, b, c, d, e, f)
-	--love.keyboard.setTextInput()
+	
 end
 
 
 function love.gamepadpressed(joystick, button)
 	if button == "a" then
-		--love.keyboard.setTextInput()
+		button = "b"
 	end
 	if button == "b" then
 		ToRemove = UneditedScript:find(LineString)
