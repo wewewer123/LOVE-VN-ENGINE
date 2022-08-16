@@ -1,4 +1,4 @@
-# LOVE-VN-3DS
+# 3DS VN
  Simple LÖVE vn for on the 3DS
 
 # Installing
