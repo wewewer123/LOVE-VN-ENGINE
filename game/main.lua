@@ -6,7 +6,7 @@ function love.load()
 	LineString = tostring(Line)
 
 	ImageLocation = UneditedImageList:find(" 1 ")
-	ImageName = UneditedImageList.sub(UneditedImageList, 1, ImageLocation-1)
+	ImageName = UneditedImageList.sub(UneditedImageList, 2, ImageLocation-1)
 	OldImageLocation = ImageLocation
 
 	Image = love.graphics.newImage(ImageName)
@@ -55,9 +55,7 @@ end
 	
 function love.draw()
 love.graphics.draw(Image, 0, 0)
-love.graphics.print(LineString,10,10)
-love.graphics.print(script,100,10)
-
+love.graphics.print(LineString,20,20)
 love.graphics.print(MoreLocationString)
 love.graphics.print(script, 0, 100)
 end
