@@ -1,10 +1,15 @@
---require "sprites.t3x"
 function love.load()
 
 	TestImage = love.graphics.newImage("test.t3x")
-	script = love.filesystem.read("script.txt")
+	UneditedScript = love.filesystem.read("script.txt")
 
-	MoreLocation = script:find("More")
+	Line = 1;
+	LineString = tostring(Line)
+	MoreLocation = UneditedScript:find("1")
+	MoreLocationString = tostring(MoreLocation)
+	OldMoreLocation = 0
+	script = UneditedScript.sub(UneditedScript, OldMoreLocation, MoreLocation-1)
+	OldMoreLocation = MoreLocation
 end
 
 function love.update()
@@ -12,13 +17,22 @@ function love.update()
 end
 
 function love.touchpressed(a, b, c, d, e, f)
-	love.keyboard.setTextInput( enable )
+	--love.keyboard.setTextInput()
 end
 
 
 function love.gamepadpressed(joystick, button)
 	if button == "a" then
-		love.keyboard.setTextInput( enable )
+		--love.keyboard.setTextInput()
+	end
+	if button == "b" then
+		ToRemove = UneditedScript:find(LineString)
+		Line = 1 + Line
+		LineString = tostring(Line)
+		MoreLocation = UneditedScript:find(LineString)
+		MoreLocationString = tostring(MoreLocation)
+		script = UneditedScript.sub(UneditedScript, OldMoreLocation+1, MoreLocation-1)
+		OldMoreLocation = MoreLocation
 	end
 end
 
@@ -28,8 +42,9 @@ end
 	
 function love.draw()
 love.graphics.draw(TestImage, 0, 0)
-love.graphics.print(script,0,0)
-EditedScript = tostring(love.filesystem.read("script.txt", MoreLocation-1))
---love.graphics.print(script:gsub(EditedScript))
-love.graphics.print(love.filesystem.read("script.txt", MoreLocation-1), 0, 100)
+love.graphics.print(LineString)
+love.graphics.print(script,100,10)
+
+love.graphics.print(MoreLocationString)
+love.graphics.print(script, 0, 100)
 end
