@@ -16,7 +16,7 @@ function love.load()
 	MoreLocationString = tostring(MoreLocation)
 	OldMoreLocation = 2
 	script = UneditedScript.sub(UneditedScript, OldMoreLocation, MoreLocation-1)
-	OldMoreLocation = MoreLocation
+	OldMoreLocation = MoreLocation-1
 end
 
 function love.update()
@@ -49,6 +49,10 @@ end
 function DrawNext()
 	ToRemove = UneditedScript:find(LineString)
 	Line = 1 + Line
+	if Line >= 11 then
+		OldImageLocation=OldImageLocation+1
+		OldMoreLocation=OldMoreLocation+1
+	end
 	LineString = tostring(Line)
 
 	ImageLocation = UneditedImageList:find(" "..LineString.." ")
@@ -58,17 +62,17 @@ function DrawNext()
 	Image = love.graphics.newImage(ImageName)
 
 	if QuestionList:find(LineString) then
-		OldMoreLocation = UneditedScript:find(" "..LineString..".n ")
 		if QuestionAwnser == "yes" then
 			MoreLocation = UneditedScript:find(" "..LineString..".y ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".y.s ")
-			script = UneditedScript.sub(UneditedScript, OldMoreLocation+7, MoreLocation-1)
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+8, MoreLocation-1)
 		end
 		if QuestionAwnser == "no" then
 			MoreLocation = UneditedScript:find(" "..LineString..".n ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".n.s ")
-			script = UneditedScript.sub(UneditedScript, OldMoreLocation+7, MoreLocation-1)
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+8, MoreLocation-1)
 		end
+		OldMoreLocation = UneditedScript:find(" "..LineString..".n ")+2
 	else
 		MoreLocation = UneditedScript:find(" "..LineString.." ")
 		MoreLocationString = tostring(MoreLocation)
