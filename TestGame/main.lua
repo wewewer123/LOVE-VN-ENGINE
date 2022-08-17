@@ -5,7 +5,6 @@ function love.load()
 	Song = love.audio.newSource("nitizyou1.mp3", "stream")
 	Line = 1;
 	LineString = tostring(Line)
-
 	ImageLocation = UneditedImageList:find(" 1 ")
 	ImageName = UneditedImageList.sub(UneditedImageList, 2, ImageLocation-1)
 	OldImageLocation = ImageLocation
@@ -79,6 +78,9 @@ function DrawNext()
 		script = UneditedScript.sub(UneditedScript, OldMoreLocation+4, MoreLocation-1)
 		OldMoreLocation = MoreLocation
 	end
+	if script:find("quit123") ~= nul then
+		love.event.quit()
+	end
 	QuestionAwnser = "blank"
 end
 
@@ -86,9 +88,13 @@ function love.textinput(key)
 	
 end
 	
-function love.draw()
+function love.draw(Screen)
+if Screen ~= "bottom" then
 love.graphics.draw(Image, 0, 0)
+love.graphics.printf(script, 0, 180, 400, "center")
+end
+if Screen ~= "left" and Screen ~= "right" then
 love.graphics.print(LineString,20,20)
 love.graphics.print(MoreLocationString)
-love.graphics.print(script, 0, 100)
+end
 end
