@@ -9,5 +9,6 @@ Actually, this is almost the end. 7
 Finally, the end! 8 
 Do you want to continue? 9 
  10.y.s Alright! 10.y 
- 10.n.s Oh... 10.n 
+ 10.n.s quit123 10.n 
 Alright, I'm gonna stop talking anyay 11 
+quit123 12 

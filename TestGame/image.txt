@@ -10,3 +10,4 @@ test.t3x 8
 DSIcon.t3x 9 
 test.t3x 10 
 DSIcon.t3x 11 
+test.t3x 12 
