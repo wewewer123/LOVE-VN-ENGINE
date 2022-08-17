@@ -23,30 +23,29 @@ function love.update()
 end
 
 function love.touchpressed(a, b, c, d, e, f)
-	
+	DrawNext()
 end
 
 
 function love.gamepadpressed(joystick, button)
-	if button == "a" then
-		button = "b"
-	end
-	if button == "b" then
-		ToRemove = UneditedScript:find(LineString)
-		Line = 1 + Line
-		LineString = tostring(Line)
+	DrawNext()
+end
 
-		ImageLocation = UneditedImageList:find(" "..LineString.." ")
-		ImageName = UneditedImageList.sub(UneditedImageList, OldImageLocation+4, ImageLocation-1)
-		OldImageLocation = ImageLocation
+function DrawNext()
+	ToRemove = UneditedScript:find(LineString)
+	Line = 1 + Line
+	LineString = tostring(Line)
 
-		Image = love.graphics.newImage(ImageName)
+	ImageLocation = UneditedImageList:find(" "..LineString.." ")
+	ImageName = UneditedImageList.sub(UneditedImageList, OldImageLocation+4, ImageLocation-1)
+	OldImageLocation = ImageLocation
 
-		MoreLocation = UneditedScript:find(LineString)
-		MoreLocationString = tostring(MoreLocation)
-		script = UneditedScript.sub(UneditedScript, OldMoreLocation+1, MoreLocation-1)
-		OldMoreLocation = MoreLocation
-	end
+	Image = love.graphics.newImage(ImageName)
+
+	MoreLocation = UneditedScript:find(LineString)
+	MoreLocationString = tostring(MoreLocation)
+	script = UneditedScript.sub(UneditedScript, OldMoreLocation+1, MoreLocation-1)
+	OldMoreLocation = MoreLocation
 end
 
 function love.textinput(key)
