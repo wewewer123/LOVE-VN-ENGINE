@@ -1,7 +1,7 @@
 function love.load()
 	UneditedScript = love.filesystem.read("script.txt")
 	UneditedImageList = love.filesystem.read("image.txt")
-
+	Song = love.audio.newSource("nitizyou1.mp3", "stream")
 	Line = 1;
 	LineString = tostring(Line)
 
@@ -28,7 +28,15 @@ end
 
 
 function love.gamepadpressed(joystick, button)
+	if button == "y" then
+		if love.audio.getActiveSourceCount == 1 then
+			love.audio.stop()
+		else
+			love.audio.play(Song)
+		end
+	else
 	DrawNext()
+	end
 end
 
 function DrawNext()
