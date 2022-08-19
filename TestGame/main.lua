@@ -3,7 +3,7 @@ function love.load()
 	UneditedImageList = love.filesystem.read("image.txt")
 	QuestionList = love.filesystem.read("questions.txt")
 	Song = love.audio.newSource("nitizyou1.mp3", "stream")
-	Line = 1;
+	Line = 1
 	LineString = tostring(Line)
 	ImageLocation = UneditedImageList:find(" 1 ")
 	ImageName = UneditedImageList.sub(UneditedImageList, 2, ImageLocation-1)
