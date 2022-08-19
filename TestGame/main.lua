@@ -22,7 +22,7 @@ function love.update()
 
 end
 
-function love.touchpressed(a, b, c, d, e, f)
+function love.touchpressed(a, x, y, d, e, f)
 	DrawNext()
 end
 
@@ -46,6 +46,10 @@ function love.gamepadpressed(joystick, button)
 end
 
 function DrawNext()
+if QuestionList:find(LineString+1) and QuestionAwnser == "blank" then
+	QuesitonNotfication = true
+else
+	QuesitonNotfication = false
 	Line = 1 + Line
 	if Line >= 11 then
 		OldImageLocation=OldImageLocation+1
@@ -125,6 +129,12 @@ function DrawNext()
 	DidGoto = false
 end
 
+if QuestionList:find(LineString+1) then
+	QuesitonNotfication = true
+end
+
+end
+
 function love.textinput(key)
 	
 end
@@ -137,5 +147,8 @@ end
 if Screen ~= "left" and Screen ~= "right" then
 love.graphics.print(LineString,20,20)
 love.graphics.print(MoreLocationString)
+if QuesitonNotfication == true then
+love.graphics.printf("a = yes b = no", 0, 180, 300, "center")
+end
 end
 end
