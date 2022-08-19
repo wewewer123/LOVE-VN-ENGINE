@@ -11,3 +11,12 @@ DSIcon.t3x 9
 test.t3x 10 
 DSIcon.t3x 11 
 test.t3x 12 
+DSIcon.t3x 39 
+ 40.s test.t3x 40 
+DSIcon.t3x 41 
+test.t3x 42 
+DSIcon.t3x 43 
+test.t3x 44 
+DSIcon.t3x 45 
+test.t3x 46 
+DSIcon.t3x 47 

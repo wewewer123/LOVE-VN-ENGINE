@@ -4,7 +4,8 @@ MoreText 2
 MoreTextYetAgain 3 
 Oh wow, More Text! 4 
 It really just doesn't end does it? 5 
-Does it really not end? 6 
+ 6.y.s goto40 6.y 
+ 6.n.s Does it really not end? 6.n 
 Actually, this is almost the end. 7 
 Finally, the end! 8 
 Do you want to continue? 9 
@@ -12,3 +13,11 @@ Do you want to continue? 9
  10.n.s quit123 10.n 
 Alright, I'm gonna stop talking anyay 11 
 quit123 12 
+ 40.s Oh, really? 40 
+That's sad :( 41 
+This is a nightmare, 42 
+This is a nightmare, 43 
+This is a nightmare, 44 
+This is a nightmare, 45 
+This is a nightmare. 46 
+quit123 47 
