@@ -46,32 +46,58 @@ function love.gamepadpressed(joystick, button)
 end
 
 function DrawNext()
-	ToRemove = UneditedScript:find(LineString)
 	Line = 1 + Line
 	if Line >= 11 then
 		OldImageLocation=OldImageLocation+1
 		OldMoreLocation=OldMoreLocation+1
 	end
+	if Line >= 101 then
+		OldImageLocation=OldImageLocation+1
+		OldMoreLocation=OldMoreLocation+1
+	end
+
 	LineString = tostring(Line)
-
-	ImageLocation = UneditedImageList:find(" "..LineString.." ")
-	ImageName = UneditedImageList.sub(UneditedImageList, OldImageLocation+4, ImageLocation-1)
-	OldImageLocation = ImageLocation
-
-	Image = love.graphics.newImage(ImageName)
 
 	if QuestionList:find(LineString) then
 		if QuestionAwnser == "yes" then
 			MoreLocation = UneditedScript:find(" "..LineString..".y ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".y.s ")
-			script = UneditedScript.sub(UneditedScript, OldMoreLocation+8, MoreLocation-1)
+			if Line >= 11 then
+				OldMoreLocation=OldMoreLocation+1
+			end
+			if Line >= 101 then
+				OldMoreLocation=OldMoreLocation+1
+			end
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+7, MoreLocation-1)
 		end
 		if QuestionAwnser == "no" then
 			MoreLocation = UneditedScript:find(" "..LineString..".n ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".n.s ")
-			script = UneditedScript.sub(UneditedScript, OldMoreLocation+8, MoreLocation-1)
+			if Line >= 11 then
+				OldMoreLocation=OldMoreLocation+1
+			end
+			if Line >= 101 then
+				OldMoreLocation=OldMoreLocation+1
+			end
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+7, MoreLocation-1)
 		end
 		OldMoreLocation = UneditedScript:find(" "..LineString..".n ")+2
+		if script:find("goto") ~= nul then
+			DidGoto = true
+			script = script.sub(script, 5, OldMoreLocation-1)
+			Line = tonumber(script)
+			LineString = script
+			OldMoreLocation = UneditedScript:find(" "..LineString..".s ")
+			MoreLocation = UneditedScript:find(" "..LineString.." ")
+			if Line >= 11 then
+				OldMoreLocation=OldMoreLocation+1
+			end
+			if Line >= 101 then
+				OldMoreLocation=OldMoreLocation+1
+			end
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+5, MoreLocation-1)
+			OldMoreLocation = MoreLocation
+		end
 	else
 		MoreLocation = UneditedScript:find(" "..LineString.." ")
 		MoreLocationString = tostring(MoreLocation)
@@ -82,6 +108,21 @@ function DrawNext()
 		love.event.quit()
 	end
 	QuestionAwnser = "blank"
+	if DidGoto then
+		OldImageLocation = UneditedImageList:find(" "..LineString..".s ")
+		if Line >= 11 then
+			OldImageLocation=OldImageLocation+1
+		end
+		if Line >= 101 then
+			OldImageLocation=OldImageLocation+1
+		end
+	end
+	ImageLocation = UneditedImageList:find(" "..LineString.." ")
+	ImageName = UneditedImageList.sub(UneditedImageList, OldImageLocation+4, ImageLocation-1)
+	OldImageLocation = ImageLocation
+
+	Image = love.graphics.newImage(ImageName)
+	DidGoto = false
 end
 
 function love.textinput(key)
