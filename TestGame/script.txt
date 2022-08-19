@@ -11,13 +11,15 @@ Finally, the end! 8
 Do you want to continue? 9 
  10.y.s Alright! 10.y 
  10.n.s quit123 10.n 
-Alright, I'm gonna stop talking anyay 11 
+I'm gonna stop talking anyway 11 
 quit123 12 
+
+
  40.s Oh, really? 40 
 That's sad :( 41 
 This is a nightmare, 42 
-This is a nightmare, 43 
-This is a nightmare, 44 
-This is a nightmare, 45 
-This is a nightmare. 46 
+nightmare, 43 
+nightmare, 44 
+nightmare, 45 
+nightmare. 46 
 quit123 47 
