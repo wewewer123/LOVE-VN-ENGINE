@@ -26,7 +26,6 @@ function love.touchpressed(a, x, y, d, e, f)
 	DrawNext()
 end
 
-
 function love.gamepadpressed(joystick, button)
 	if button == "y" then
 		if love.audio.getActiveSourceCount == 1 then
@@ -62,7 +61,7 @@ else
 
 	LineString = tostring(Line)
 
-	if QuestionList:find(LineString) then
+	if QuestionList:find(" "..LineString.." ") then
 		if QuestionAwnser == "yes" then
 			MoreLocation = UneditedScript:find(" "..LineString..".y ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".y.s ")
