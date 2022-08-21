@@ -1,18 +1,22 @@
 
-TestText 1 
-MoreText 2 
-MoreTextYetAgain 3 
-Oh wow, More Text! 4 
-It really just doesn't end does it? 5 
- 6.y.s goto40 6.y 
- 6.n.s Does it really not end? 6.n 
-Actually, this is almost the end. 7 
-Finally, the end! 8 
-Do you want to continue? 9 
- 10.y.s Alright! 10.y 
- 10.n.s quit123 10.n 
-I'm gonna stop talking anyway 11 
-quit123 12 
+Welcome to the example text! 1 
+Do you want to begin? 2 
+ 3.y.s Here we go! 3.y 
+ 3.s.n quit123 3.n 
+TestText 4 
+MoreText 5 
+MoreTextYetAgain 6 
+Oh wow, More Text! 7 
+It really just doesn't end does it? 8 
+ 9.y.s goto40 9.y 
+ 9.n.s Does it really not end? 9.n 
+Actually, this is almost the end. 10 
+Finally, the end! 11 
+Do you want to continue? 12 
+ 13.y.s Alright! 13.y 
+ 13.n.s quit123 13.n 
+I'm gonna stop talking now anyway. 14 
+quit123 15 
 
 
  40.s Oh, really? 40 
