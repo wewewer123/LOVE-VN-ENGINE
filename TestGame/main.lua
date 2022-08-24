@@ -120,9 +120,11 @@ else
 			OldImageLocation=OldImageLocation+1
 		end
 	end
+	if UneditedImageList:find(" "..LineString.." ") then
 	ImageLocation = UneditedImageList:find(" "..LineString.." ")
 	ImageName = UneditedImageList.sub(UneditedImageList, OldImageLocation+4, ImageLocation-1)
 	OldImageLocation = ImageLocation
+	end
 
 	Image = love.graphics.newImage(ImageName)
 	DidGoto = false
