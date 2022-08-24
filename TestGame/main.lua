@@ -44,12 +44,7 @@ function love.gamepadpressed(joystick, button)
 	end
 end
 
-function DrawNext()
-if QuestionList:find(LineString+1) and QuestionAwnser == "blank" then
-	QuesitonNotfication = true
-else
-	QuesitonNotfication = false
-	Line = 1 + Line
+function AddBoth()
 	if Line >= 11 then
 		OldImageLocation=OldImageLocation+1
 		OldMoreLocation=OldMoreLocation+1
@@ -58,6 +53,53 @@ else
 		OldImageLocation=OldImageLocation+1
 		OldMoreLocation=OldMoreLocation+1
 	end
+	if Line >= 1001 then
+		OldImageLocation=OldImageLocation+1
+		OldMoreLocation=OldMoreLocation+1
+	end
+	if Line >= 10001 then
+		OldImageLocation=OldImageLocation+1
+		OldMoreLocation=OldMoreLocation+1
+	end
+end
+
+function AddScript()
+	if Line >= 11 then
+		OldMoreLocation=OldMoreLocation+1
+	end
+	if Line >= 101 then
+		OldMoreLocation=OldMoreLocation+1
+	end
+	if Line >= 11 then
+		OldMoreLocation=OldMoreLocation+1
+	end
+	if Line >= 101 then
+		OldMoreLocation=OldMoreLocation+1
+	end
+end
+
+function AddImage()
+	if Line >= 11 then
+		OldImageLocation=OldImageLocation+1
+	end
+	if Line >= 101 then
+		OldImageLocation=OldImageLocation+1
+	end
+	if Line >= 1001 then
+		OldImageLocation=OldImageLocation+1
+	end
+	if Line >= 10001 then
+		OldImageLocation=OldImageLocation+1
+	end
+end
+
+function DrawNext()
+if QuestionList:find(LineString+1) and QuestionAwnser == "blank" then
+	QuesitonNotfication = true
+else
+	QuesitonNotfication = false
+	Line = 1 + Line
+	AddBoth()
 
 	LineString = tostring(Line)
 
@@ -65,24 +107,14 @@ else
 		if QuestionAwnser == "yes" then
 			MoreLocation = UneditedScript:find(" "..LineString..".y ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".y.s ")
-			if Line >= 11 then
-				OldMoreLocation=OldMoreLocation+1
-			end
-			if Line >= 101 then
-				OldMoreLocation=OldMoreLocation+1
-			end
-			script = UneditedScript.sub(UneditedScript, OldMoreLocation+7, MoreLocation-1)
+			AddScript()
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+6, MoreLocation-1)
 		end
 		if QuestionAwnser == "no" then
 			MoreLocation = UneditedScript:find(" "..LineString..".n ")
 			OldMoreLocation = UneditedScript:find(" "..LineString..".n.s ")
-			if Line >= 11 then
-				OldMoreLocation=OldMoreLocation+1
-			end
-			if Line >= 101 then
-				OldMoreLocation=OldMoreLocation+1
-			end
-			script = UneditedScript.sub(UneditedScript, OldMoreLocation+7, MoreLocation-1)
+			AddScript()
+			script = UneditedScript.sub(UneditedScript, OldMoreLocation+6, MoreLocation-1)
 		end
 		OldMoreLocation = UneditedScript:find(" "..LineString..".n ")+2
 		if script:find("goto") ~= nul then
@@ -92,12 +124,7 @@ else
 			LineString = script
 			OldMoreLocation = UneditedScript:find(" "..LineString..".s ")
 			MoreLocation = UneditedScript:find(" "..LineString.." ")
-			if Line >= 11 then
-				OldMoreLocation=OldMoreLocation+1
-			end
-			if Line >= 101 then
-				OldMoreLocation=OldMoreLocation+1
-			end
+			AddScript()
 			script = UneditedScript.sub(UneditedScript, OldMoreLocation+5, MoreLocation-1)
 			OldMoreLocation = MoreLocation
 		end
@@ -113,12 +140,7 @@ else
 	QuestionAwnser = "blank"
 	if DidGoto then
 		OldImageLocation = UneditedImageList:find(" "..LineString..".s ")
-		if Line >= 11 then
-			OldImageLocation=OldImageLocation+1
-		end
-		if Line >= 101 then
-			OldImageLocation=OldImageLocation+1
-		end
+		AddImage()
 	end
 	if UneditedImageList:find(" "..LineString.." ") then
 	ImageLocation = UneditedImageList:find(" "..LineString.." ")
