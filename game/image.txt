@@ -1,3 +1,0 @@
-
-test.t3x 1 
-test.t3x 500 
