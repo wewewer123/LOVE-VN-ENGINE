@@ -1,12 +1,3 @@
 
-DSIcon.t3x 1 
-test.t3x 2 
-DSIcon.t3x 3 
-test.t3x 4 
-DSIcon.t3x 5 
-test.t3x 6 
-DSIcon.t3x 7 
-test.t3x 8 
-DSIcon.t3x 9 
-test.t3x 10 
-DSIcon.t3x 11 
+test.t3x 1 
+test.t3x 500 
