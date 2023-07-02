@@ -10,8 +10,13 @@ ImageContainerDS =
 }
 ImageContainerPC = 
 {
-    "CalibrationScreen.jpg 1 ",
-    "CalibrationScreen.jpg 7 "
+    "bg_lecturehall.jpg 1 ",
+    "bg_uni.jpg 5 ",
+    "bg_meadow.jpg 14 ",
+    "black.png 48 ",
+    "bg_club.jpg 49 ",
+    "black.png 68 ",
+    "black.png 76 ",
 }
 if love.system.getOS() == "Windows" then
     ImageContainer = ImageContainerPC
