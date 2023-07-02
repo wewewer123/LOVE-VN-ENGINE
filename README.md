@@ -21,13 +21,13 @@ In the "script.lua" file "putScriptContainer = { "text1", "text2", etc }". If yo
 
 # Future plans
 
-Add custom questions.
+- Add custom questions.
 
-Optimize the " qqq " and " ggg " (maybe be giving exact line number as option).
+- Optimize the " qqq " and " ggg " (maybe be giving exact line number as option).
 
-Make it easier to create t3x files.
+- Make it easier to create t3x files.
 
-Automate conversion from renpy to this.
+- Automate conversion from renpy to this.
 
 
 # Building
