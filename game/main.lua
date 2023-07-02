@@ -1,4 +1,3 @@
---require("script")
 function love.load()
 	font = love.graphics.newFont("standard")
 	ScriptScript = require("script")
@@ -13,11 +12,7 @@ function love.load()
 	QuesitonNotfication = false
 	GotoStart = 0
 	GotoText = ""
-	GotoFindLine = 0
-	GotoGoto = false
 	DrawNext()
-	--Image = love.graphics.newImage(ImageName)
-	--Image = love.graphics.newImage("test.t3x")
 end
 
 function love.update()
@@ -82,17 +77,11 @@ function DrawNext()
 		end
 	end
 
-	--if GotoGoto then
-	--	Line = GotoFindLine
-	--	GotoGoto = false
-	--end
-
 	DrawImage()
 
 	ScriptText = ScriptContainer[Line]
 
 	if ScriptText == nil then
-		--ScriptText = "Nil"
 		love.event.quit()
 	end
 
@@ -104,6 +93,7 @@ function DrawNext()
 			if ScriptContainer[i]:find(QuestionText) then
 				QuestionFindLine = i
 				QuesitonNotfication = true
+				--love.keyboard.setTextInput( enable ) I should make it so this only goes for mobile (yes I'm expanding too much, ik)
 			end
 		end
 	end
@@ -114,9 +104,6 @@ function DrawNext()
 		ScriptText = ScriptText:sub(1, GotoStart)
 		for i = 1,#ScriptContainer,1 do
 			if ScriptContainer[i]:find(GotoText) then
-				--GotoFindLine = i
-				--GotoGoto = true
-
 				Line = i
 				ScriptText = ScriptContainer[Line]
 				DrawImage()
