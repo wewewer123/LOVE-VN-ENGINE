@@ -93,7 +93,9 @@ function DrawNext()
 			if ScriptContainer[i]:find(QuestionText) then
 				QuestionFindLine = i
 				QuesitonNotfication = true
-				--love.keyboard.setTextInput( enable ) I should make it so this only goes for mobile (yes I'm expanding too much, ik)
+				if love.system.getOS() ~= "N3DSXL" and love.system.getOS() ~= "3DSXL" and love.system.getOS() ~= "3DS" and love.system.getOS() ~= "N2DSXL" and love.system.getOS() ~= "2DSXL" and love.system.getOS() ~= "2DS" then
+					love.keyboard.setTextInput( enable )
+				end
 			end
 		end
 	end
