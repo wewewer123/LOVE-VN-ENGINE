@@ -1,8 +1,15 @@
 function love.load()
-	font = love.graphics.newFont("standard")
 	ScriptScript = require("script")
 	ImageScript = require("image")
+	if love.system.getOS() ~= "Horizon" then
+		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
+		font = love.graphics.newFont(28)
+	else
+		font = love.graphics.newFont("standard")
+	end
+	major, minor, revision, codename = love.getVersion( )
 	Song = love.audio.newSource("nitizyou1.mp3", "stream")
+
 	Line = 1
 	ScriptText = ""
 	UpCount = 0
@@ -93,8 +100,8 @@ function DrawNext()
 			if ScriptContainer[i]:find(QuestionText) then
 				QuestionFindLine = i
 				QuesitonNotfication = true
-				if love.system.getOS() ~= "N3DSXL" and love.system.getOS() ~= "3DSXL" and love.system.getOS() ~= "3DS" and love.system.getOS() ~= "N2DSXL" and love.system.getOS() ~= "2DSXL" and love.system.getOS() ~= "2DS" then
-					love.keyboard.setTextInput( enable )
+				if love.system.getOS() ~= "Horizon" then
+					love.keyboard.setTextInput(true)
 				end
 			end
 		end
@@ -140,8 +147,11 @@ end
 function DrawImage()
 	for i = 1,#ImageContainer,1 do
 		if ImageContainer[i]:find(" "..Line.." ") ~= nil then
-			--Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-			Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+			if major ~= 12 then
+				Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+			else
+				Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+			end
 		end
 	end
 end
@@ -151,16 +161,22 @@ function love.textinput(key)
 end
 	
 function love.draw(Screen)
-if Screen ~= "bottom" then
-love.graphics.draw(Image, 0, 0)
-love.graphics.printf(ScriptText, font, 200, 180-(UpCount*20), 200, "center", 0, 2, 2)
-end
-if Screen ~= "left" and Screen ~= "right" then
---love.graphics.print(LineString,20,20)
---love.graphics.print(MoreLocationString)
-if QuesitonNotfication == true then
-love.graphics.printf("A = yes B = no", font, 160, 120, 150, "center", 0, 3, 3)
---love.graphics.printf(ScriptText, font, 160, 180-(UpCount*20), 150, "center", 0, 2, 2)
-end
+if Screen ~= nil then
+	if Screen ~= "bottom" then
+		love.graphics.draw(Image, 0, 0)
+		love.graphics.printf(ScriptText, font, 200, 180-(UpCount*20), 200, "center", 0, 2, 2)
+	end
+	if Screen ~= "left" and Screen ~= "right" then
+	if QuesitonNotfication == true then
+		love.graphics.printf("A = yes, B = no", font, 160, 120, 150, "center", 0, 3, 3)
+	end
+	--love.graphics.printf(ScriptText, font, 160, 180-(UpCount*20), 150, "center", 0, 2, 2)
+	end
+else
+	love.graphics.draw(Image, 0, 0)
+	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+	if QuesitonNotfication == true then
+		love.graphics.printf("Enter = yes, Space = no", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+	end
 end
 end
