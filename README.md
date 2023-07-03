@@ -12,7 +12,7 @@ To run the vn simply startup LovePotion from the homebrew launcher.
 
 # Creating custom story
 
-To make your own story copy the "EmptyGame" and rename it to "game". 
+To make your own story copy the "EmptyGame" and rename it to "game" and copy over main.lua from the original "game" folder. 
 
 If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the ds needs .t3x files for textures)
 
