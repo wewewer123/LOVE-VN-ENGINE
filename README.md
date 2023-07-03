@@ -4,11 +4,17 @@
 
 # Installing
 
-To install put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 4) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
+- 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 4, but should work on all 3.0/2.0 versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
+
+- iOS: To install on iOS you will need a mac with XCode and you will need to build using instructions you can find [here](https://github.com/love2d/love#iOS). Once you have that set up you have to zip all the files in the "game" folder to a .zip file (in a way so thayt main.lua is on the top layer), and rename that .zip file to .love. Then you can import that file into the iOS application (I will try to make this easier in the future).
+
+- pc: To install on pc all you have to do is install love from [here](https://github.com/love2d/love/releases) (right now version 11 is the latest which works fine, version 12 should work too, however any other versions have not been tested).
 
 # Running
 
-To run the vn simply startup LovePotion from the homebrew launcher.
+To run the vn on the 3DS simply startup LovePotion from the homebrew launcher.
+To run the vn on iOS simply run the .love file that you imported into the app.
+To run the vn on pc simply drag the game folder or the game .love file onto the exe.
 
 # Creating custom story
 
@@ -30,4 +36,4 @@ In the script.lua file if you want to add a question type " qqq " after it and t
 
 # Building
 
-Building is currently not possible, I haven't gotten it to compile porperly yet.
+Building for the 3DS is currently not possible, for iOS and pc all you have to do is zip all the files in the "game" folder to a .zip file (in a way so thayt main.lua is on the top layer), and rename that .zip file to .love.
