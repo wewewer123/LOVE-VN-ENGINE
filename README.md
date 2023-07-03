@@ -12,11 +12,11 @@ To run the vn simply startup LovePotion from the homebrew launcher.
 
 # Creating custom story
 
-To make your own story create a new "game" folder and copy main.lua into that folder. Then 2 new files called "image.lua" and "script.lua". 
+To make your own story copy the "EmptyGame" and rename it to "game". 
 
-In the "image.lua" file put "ImageContainerDS = {}" and "ImageContainerPC = {}" where if you want to add a new image just put in ""(imagename.extention) (LineNumber) ",". (the ds needs .t3x files for textures)
+If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the ds needs .t3x files for textures)
 
-In the "script.lua" file "putScriptContainer = { "text1", "text2", etc }". If you want to add a question type " qqq " after it and then after that exactly put the text it should go to if the awnser is no. If you want to move from one chuck of text to another type " ggg " followed by the exact text from the line you want it to move to.
+In the script.lua file if you want to add a question type " qqq " after it and then after that exactly put the text it should go to if the awnser is no. If you want to move from one chuck of text to another type " ggg " followed by the exact text from the line you want it to move to. if you type "123quit123" anywhere in a line the program will exit without showing that line.
 
 
 # Future plans
