@@ -8,7 +8,7 @@
 
 - iOS: To install on iOS you will need a mac with XCode and you will need to build using instructions you can find [here](https://github.com/love2d/love#iOS). Once you have that set up you have to zip all the files in the "game" folder to a .zip file (in a way so thayt main.lua is on the top layer), and rename that .zip file to .love. Then you can import that file into the iOS application (I will try to make this easier in the future).
 
-- pc: To install on pc all you have to do is install love from [here](https://github.com/love2d/love/releases) (right now version 11 is the latest which works fine, version 12 should work too, however any other versions have not been tested).
+- pc: To install on pc all you have to do is install love from [here](https://github.com/love2d/love/releases) (right now version 11 is the latest which works fine, version 12 should work too when that releases, however any other versions have not been tested).
 
 # Running
 
@@ -28,11 +28,15 @@ In the script.lua file if you want to add a question type " qqq " after it and t
 
 - Add custom questions.
 
+- Make music work better/more flexibly.
+
 - Optimize the " qqq " and " ggg " (maybe be giving exact line number as option).
 
 - Make it easier to create t3x files.
 
 - Automate conversion from renpy to this.
+
+- More devices!!!
 
 # Building
 
