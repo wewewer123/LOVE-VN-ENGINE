@@ -26,11 +26,11 @@ If you want to add a new image just add ""(imagename.extention) (LineNumber) ","
 
 In the script.lua file if you want to add a question type " qqq " after it and then after that exactly put the text it should go to if the awnser is no. If you want to move from one chuck of text to another type " ggg " followed by the exact text from the line you want it to move to. if you type "123quit123" anywhere in a line the program will exit *without* showing that line.
 
+If you want to add custom music just add ""(musicname.extention) (LineNumber) "," to music.lua. (only mp3 files are officially supported)
+
 # Future plans
 
 - Add custom questions.
-
-- Make music work better/more flexibly.
 
 - Optimize the " qqq " and " ggg " (maybe be giving exact line number as option).
 

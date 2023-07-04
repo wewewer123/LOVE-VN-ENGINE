@@ -1,6 +1,7 @@
 function love.load()
 	ScriptScript = require("script")
 	ImageScript = require("image")
+	MusicScript = require("music")
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 		font = love.graphics.newFont(28)
@@ -8,7 +9,6 @@ function love.load()
 		font = love.graphics.newFont("standard")
 	end
 	major, minor, revision, codename = love.getVersion( )
-	Song = love.audio.newSource("nitizyou1.mp3", "stream")
 
 	Line = 1
 	ScriptText = ""
@@ -19,6 +19,7 @@ function love.load()
 	QuesitonNotfication = false
 	GotoStart = 0
 	GotoText = ""
+	CheckMusic()
 	DrawNext()
 end
 
@@ -85,6 +86,7 @@ function DrawNext()
 	end
 
 	DrawImage()
+	CheckMusic()
 
 	ScriptText = ScriptContainer[Line]
 
@@ -116,6 +118,7 @@ function DrawNext()
 				Line = i
 				ScriptText = ScriptContainer[Line]
 				DrawImage()
+				CheckMusic()
 			end
 		end
 	end
@@ -152,6 +155,16 @@ function DrawImage()
 			else
 				Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
 			end
+		end
+	end
+end
+
+function CheckMusic()
+	for i = 1,#MusicContainer,1 do
+		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
+			love.audio.stop()
+			Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
+			love.audio.play(Song)
 		end
 	end
 end
