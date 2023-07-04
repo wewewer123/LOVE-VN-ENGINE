@@ -19,7 +19,8 @@ function love.load()
 	QuesitonNotfication = false
 	GotoStart = 0
 	GotoText = ""
-	CheckMusic()
+	Song = love.audio.newSource("silent.mp3", "stream")
+	love.audio.play(Song)
 	DrawNext()
 end
 
@@ -33,8 +34,8 @@ end
 
 function love.keypressed( key, scancode, isrepeat )
 	if key == "t" then
-		if love.audio.getActiveSourceCount ~= 0 then
-			love.audio.stop()
+		if Song:isPlaying() then
+			love.audio.stop(Song)
 		else
 			love.audio.play(Song)
 		end
@@ -45,14 +46,14 @@ function love.keypressed( key, scancode, isrepeat )
 		if key == "space" then
 			QuestionAwnser = "no"
 		end
+		DrawNext()
 	end
-	DrawNext()
 end
 
 function love.gamepadpressed(joystick, button)
 	if button == "y" then
 		if Song:isPlaying() then
-			love.audio.stop()
+			love.audio.stop(Song)
 		else
 			love.audio.play(Song)
 		end
@@ -162,9 +163,16 @@ end
 function CheckMusic()
 	for i = 1,#MusicContainer,1 do
 		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
-			love.audio.stop()
-			Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
-			love.audio.play(Song)
+			if Song:isPlaying() then
+				love.audio.stop()
+				Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
+				Song:setLooping(true)
+				love.audio.play(Song)
+			else
+				Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
+				Song:setLooping(true)
+				love.audio.stop()
+			end
 		end
 	end
 end
