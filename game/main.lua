@@ -8,7 +8,16 @@ function love.load()
 	else
 		font = love.graphics.newFont("standard")
 	end
+
 	major, minor, revision, codename = love.getVersion( )
+	Song = love.audio.newSource("silent.mp3", "stream")
+	love.audio.play(Song)
+	if major <= 11 then
+		Image = love.graphics.newText(font, "")
+	else
+		Image = love.graphics.newTextBatch(font, "")
+	end
+
 
 	Line = 1
 	ScriptText = ""
@@ -19,8 +28,6 @@ function love.load()
 	QuesitonNotfication = false
 	GotoStart = 0
 	GotoText = ""
-	Song = love.audio.newSource("silent.mp3", "stream")
-	love.audio.play(Song)
 	DrawNext()
 end
 
@@ -151,7 +158,7 @@ end
 function DrawImage()
 	for i = 1,#ImageContainer,1 do
 		if ImageContainer[i]:find(" "..Line.." ") ~= nil then
-			if major ~= 12 then
+			if major <= 11 then
 				Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
 			else
 				Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
