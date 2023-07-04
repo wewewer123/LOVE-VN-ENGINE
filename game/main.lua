@@ -170,14 +170,12 @@ end
 function CheckMusic()
 	for i = 1,#MusicContainer,1 do
 		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
+			love.audio.stop()
+			Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
+			Song:setLooping(true)
 			if Song:isPlaying() then
-				love.audio.stop()
-				Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
-				Song:setLooping(true)
 				love.audio.play(Song)
 			else
-				Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
-				Song:setLooping(true)
 				love.audio.stop()
 			end
 		end
