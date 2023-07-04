@@ -12,9 +12,11 @@
 
 # Running
 
-To run the vn on the 3DS simply startup LovePotion from the homebrew launcher.
-To run the vn on iOS simply run the .love file that you imported into the app.
-To run the vn on pc simply drag the game folder or the game .love file onto the exe.
+- 3DS: To run the vn on the 3DS simply startup LovePotion from the homebrew launcher.
+
+- iOS: To run the vn on iOS simply run the .love file that you imported into the app.
+
+- pc: To run the vn on pc simply drag the game folder or the game .love file onto the exe.
 
 # Creating custom story
 
@@ -40,4 +42,10 @@ In the script.lua file if you want to add a question type " qqq " after it and t
 
 # Building
 
-Building for the 3DS is currently not possible, for iOS and pc all you have to do is zip all the files in the "game" folder to a .zip file (in a way so thayt main.lua is on the top layer), and rename that .zip file to .love.
+- Unviersal: If you want to make a .love file that can run on all supported systems all you have to do is zip all the files in the "game" folder to a .zip file (in a way so thayt main.lua is on the top layer), and rename that .zip file to .love.
+
+- pc: If you want to build for pc please follow the instructions you can find [here](https://love2d.org/wiki/Game_Distribution#Creating_a_Windows_Executable).
+
+- iOS: On iOS it isn't easily possible to build an executable.
+
+- 3DS: On the 3DS I haven't quite figured out how to build propperly.
