@@ -2,6 +2,13 @@
 
  Simple LÖVE vn for on the 3DS, iOS, pc (and hopefully more in the future).
 
+# Features
+
+- Simple Image/Music/Text vn engine.
+- No programming knowledge required to use.
+- MultiThreaded music loading for the smoothest usage possible.
+- Support for the 3DS, iOS and pc.
+
 # Installing
 
 - 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 4, but should work on all 3.0/2.0 versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
@@ -18,6 +25,14 @@
 
 - pc: To run the vn on pc simply drag the game folder or the game .love file onto the exe.
 
+# Future plans
+
+- Make it easier to create t3x files.
+
+- Automate conversion from renpy to this.
+
+- More devices!!!
+
 # Creating custom story
 
 To make your own story copy the "EmptyGame" and rename it to "game" and copy over main.lua from the original "game" folder.
@@ -29,14 +44,6 @@ If you want to move from one chuck of text to another type " ggg " followed by t
 If you type "123quit123" anywhere in a line the program will exit *without* showing that line.
 
 If you want to add custom music just add ""(musicname.extention) (LineNumber) "," to music.lua. (only mp3 files are officially supported)
-
-# Future plans
-
-- Make it easier to create t3x files.
-
-- Automate conversion from renpy to this.
-
-- More devices!!!
 
 # Building
 
