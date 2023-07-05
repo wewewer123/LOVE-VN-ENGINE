@@ -20,7 +20,6 @@ function love.load()
 
 	Line = 1
 	ScriptText = ""
-	UpCount = 0
 	QuestionStart = 0
 	QuestionText = ""
 	YesText = ""
@@ -155,20 +154,6 @@ function DrawNext()
 
 	Line = Line + 1
 
-	UpCount = 0
-	if #ScriptText >= 70 then
-		UpCount=UpCount+1
-	end
-	if #ScriptText >= 105 then
-		UpCount=UpCount+1
-	end
-	if #ScriptText >= 140 then
-		UpCount=UpCount+1
-	end
-	if #ScriptText >= 175 then
-		UpCount=UpCount+1
-	end
-
 	QuestionAwnser = ""
 	QuestionText = ""
 end
@@ -206,13 +191,13 @@ end
 	
 function love.draw(Screen)
 if Screen ~= nil then
-	if Screen ~= "bottom" then
+	if Screen == "left" then
 		love.graphics.draw(Image, 0, 0)
-		love.graphics.printf(ScriptText, font, 200, 180-(UpCount*30), 400, "center", 0, 1, 1)
 	end
-	if Screen ~= "left" and Screen ~= "right" then
+	if Screen == "bottom" then
+		love.graphics.printf(ScriptText, font, 160, 0, 320, "center", 0, 1, 1)
 	if QuesitonNotfication == true then
-		love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 120, 320, "center", 0, 1, 1)
+		love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 180, 320, "center", 0, 1, 1)
 	end
 	end
 else

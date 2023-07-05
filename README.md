@@ -22,9 +22,9 @@
 
 To make your own story copy the "EmptyGame" and rename it to "game" and copy over main.lua from the original "game" folder.
 
-If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the ds needs .t3x files for textures)
+If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the 3DS needs .t3x files for textures)
 
-In the script.lua file if you want to add a question type " qqq " after it and then after that exactly put the text it should go to if the awnser is no, or the linenumber for if the awnser is no. After that you add " yyy " followed by the yes prompt and " nnn " followed by the no prompt.
+In the script.lua file if you want to add a question type " qqq " after it and then after that exactly put the text it should go to if the awnser is no, or the linenumber for if the awnser is no. After that you add " yyy " followed by the yes prompt and " nnn " followed by the no prompt (watch out with the prompt size, as if you make it too large it will display incorrectly on the 3DS).
 If you want to move from one chuck of text to another type " ggg " followed by the exact text from the line you want it to move to, or the linenumber of the text you want to move to.
 If you type "123quit123" anywhere in a line the program will exit *without* showing that line.
 
