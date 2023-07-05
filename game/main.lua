@@ -71,7 +71,7 @@ function love.gamepadpressed(joystick, button)
 		if button == "b" then
 			QuestionAwnser = "no"
 		end
-	DrawNext()
+		DrawNext()
 	end
 end
 
@@ -191,8 +191,14 @@ end
 	
 function love.draw(Screen)
 if Screen ~= nil then
-	if Screen == "left" then
-		love.graphics.draw(Image, 0, 0)
+	if love.graphics.get3D() then
+		if Screen ~= "bottom" then
+			love.graphics.draw(Image, 0, 0)
+		end
+	else
+		if Screen == "left" then
+			love.graphics.draw(Image, 0, 0)
+		end
 	end
 	if Screen == "bottom" then
 		love.graphics.printf(ScriptText, font, 160, 0, 320, "center", 0, 1, 1)
