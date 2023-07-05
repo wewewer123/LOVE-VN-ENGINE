@@ -4,10 +4,9 @@ function love.load()
 	MusicScript = require("music")
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
-		font = love.graphics.newFont(28)
-	else
-		font = love.graphics.newFont("standard")
 	end
+
+	font = love.graphics.newFont(28)
 
 	major, minor, revision, codename = love.getVersion( )
 	Song = love.audio.newSource("silent.mp3", "stream")
@@ -24,6 +23,8 @@ function love.load()
 	UpCount = 0
 	QuestionStart = 0
 	QuestionText = ""
+	YesText = ""
+	NoText = ""
 	QuestionFindLine = 0
 	QuesitonNotfication = false
 	GotoStart = 0
@@ -104,29 +105,46 @@ function DrawNext()
 
 	if ScriptText:find(" qqq ") ~= nil then
 		QuestionStart = ScriptText:find(" qqq ")
-		QuestionText = ScriptText.sub(ScriptText, QuestionStart+5, #ScriptText)
+		QuestionText = ScriptText.sub(ScriptText, QuestionStart+5, ScriptText:find(" yyy ")-1)
+		YesText = ScriptText.sub(ScriptText, ScriptText:find(" yyy ")+5, ScriptText:find(" nnn ")-1)
+		NoText = ScriptText.sub(ScriptText, ScriptText:find(" nnn ")+5, #ScriptText)
 		ScriptText = ScriptText:sub(1, QuestionStart)
-		for i = 1,#ScriptContainer,1 do
-			if ScriptContainer[i]:find(QuestionText) then
-				QuestionFindLine = i
-				QuesitonNotfication = true
-				if love.system.getOS() ~= "Horizon" then
-					love.keyboard.setTextInput(true)
+		if tonumber(QuestionText) then
+			QuestionFindLine = tonumber(QuestionText)
+			QuesitonNotfication = true
+			if love.system.getOS() ~= "Horizon" then
+				love.keyboard.setTextInput(true)
+			end
+		else
+			for i = 1,#ScriptContainer,1 do
+				if ScriptContainer[i]:find(QuestionText) then
+					QuestionFindLine = i
+					QuesitonNotfication = true
+					if love.system.getOS() ~= "Horizon" then
+						love.keyboard.setTextInput(true)
+					end
 				end
 			end
 		end
 	end
 
 	if ScriptText:find(" ggg ") ~= nil then
-		GotoStart = ScriptText:find(" ggg ")
-		GotoText = ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)
-		ScriptText = ScriptText:sub(1, GotoStart)
-		for i = 1,#ScriptContainer,1 do
-			if ScriptContainer[i]:find(GotoText) then
-				Line = i
-				ScriptText = ScriptContainer[Line]
-				DrawImage()
-				CheckMusic()
+		if tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)) then
+			Line = tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText))
+			ScriptText = ScriptContainer[Line]
+			DrawImage()
+			CheckMusic()
+		else
+			GotoStart = ScriptText:find(" ggg ")
+			GotoText = ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)
+			ScriptText = ScriptText:sub(1, GotoStart)
+			for i = 1,#ScriptContainer,1 do
+				if ScriptContainer[i]:find(GotoText) then
+					Line = i
+					ScriptText = ScriptContainer[Line]
+					DrawImage()
+					CheckMusic()
+				end
 			end
 		end
 	end
@@ -190,19 +208,18 @@ function love.draw(Screen)
 if Screen ~= nil then
 	if Screen ~= "bottom" then
 		love.graphics.draw(Image, 0, 0)
-		love.graphics.printf(ScriptText, font, 200, 180-(UpCount*20), 200, "center", 0, 2, 2)
+		love.graphics.printf(ScriptText, font, 200, 180-(UpCount*30), 400, "center", 0, 1, 1)
 	end
 	if Screen ~= "left" and Screen ~= "right" then
 	if QuesitonNotfication == true then
-		love.graphics.printf("A = yes, B = no", font, 160, 120, 150, "center", 0, 3, 3)
+		love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 120, 320, "center", 0, 1, 1)
 	end
-	--love.graphics.printf(ScriptText, font, 160, 180-(UpCount*20), 150, "center", 0, 2, 2)
 	end
 else
 	love.graphics.draw(Image, 0, 0)
 	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
 	if QuesitonNotfication == true then
-		love.graphics.printf("Enter = yes, Space = no", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 	end
 end
 end
