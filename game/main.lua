@@ -105,7 +105,6 @@ function DrawNext()
 
 	if ScriptText == nil then
 		MusicThread:wait()
-		ImageThread:wait()
 		love.event.quit()
 	end
 
