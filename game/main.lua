@@ -2,6 +2,8 @@ function love.load()
 	ScriptScript = require("script")
 	ImageScript = require("image")
 	MusicScript = require("music")
+	MusicThreading = require("MusicThreading")
+	MusicThread = love.thread.newThread( MusicThreading )
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 	end
@@ -10,14 +12,14 @@ function love.load()
 
 	major, minor, revision, codename = love.getVersion( )
 	Song = love.audio.newSource("silent.mp3", "stream")
-	love.audio.play(Song)
 	if major <= 11 then
 		Image = love.graphics.newText(font, "")
 	else
 		Image = love.graphics.newTextBatch(font, "")
 	end
 
-
+	PlayingSong = true
+	LoadingMusic = false
 	Line = 1
 	ScriptText = ""
 	QuestionStart = 0
@@ -30,9 +32,8 @@ function love.load()
 	GotoText = ""
 	DrawNext()
 end
-
 function love.update()
-
+	CheckMusic()
 end
 
 function love.touchpressed(a, x, y, d, e, f)
@@ -43,8 +44,10 @@ function love.keypressed( key, scancode, isrepeat )
 	if key == "t" then
 		if Song:isPlaying() then
 			love.audio.stop(Song)
+			PlayingSong = false
 		else
 			love.audio.play(Song)
+			PlayingSong = true
 		end
 	else
 		if key == "return" then
@@ -59,10 +62,12 @@ end
 
 function love.gamepadpressed(joystick, button)
 	if button == "y" then
-		if Song:isPlaying() then
+		if PlayingSong then
 			love.audio.stop(Song)
+			PlayingSong = false
 		else
 			love.audio.play(Song)
+			PlayingSong = true
 		end
 	else
 		if button == "a" then
@@ -94,11 +99,13 @@ function DrawNext()
 	end
 
 	DrawImage()
-	CheckMusic()
+	NewMusic()
 
 	ScriptText = ScriptContainer[Line]
 
 	if ScriptText == nil then
+		MusicThread:wait()
+		ImageThread:wait()
 		love.event.quit()
 	end
 
@@ -132,7 +139,7 @@ function DrawNext()
 			Line = tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText))
 			ScriptText = ScriptContainer[Line]
 			DrawImage()
-			CheckMusic()
+			NewMusic()
 		else
 			GotoStart = ScriptText:find(" ggg ")
 			GotoText = ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)
@@ -142,13 +149,14 @@ function DrawNext()
 					Line = i
 					ScriptText = ScriptContainer[Line]
 					DrawImage()
-					CheckMusic()
+					NewMusic()
 				end
 			end
 		end
 	end
 
 	if ScriptText:find("123quit123") ~= nil then
+		--MusicThread:wait()
 		love.event.quit()
 	end
 
@@ -170,16 +178,32 @@ function DrawImage()
 	end
 end
 
-function CheckMusic()
+function NewMusic()
 	for i = 1,#MusicContainer,1 do
 		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
-			love.audio.stop()
-			Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
-			Song:setLooping(true)
-			if Song:isPlaying() then
+			love.audio.stop(Song)
+			--Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
+			MusicThread:start(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1))
+		end
+	end
+end
+
+function CheckMusic()
+	info = love.thread.getChannel( 'music' ):pop()
+	if info then
+		if tonumber(info) then
+			LoadingMusic = true
+		else
+		Song = info
+		LoadingMusic = false
+			if PlayingSong then
 				love.audio.play(Song)
+				Song:setLooping(true)
+				PlayingSong = true
 			else
 				love.audio.stop()
+				Song:setLooping(true)
+				PlayingSong = false
 			end
 		end
 	end
@@ -202,13 +226,19 @@ if Screen ~= nil then
 	end
 	if Screen == "bottom" then
 		love.graphics.printf(ScriptText, font, 160, 0, 320, "center", 0, 1, 1)
-	if QuesitonNotfication == true then
-		love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 180, 320, "center", 0, 1, 1)
-	end
+		if LoadingMusic then
+			love.graphics.printf("Loading Song", font, 160, 180, 320, "center", 0, 1, 1)
+		end
+		if QuesitonNotfication == true then
+			love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 180, 320, "center", 0, 1, 1)
+		end
 	end
 else
 	love.graphics.draw(Image, 0, 0)
 	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+	if LoadingMusic then
+		love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+	end
 	if QuesitonNotfication == true then
 		love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 	end
