@@ -27,6 +27,8 @@
 
 # Future plans
 
+- Character sprite support.
+- Part transparent text background.
 - Make it easier to create t3x files.
 - Automate conversion from renpy to this.
 - More devices!!!
