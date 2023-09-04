@@ -1,11 +1,16 @@
 function love.load()
 	ScriptScript = require("script")
 	ImageScript = require("image")
+	CharacterScript = require("character")
 	MusicScript = require("music")
 	MusicThreading = require("MusicThreading")
 	MusicThread = love.thread.newThread( MusicThreading )
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
+	else
+		if love.system.getModel() ~= "RED" or love.system.getModel() ~= "CTR" or love.system.getModel() ~= "SPR" or love.system.getModel() ~= "KTR" or love.system.getModel() ~= "FTR" or love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+			ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
+		end
 	end
 
 	font = love.graphics.newFont(28)
@@ -14,8 +19,12 @@ function love.load()
 	Song = love.audio.newSource("silent.mp3", "stream")
 	if major <= 11 then
 		Image = love.graphics.newText(font, "")
+		Character = love.graphics.newText(font, "")
+		SecondaryCharacter = love.graphics.newText(font, "")
 	else
 		Image = love.graphics.newTextBatch(font, "")
+		Character = love.graphics.newTextBatch(font, "")
+		SecondaryCharacter = love.graphics.newTextBatch(font, "")
 	end
 
 	PlayingSong = true
@@ -30,7 +39,9 @@ function love.load()
 	QuesitonNotfication = false
 	GotoStart = 0
 	GotoText = ""
+
 	DrawNext()
+
 end
 function love.update()
 	CheckMusic()
@@ -99,6 +110,7 @@ function DrawNext()
 	end
 
 	DrawImage()
+	DrawCharacter()
 	NewMusic()
 
 	ScriptText = ScriptContainer[Line]
@@ -138,6 +150,7 @@ function DrawNext()
 			Line = tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText))
 			ScriptText = ScriptContainer[Line]
 			DrawImage()
+			DrawCharacter()
 			NewMusic()
 		else
 			GotoStart = ScriptText:find(" ggg ")
@@ -148,6 +161,7 @@ function DrawNext()
 					Line = i
 					ScriptText = ScriptContainer[Line]
 					DrawImage()
+					DrawCharacter()
 					NewMusic()
 				end
 			end
@@ -155,7 +169,7 @@ function DrawNext()
 	end
 
 	if ScriptText:find("123quit123") ~= nil then
-		--MusicThread:wait()
+		MusicThread:wait()
 		love.event.quit()
 	end
 
@@ -168,13 +182,58 @@ end
 function DrawImage()
 	for i = 1,#ImageContainer,1 do
 		if ImageContainer[i]:find(" "..Line.." ") ~= nil then
-			if major <= 11 then
-				Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+			if string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1) == "nothing" then
+				if major <= 11 then
+					Image = love.graphics.newText(font, "")
+				else
+					Image = love.graphics.newTextBatch(font, "")
+				end
 			else
-				Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+				if major <= 11 then
+					Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+				else
+					Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
+				end
 			end
 		end
 	end
+end
+
+function DrawCharacter()
+	for i = 1,#CharacterContainer,1 do
+		if CharacterContainer[i]:find(" "..Line.." ") ~= nil then
+			if string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1) == "nothing" then
+				if major <= 11 then
+					Character = love.graphics.newText(font, "")
+				else
+					Character = love.graphics.newTextBatch(font, "")
+				end
+			else
+				if major <= 11 then
+					Character = love.graphics.newImage(string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1))
+				else
+					Character = love.graphics.newTexture(string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1))
+				end
+			end
+		end
+	end
+	for i = 1,#SecondaryCharacterContainer,1 do
+		if SecondaryCharacterContainer[i]:find(" "..Line.." ") ~= nil then
+			if string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1) == "nothing" then
+				if major <= 11 then
+					SecondaryCharacter = love.graphics.newText(font, "")
+				else
+					SecondaryCharacter = love.graphics.newTextBatch(font, "")
+				end
+			else
+			if major <= 11 then
+				SecondaryCharacter = love.graphics.newImage(string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1))
+			else
+				SecondaryCharacter = love.graphics.newTexture(string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1))
+			end
+		end
+	end
+end
 end
 
 function NewMusic()
@@ -182,6 +241,7 @@ function NewMusic()
 		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
 			love.audio.stop(Song)
 			--Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "stream")
+			MusicThread:wait()
 			MusicThread:start(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1))
 		end
 	end
@@ -213,27 +273,50 @@ function love.textinput(key)
 end
 	
 function love.draw(Screen)
-if Screen ~= nil then
-	if love.graphics.get3D() then
-		if Screen ~= "bottom" then
+if love.system.getOS() == "Horizon" then 
+	if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
+		if Screen ~= "bottom" then --400*2x240
 			love.graphics.draw(Image, 0, 0)
+			love.graphics.draw(Character, 0, 100, 0, 0.75, 0.75)
+			love.graphics.draw(SecondaryCharacter, 400-(SecondaryCharacter:getDimensions()/2), 100, 0, 0.75, 0.75)	
 		end
-	else
-		if Screen == "left" then
-			love.graphics.draw(Image, 0, 0)
+		if Screen == "bottom" then --320x240
+			love.graphics.printf(ScriptText, font, 160, 0, 320, "center", 0, 1, 1)
+			if LoadingMusic then
+				love.graphics.printf("Loading Song", font, 160, 180, 320, "center", 0, 1, 1)
+			end
+			if QuesitonNotfication == true then
+				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 180, 320, "center", 0, 1, 1)
+			end
 		end
-	end
-	if Screen == "bottom" then
-		love.graphics.printf(ScriptText, font, 160, 0, 320, "center", 0, 1, 1)
+	else --switch
+		love.graphics.draw(Image, 0, 0)
+		love.graphics.draw(Character, 0, (ScreenHeight/3.5), 0, 0.5, 0.5)
+		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()/2), (ScreenHeight/3.5), 0, 0.5, 0.5)
+		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
 		if LoadingMusic then
-			love.graphics.printf("Loading Song", font, 160, 180, 320, "center", 0, 1, 1)
+			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
 		if QuesitonNotfication == true then
-			love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 180, 320, "center", 0, 1, 1)
+			love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
 	end
-else
+else if(screen) ~= nil then --WiiU
+		love.graphics.draw(Image, 0, 0)
+		love.graphics.draw(Character, 0, (ScreenHeight/3.5), 0, 0.5, 0.5)
+		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()/2), (ScreenHeight/3.5), 0, 0.5, 0.5)
+		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+		if LoadingMusic then
+			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		end
+		if QuesitonNotfication == true then
+			love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		end
+	end
+	--pc or mobile
 	love.graphics.draw(Image, 0, 0)
+	love.graphics.draw(Character, 0, (ScreenHeight/3.5), 0, 0.5, 0.5)
+	love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()/2), (ScreenHeight/3.5), 0, 0.5, 0.5)
 	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
 	if LoadingMusic then
 		love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)

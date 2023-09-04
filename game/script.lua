@@ -29,7 +29,7 @@ ScriptContainer =
     "You can make choices that lead to different events and endings in the story.",
     "So where does the 'visual' part come in?",
     "Visual novels have pictures and even music, sound effects, and sometimes voice acting to go along with the text.",
-    "That certainly sounds like fun. I actually used to make webcomics way back when, so I've got lots of story ideas.",
+    "I see! That certainly sounds like fun. I actually used to make webcomics way back when, so I've got lots of story ideas.",
     "That's great! So...would you be interested in working with me as an artist?",
     "I'd love to!",
     " ggg 48",
