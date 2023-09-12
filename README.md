@@ -27,7 +27,7 @@
 
 # Future plans
 
-- Fix allignment issues between scripts (namely image.lua/character.lua compared to script.lua)
+- Fix allignment issues between scripts (namely image.lua/character.lua being one higher compared to script.lua)
 - Part transparent text background.
 - Make it easier to create t3x files.
 - Automate conversion from renpy to this.
