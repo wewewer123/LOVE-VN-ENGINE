@@ -277,16 +277,16 @@ if love.system.getOS() == "Horizon" then
 	if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
 		if Screen ~= "bottom" then --400*2x240
 			love.graphics.draw(Image, 0, 0)
-			love.graphics.draw(Character, 0, 100, 0, 0.75, 0.75)
-			love.graphics.draw(SecondaryCharacter, 400-(SecondaryCharacter:getDimensions()/2), 100, 0, 0.75, 0.75)	
+			love.graphics.draw(Character, 0, 120, 0, 0.75, 0.75)
+			love.graphics.draw(SecondaryCharacter, 400-(SecondaryCharacter:getWidth()*0.75), 0+(240-(SecondaryCharacter:getHeight()*0.75)), 0, 0.75, 0.75)	
 		end
 		if Screen == "bottom" then --320x240
-			love.graphics.printf(ScriptText, font, 160, 0, 320, "center", 0, 1, 1)
+			love.graphics.printf(ScriptText, font, 0, 0, 320, "center", 0, 1, 1)
 			if LoadingMusic then
-				love.graphics.printf("Loading Song", font, 160, 180, 320, "center", 0, 1, 1)
+				love.graphics.printf("Loading Song", font, 0, 180, 320, "center", 0, 1, 1)
 			end
 			if QuesitonNotfication == true then
-				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 160, 180, 320, "center", 0, 1, 1)
+				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, 180, 320, "center", 0, 1, 1)
 			end
 		end
 	else --switch

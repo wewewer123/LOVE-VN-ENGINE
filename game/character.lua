@@ -10,7 +10,7 @@ SecondaryCharacterContainerDS =
 {
     "sylvie green normal.png.t3x 6 ",
     "sylvie green smile.png.t3x 10 ",
-    "nothing 15 ", --crashes, needs fix, but it's 1:52 rn and I feel my brain frying off
+    "nothing 15 ",
     "sylvie green smile.png.t3x 19 ",
     "sylvie green surprised.png.t3x 22 ",
     "sylvie green smile.png.t3x 24 ",
