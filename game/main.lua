@@ -7,13 +7,22 @@ function love.load()
 	MusicThread = love.thread.newThread( MusicThreading )
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
+		textbox = love.graphics.newImage("textbox.png")
 	else
 		if love.system.getModel() ~= "RED" or love.system.getModel() ~= "CTR" or love.system.getModel() ~= "SPR" or love.system.getModel() ~= "KTR" or love.system.getModel() ~= "FTR" or love.system.getModel() ~= "JAN" then --None of the 2/3DS models
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
+			textbox = love.graphics.newImage("textbox.png")
+		else
+			if major <= 11 then
+				textbox = love.graphics.newText(font, "")
+			else
+				textbox = love.graphics.newTextBatch(font, "")
+			end
 		end
 	end
 
 	font = love.graphics.newFont(28)
+	NameFont = love.graphics.newFont(34)
 
 	major, minor, revision, codename = love.getVersion( )
 	Song = love.audio.newSource("silent.mp3", "stream")
@@ -31,6 +40,7 @@ function love.load()
 	LoadingMusic = false
 	Line = 1
 	ScriptText = ""
+	Speaker = ""
 	QuestionStart = 0
 	QuestionText = ""
 	YesText = ""
@@ -45,6 +55,7 @@ function love.load()
 end
 function love.update()
 	CheckMusic()
+	CheckKeyboard()
 end
 
 function love.touchpressed(a, x, y, d, e, f)
@@ -83,9 +94,11 @@ function love.gamepadpressed(joystick, button)
 	else
 		if button == "a" then
 			QuestionAwnser = "yes"
+			love.keyboard.setTextInput(false)
 		end
 		if button == "b" then
 			QuestionAwnser = "no"
+			love.keyboard.setTextInput(false)
 		end
 		DrawNext()
 	end
@@ -99,9 +112,11 @@ function DrawNext()
 		if QuestionAwnser == "no" then
 			Line = QuestionFindLine
 			QuestionFindLine = 0
+			love.keyboard.setTextInput(false)
 		end
 		if QuestionAwnser == "yes" then
 			QuestionFindLine = 0
+			love.keyboard.setTextInput(false)
 		end
 		if QuestionAwnser == "" then
 			QuesitonNotfication = true
@@ -120,6 +135,13 @@ function DrawNext()
 		love.event.quit()
 	end
 
+	if ScriptText:find(" .name. ") ~= nil then
+		Speaker = ScriptText.sub(ScriptText, 1, ScriptText:find(" .name. ")-1)
+		ScriptText = ScriptText:sub(ScriptText:find(" .name. ")+7, #ScriptText)
+	else
+		Speaker = ""
+	end
+
 	if ScriptText:find(" qqq ") ~= nil then
 		QuestionStart = ScriptText:find(" qqq ")
 		QuestionText = ScriptText.sub(ScriptText, QuestionStart+5, ScriptText:find(" yyy ")-1)
@@ -130,7 +152,9 @@ function DrawNext()
 			QuestionFindLine = tonumber(QuestionText)
 			QuesitonNotfication = true
 			if love.system.getOS() ~= "Horizon" then
-				love.keyboard.setTextInput(true)
+				if love.system.getOS() ~= "Cafe" then --check if this works
+					love.keyboard.setTextInput(true)
+				end
 			end
 		else
 			for i = 1,#ScriptContainer,1 do
@@ -138,7 +162,9 @@ function DrawNext()
 					QuestionFindLine = i
 					QuesitonNotfication = true
 					if love.system.getOS() ~= "Horizon" then
-						love.keyboard.setTextInput(true)
+						if love.system.getOS() ~= "Cafe" then --check if this works
+							love.keyboard.setTextInput(true)
+						end
 					end
 				end
 			end
@@ -268,6 +294,16 @@ function CheckMusic()
 	end
 end
 
+function CheckKeyboard()
+	if QuesitonNotfication == true then
+		if love.system.getOS() ~= "Horizon" then
+			if love.system.getOS() ~= "Cafe" then --check if this works
+				love.keyboard.setTextInput(true)
+			end
+		end
+	end
+end
+
 function love.textinput(key)
 	
 end
@@ -277,11 +313,12 @@ if love.system.getOS() == "Horizon" then
 	if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
 		if Screen ~= "bottom" then --400*2x240
 			love.graphics.draw(Image, 0, 0)
-			love.graphics.draw(Character, 0, 120, 0, 0.75, 0.75)
+			love.graphics.draw(Character, 0, 0+(240-(SecondaryCharacter:getHeight()*0.75)), 0, 0.75, 0.75)
 			love.graphics.draw(SecondaryCharacter, 400-(SecondaryCharacter:getWidth()*0.75), 0+(240-(SecondaryCharacter:getHeight()*0.75)), 0, 0.75, 0.75)	
 		end
 		if Screen == "bottom" then --320x240
-			love.graphics.printf(ScriptText, font, 0, 0, 320, "center", 0, 1, 1)
+			love.graphics.printf(Speaker, NameFont, 0, 0, 320, "center", 0, 1, 1)
+			love.graphics.printf(ScriptText, font, 0, 40, 320, "center", 0, 1, 1)
 			if LoadingMusic then
 				love.graphics.printf("Loading Song", font, 0, 180, 320, "center", 0, 1, 1)
 			end
@@ -291,9 +328,11 @@ if love.system.getOS() == "Horizon" then
 		end
 	else --switch
 		love.graphics.draw(Image, 0, 0)
-		love.graphics.draw(Character, 0, (ScreenHeight/3.5), 0, 0.5, 0.5)
-		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()/2), (ScreenHeight/3.5), 0, 0.5, 0.5)
-		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+		love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/7), 0, 1, 1)
+		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
+		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 		if LoadingMusic then
 			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
@@ -303,9 +342,11 @@ if love.system.getOS() == "Horizon" then
 	end
 else if(screen) ~= nil then --WiiU
 		love.graphics.draw(Image, 0, 0)
-		love.graphics.draw(Character, 0, (ScreenHeight/3.5), 0, 0.5, 0.5)
-		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()/2), (ScreenHeight/3.5), 0, 0.5, 0.5)
-		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+		love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/7), 0, 1, 1)
+		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
+		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 		if LoadingMusic then
 			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
@@ -315,9 +356,11 @@ else if(screen) ~= nil then --WiiU
 	end
 	--pc or mobile
 	love.graphics.draw(Image, 0, 0)
-	love.graphics.draw(Character, 0, (ScreenHeight/3.5), 0, 0.5, 0.5)
-	love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()/2), (ScreenHeight/3.5), 0, 0.5, 0.5)
-	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+	love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+	love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/7), 0, 1, 1)
+	love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
+	love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 	if LoadingMusic then
 		love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 	end
