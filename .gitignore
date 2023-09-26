@@ -1,8 +1,6 @@
 .vscode
 .vscode/
-*.icn
-*.cia
-*.smdh
-*.exe
-*.3dsx
-*.elf
+package-lock.json
+package.json
+node_modules/
+BuildTools/build
