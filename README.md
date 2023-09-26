@@ -7,7 +7,7 @@
 - Simple Image/Music/Text vn engine.
 - No programming knowledge required to use.
 - MultiThreaded music loading for the smoothest usage possible.
-- Support for the 3DS, Switch, iOS and pc.
+- Support for the 3DS, Switch, website, iOS and pc.
 
 ## Installing
 
@@ -23,9 +23,9 @@
 
 - 3DS: To run the vn on the 3DS simply startup LovePotion from the homebrew launcher.
 
-- Switch: To run the vn on the Switch simply startup LovePotion from the homebrew launcher.
+- Switch: To run the vn on the Switch simply startup LovePotion from the homebrew launcher (doesn't work in tablet mode).
 
-- web: Go to [this website](https://easydoor.mine.bz/LoveVN) (if it's online) (some browsers don't work idk why)
+- web: Go to [this website](http://easydoor.mine.bz/server/LoveVN/) (if it's online) (some browsers don't work idk why)
 
 - iOS: To run the vn on iOS simply run the .love file that you imported into the app.
 
