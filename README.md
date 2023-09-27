@@ -33,6 +33,7 @@
 
 ## Future plans
 
+- Add outlines to the choice buttons for touchscreens
 - Make it easier to create t3x files.
 - Make a github action to build a github pages for web build.
 - Fix allignment issues between scripts (namely image.lua/character.lua being one higher compared to script.lua)
@@ -60,7 +61,7 @@ If you want to add custom music just add ""(musicname.extention) (LineNumber) ",
 
 - Switch: I'm still working out the specifics for building on the switch.
 
-- web: Open cmd in the "LOVE-VN-ENGINE" folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web".
+- web: Create an universal build, call it game.love and place it in the "LOVE-VN-ENGINE" folder, then open cmd in that same folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web".
 
 - iOS: On iOS it isn't easily possible to build an executable.
 
