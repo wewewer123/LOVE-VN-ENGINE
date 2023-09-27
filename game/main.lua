@@ -378,8 +378,8 @@ else if(screen) ~= nil then --WiiU
 			--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
 
 			love.graphics.setColor(1,1,1)
-			love.graphics.printf(NoText, font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-			love.graphics.printf(YesText, font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(NoText, font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(YesText, font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		else
 			love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
