@@ -36,6 +36,12 @@ function love.load()
 		SecondaryCharacter = love.graphics.newTextBatch(font, "")
 	end
 
+	if love.system.getOS == "ios" or love.system.getOS == "android" then --idk if it works but touchscreen is touchscreen
+		MobileMode = true
+	else
+		MobileMode = false
+	end
+
 	PlayingSong = true
 	LoadingMusic = false
 	Line = 1
@@ -55,14 +61,23 @@ function love.load()
 end
 function love.update()
 	CheckMusic()
-	CheckKeyboard()
 end
 
-function love.touchpressed(a, x, y, d, e, f)
+function love.touchpressed(id, x, y, dx, dy, pressure)
+	if love.system.getOS() ~= "Horizon" and love.system.getOS() ~= "Cafe" then
+		MobileMode = true
+		if 0 < x and x < ScreenWidth/2 and 0 < y and y < ScreenHeight/2 then
+			QuestionAwnser = "yes"
+		end
+		if ScreenWidth/2 < x and x < ScreenWidth and 0 < y and y < ScreenHeight/2 then
+			QuestionAwnser = "no"
+		end
+	end
 	DrawNext()
 end
 
-function love.keypressed( key, scancode, isrepeat )
+function love.keypressed(key, scancode, isrepeat)
+	MobileMode = false
 	if key == "t" then
 		if Song:isPlaying() then
 			love.audio.stop(Song)
@@ -83,6 +98,7 @@ function love.keypressed( key, scancode, isrepeat )
 end
 
 function love.gamepadpressed(joystick, button)
+	MobileMode = false
 	if button == "y" then
 		if PlayingSong then
 			love.audio.stop(Song)
@@ -94,11 +110,9 @@ function love.gamepadpressed(joystick, button)
 	else
 		if button == "a" then
 			QuestionAwnser = "yes"
-			love.keyboard.setTextInput(false)
 		end
 		if button == "b" then
 			QuestionAwnser = "no"
-			love.keyboard.setTextInput(false)
 		end
 		DrawNext()
 	end
@@ -112,11 +126,9 @@ function DrawNext()
 		if QuestionAwnser == "no" then
 			Line = QuestionFindLine
 			QuestionFindLine = 0
-			love.keyboard.setTextInput(false)
 		end
 		if QuestionAwnser == "yes" then
 			QuestionFindLine = 0
-			love.keyboard.setTextInput(false)
 		end
 		if QuestionAwnser == "" then
 			QuesitonNotfication = true
@@ -151,21 +163,11 @@ function DrawNext()
 		if tonumber(QuestionText) then
 			QuestionFindLine = tonumber(QuestionText)
 			QuesitonNotfication = true
-			if love.system.getOS() ~= "Horizon" then
-				if love.system.getOS() ~= "Cafe" then --check if this works
-					love.keyboard.setTextInput(true)
-				end
-			end
 		else
 			for i = 1,#ScriptContainer,1 do
 				if ScriptContainer[i]:find(QuestionText) then
 					QuestionFindLine = i
 					QuesitonNotfication = true
-					if love.system.getOS() ~= "Horizon" then
-						if love.system.getOS() ~= "Cafe" then --check if this works
-							love.keyboard.setTextInput(true)
-						end
-					end
 				end
 			end
 		end
@@ -294,16 +296,6 @@ function CheckMusic()
 	end
 end
 
-function CheckKeyboard()
-	if QuesitonNotfication == true then
-		if love.system.getOS() ~= "Horizon" then
-			if love.system.getOS() ~= "Cafe" then --check if this works
-				love.keyboard.setTextInput(true)
-			end
-		end
-	end
-end
-
 function love.textinput(key)
 	
 end
@@ -365,7 +357,32 @@ else if(screen) ~= nil then --WiiU
 		love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 	end
 	if QuesitonNotfication == true then
-		love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		if MobileMode then
+			love.graphics.setColor(0.10,1.00,0.40, 0.25)
+			love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
+
+			love.graphics.setColor(0,0,0)
+			--love.graphics.polygon("line", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
+			--love.graphics.polygon("line", 10,10, ScreenWidth/2-10,10, ScreenWidth/2-10,ScreenHeight/2-10, 10,ScreenHeight/2-10)
+			--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
+			--love.graphics.polygon("line", i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, i,ScreenHeight/2-i)
+			--end
+
+			love.graphics.setColor(1.00,0.20,0.20, 0.25)
+			love.graphics.polygon("fill", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
+
+			--love.graphics.setColor(0,0,0)
+			--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
+			--	love.graphics.polygon("line", ScreenWidth-i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, ScreenWidth-i,ScreenHeight/2-i)
+			--end
+			--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
+
+			love.graphics.setColor(1,1,1)
+			love.graphics.printf(NoText, font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(YesText, font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		else
+			love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		end
 	end
 end
 end
