@@ -6,6 +6,7 @@
 
 - Simple Image/Music/Text vn engine.
 - No programming knowledge required to use.
+- No external image scaling required.
 - MultiThreaded music loading for the smoothest usage possible.
 - Support for the 3DS, Switch, website, iOS and pc.
 
@@ -33,10 +34,10 @@
 
 ## Future plans
 
-- Add outlines to the choice buttons for touchscreens
+- Add outlines to the choice buttons for touchscreens.
 - Make it easier to create t3x files.
 - Make a github action to build a github pages for web build.
-- Fix allignment issues between scripts (namely image.lua/character.lua being one higher compared to script.lua)
+- Fix allignment issues between scripts. (namely image.lua/character.lua being one higher compared to script.lua)
 - Automate conversion from renpy to this.
 - More devices!!!
 

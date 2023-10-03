@@ -1,4 +1,5 @@
 function love.load()
+	love.window.setFullscreen(true)
 	ScriptScript = require("script")
 	ImageScript = require("image")
 	CharacterScript = require("character")
@@ -319,7 +320,7 @@ if love.system.getOS() == "Horizon" then
 			end
 		end
 	else --switch
-		love.graphics.draw(Image, 0, 0)
+		love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 		love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
 		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/7), 0, 1, 1)
 		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
@@ -333,7 +334,7 @@ if love.system.getOS() == "Horizon" then
 		end
 	end
 else if(screen) ~= nil then --WiiU
-		love.graphics.draw(Image, 0, 0)
+		love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 		love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
 		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/7), 0, 1, 1)
 		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
@@ -346,11 +347,11 @@ else if(screen) ~= nil then --WiiU
 			love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
 	end
-	--pc or mobile
-	love.graphics.draw(Image, 0, 0)
+	--pc, mobile or web
+	love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 	love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
 	love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/7), 0, 1, 1)
-	love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
+	love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, ScreenWidth/textbox:getWidth(), 2)
 	love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
 	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 	if LoadingMusic then
