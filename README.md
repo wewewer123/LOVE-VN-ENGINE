@@ -62,7 +62,8 @@ If you want to add custom music just add ""(musicname.extention) (LineNumber) ",
 
 - Switch: I'm still working out the specifics for building on the switch.
 
-- web: Create an universal build, call it game.love and place it in the "LOVE-VN-ENGINE" folder, then open cmd in that same folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web".
+- web(automatic): double click BuildTools/BuildServer.bat (don't run as administrator). (make sure you have node.js and 7z installed for this)
+- web(manual): Create an universal build, call it game.love and place it in the "LOVE-VN-ENGINE" folder, then open cmd in that same folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web". (make sure you have node.js installed for this)
 
 - iOS: On iOS it isn't easily possible to build an executable.
 
