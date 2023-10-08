@@ -63,7 +63,8 @@ function love.load()
 	GotoText = ""
 	MusicName = ""
 	TouchPositions = {}
-	RequireTouch=  false
+	RequireTouch = false
+	TouchCalcTimes = 0
 
 	DebugX=""
 	DebugY=""
@@ -86,17 +87,41 @@ function CheckKeyboard()
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-	DebugX=x
-	DebugY=y
+	UseX = (x * (Image:getWidth() / ScreenWidth))
+	Usex = (x / ScreenWidth) * Image:getWidth()
+	UseY = (y * (Image:getHeight() / ScreenHeight))
+	
+	if ScreenWidth/ScreenHeight ~= Image:getWidth()/Image:getHeight() then
+		if ScreenWidth/ScreenHeight > Image:getWidth()/Image:getHeight() then -- wider screen
+			local scaleFactor = ScreenHeight / Image:getHeight()
+			local scaledWidth = Image:getWidth() * scaleFactor
+			local blackBars = (ScreenWidth - scaledWidth) / 2
+			UseX = (x - blackBars) / scaleFactor
+		end
+		if ScreenWidth/ScreenHeight < Image:getWidth()/Image:getHeight() then -- slimmer screen
+			local scaleFactor = ScreenWidth / Image:getWidth()
+			local scaledHeight = Image:getHeight() * scaleFactor
+			local blackBars = (ScreenHeight - scaledHeight) / 2
+			UseY = (y - blackBars) / scaleFactor
+		end
+		UseX = math.min(math.max(0, UseX), Image:getWidth())
+		UseY = math.min(math.max(0, UseY), Image:getHeight())
+	end
+	
+	DebugX=UseX
+	DebugY=UseY
+
+
 	if RequireTouch then
-		
-		if tonumber(TouchPositions[1]) < x and x < tonumber(TouchPositions[2]) and tonumber(TouchPositions[3]) < y and y < tonumber(TouchPositions[4]) then
-			RequireTouch = false
-			Line = tonumber(TouchPositions[5])
-			DrawNext()
+		for i=0,TouchCalcTimes,1 do
+			if tonumber(TouchPositions[1+(i*5)]) < UseX and UseX < tonumber(TouchPositions[2+(i*5)]) and tonumber(TouchPositions[3+(i*5)]) < UseY and UseY < tonumber(TouchPositions[4+(i*5)]) then
+				RequireTouch = false
+				Line = tonumber(TouchPositions[5+(i*5)])
+				DrawNext()
+			end
 		end
 	else
-		if love.system.getOS() ~= "Horizon" and love.system.getOS() ~= "Cafe" then
+		if touchscreen then
 			MobileMode = true
 			if 0 < x and x < ScreenWidth/2 and 0 < y and y < ScreenHeight/2 then
 				QuestionAwnser = "yes"
@@ -110,10 +135,38 @@ function love.mousepressed(x, y, button, istouch, presses)
 end
 
 function love.touchpressed(id, x, y, dx, dy, pressure)
+	UseX = (x * (Image:getWidth() / ScreenWidth))
+	Usex = (x / ScreenWidth) * Image:getWidth()
+	UseY = (y * (Image:getHeight() / ScreenHeight))
+	
+	if ScreenWidth/ScreenHeight ~= Image:getWidth()/Image:getHeight() then
+		if ScreenWidth/ScreenHeight > Image:getWidth()/Image:getHeight() then -- wider screen
+			local scaleFactor = ScreenHeight / Image:getHeight()
+			local scaledWidth = Image:getWidth() * scaleFactor
+			local blackBars = (ScreenWidth - scaledWidth) / 2
+			UseX = (x - blackBars) / scaleFactor
+		end
+		if ScreenWidth/ScreenHeight < Image:getWidth()/Image:getHeight() then -- slimmer screen
+			local scaleFactor = ScreenWidth / Image:getWidth()
+			local scaledHeight = Image:getHeight() * scaleFactor
+			local blackBars = (ScreenHeight - scaledHeight) / 2
+			UseY = (y - blackBars) / scaleFactor
+		end
+		UseX = math.min(math.max(0, UseX), Image:getWidth())
+		UseY = math.min(math.max(0, UseY), Image:getHeight())
+	end
+	
+	DebugX=UseX
+	DebugY=UseY
+
+
 	if RequireTouch then
-		if TouchPositions[1] > x and x < TouchPositions[2] and TouchPositions[3] > y and y < TouchPositions[4] then
-			Line = TouchPositions[5]
-			DrawNext()
+		for i=0,TouchCalcTimes,1 do
+			if tonumber(TouchPositions[1+(i*5)]) < UseX and UseX < tonumber(TouchPositions[2+(i*5)]) and tonumber(TouchPositions[3+(i*5)]) < UseY and UseY < tonumber(TouchPositions[4+(i*5)]) then
+				RequireTouch = false
+				Line = tonumber(TouchPositions[5+(i*5)])
+				DrawNext()
+			end
 		end
 	else
 		if love.system.getOS() ~= "Horizon" and love.system.getOS() ~= "Cafe" then
@@ -146,10 +199,10 @@ if RequireTouch ~= true then
 				end
 			end
 		else 
-			--if key == "lshift" then
+			--if #Name ~= 0 then--if key == "lshift" then
 				Name = Name .. key
 			--else
-
+			--	Name = Name .. key
 			--end
 		end
 	else
@@ -263,14 +316,6 @@ function DrawNext()
 		end
 	end
 
-	if ScriptText:find(" ttt ") ~= nil then
-		--TouchStart = ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)
-		TouchStart = ScriptText:find(" ttt ")
-		for i = 1,TouchStart-#ScriptText,1 do
-			TouchPos = array.from(0,2,4,6,8)
-		end
-	end
-
 	if ScriptText:find(" ggg ") ~= nil then
 		GotoStart = ScriptText:find(" ggg ")
 		if tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)) then
@@ -368,21 +413,25 @@ end
 function TouchList()
 	for i = 1,#TouchContainer,1 do
 		if TouchContainer[i]:find(" l"..Line.." ") ~= nil then
+			TouchCalcTimes = 0
 			s, TouchStuffStart = TouchContainer[i]:find(" l"..Line.." ")
-			TouchText = string.sub(TouchContainer[i], TouchStuffStart, #TouchContainer[i])
+			TouchText = string.sub(TouchContainer[i], TouchStuffStart+1, #TouchContainer[i])
 			TouchRepeatText = TouchText
 			s, RepeatTimes = TouchText:gsub(",", "")
 			s, RepeatRepeatTimes = TouchText:gsub(":", "")
 			if RepeatRepeatTimes ~= 0 then
-				for g = 1,RepeatRepeatTimes+1,1 do --something goes wrong here
-					TouchSearch()
+				RepeatRepeatTimes = RepeatRepeatTimes + 1
+				TouchSearch()
+				for g = 1,RepeatRepeatTimes-1,1 do
 					TouchRepeatText = string.gsub(TouchRepeatText, ":", "f", 1)
-					--TouchPositions[u] = string.sub(TouchText, 1, TouchText:find("f")-1)
-					TouchRepeatText = string.sub(TouchRepeatText, TouchRepeatText:find("f")+1, #TouchText)
+					TouchRepeatText = string.sub(TouchRepeatText, TouchRepeatText:find("f")+2, #TouchRepeatText)
 					TouchText = TouchRepeatText
+					TouchCalcTimes = g
+					TouchSearch()
 				end
-			else -- cuz this works fine
+			else
 				RepeatRepeatTimes = 1
+				TouchCalcTimes = 1
 				TouchSearch()
 			end
 			if #TouchPositions >= 5 then
@@ -393,10 +442,10 @@ function TouchList()
 end
 
 function TouchSearch()
+	TouchCalcTimesUse = TouchCalcTimes*5
 	for u = 1,RepeatTimes/RepeatRepeatTimes,1 do
-		--TouchContainer[i]:find(" l"..Line.." ")-1
 		TouchText = string.gsub(TouchText, ",", "g", 1)
-		TouchPositions[u] = string.sub(TouchText, 1, TouchText:find("g")-1)
+		TouchPositions[u+TouchCalcTimesUse] = string.sub(TouchText, 1, TouchText:find("g")-1)
 		TouchText = string.sub(TouchText, TouchText:find("g")+1, #TouchText)
 	end
 end
