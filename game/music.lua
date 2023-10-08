@@ -1,6 +1,5 @@
 MusicContainer = 
 {
-    "ilurock.mp3 1 ",
-    "nitizyou1.mp3 77 ",
+    "jamtheme.mp3 1 ",
 }
 return MusicContainer

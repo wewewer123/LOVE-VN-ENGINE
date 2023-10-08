@@ -1,6 +1,7 @@
 # LÖVE VN ENGINE
 
  Simple LÖVE vn for on the 3DS, Switch, web, iOS, pc (and hopefully more in the future).
+ This version was a [submition](https://itch.io/jam/cozy-fall-jam-2023/rate/2304227) to the [Cozy Fall Jam 2023 🍂](https://itch.io/jam/cozy-fall-jam-2023)
 
 ## Features
 
@@ -32,8 +33,17 @@
 
 - pc: To run the vn on pc simply drag the game folder or the game .love file onto the exe.
 
+## Fix before merge with main
+
+- 1: fix music and video so you don't have to change scripts between diffrent system builds
+- 2: character auto scale with screen
+- 2.1: custom textboxes/ui
+- 2.2: animations
+- 3: fixing name input on mobile/console(especially 3ds) (kinda done alr)
+
 ## Future plans
 
+- Add a sfx system
 - Add outlines to the choice buttons for touchscreens.
 - Make it easier to create t3x files.
 - Make a github action to build a github pages for web build.
@@ -64,6 +74,7 @@ If you want to add custom music just add ""(musicname.extention) (LineNumber) ",
 
 - web(automatic): double click BuildTools/BuildServer.bat (don't run as administrator). (make sure you have node.js and 7z installed for this)
 - web(manual): Create an universal build, call it game.love and place it in the "LOVE-VN-ENGINE" folder, then open cmd in that same folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web". (make sure you have node.js installed for this)
+- web(jam): [used this](https://schellingb.github.io/LoveWebBuilder/package)
 
 - iOS: On iOS it isn't easily possible to build an executable.
 

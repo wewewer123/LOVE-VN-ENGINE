@@ -5,4 +5,3 @@ package.json
 node_modules/
 BuildTools/build
 game/game.love
-StuffToDo.txt
