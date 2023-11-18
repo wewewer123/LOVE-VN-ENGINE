@@ -8,7 +8,15 @@ CharacterContainerPC =
 }
 SecondaryCharacterContainerDS = 
 {
-    "",
+    "Cozy-Character.png.t3x 25 ",
+    "nothing 43 ",
+    "Cozy-Character.png.t3x 44 ",
+    "nothing 63 ",
+    "Cozy-Character.png.t3x 64 ",
+    "nothing 146 ",
+    "Cozy-Character.png.t3x 147 ",
+    "nothing 105 ",
+    "Cozy-Character.png.t3x 106 ",
 }
 SecondaryCharacterContainerPC = 
 {

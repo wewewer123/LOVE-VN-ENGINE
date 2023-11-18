@@ -1,5 +1,4 @@
 function love.load()
-	--love.window.setFullscreen(true)
 	utf8 = require("utf8")
 	ScriptScript, Name, AskForName = unpack(require("script"))
 	ImageScript = require("image")
@@ -8,15 +7,23 @@ function love.load()
 	MusicScript = require("music")
 	MusicThreading = require("MusicThreading")
 	MusicThread = love.thread.newThread( MusicThreading )
+	major, minor, revision, codename = love.getVersion( )
+
+	font = love.graphics.newFont(28)
+	NameFont = love.graphics.newFont(30)
+	AnnounceFont = love.graphics.newFont(35)
+
+	--major = 11
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 		textbox = love.graphics.newImage("textbox.png")
 	else
-		if love.system.getModel() ~= "RED" or love.system.getModel() ~= "CTR" or love.system.getModel() ~= "SPR" or love.system.getModel() ~= "KTR" or love.system.getModel() ~= "FTR" or love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+		if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 			textbox = love.graphics.newImage("textbox.png")
 		else
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions("left")
+			BottomScreenWidth, BottomScreenHeight = love.graphics.getDimensions("bottom")
 			if major <= 11 then
 				textbox = love.graphics.newText(font, "")
 			else
@@ -25,11 +32,6 @@ function love.load()
 		end
 	end
 
-	font = love.graphics.newFont(28)
-	NameFont = love.graphics.newFont(30)
-	AnnounceFont = love.graphics.newFont(35)
-
-	major, minor, revision, codename = love.getVersion( )
 	Song = love.audio.newSource("silent.mp3", "stream")
 	if major <= 11 then
 		Image = love.graphics.newText(font, "")
@@ -41,7 +43,7 @@ function love.load()
 		SecondaryCharacter = love.graphics.newTextBatch(font, "")
 	end
 
-	if love.system.getOS == "iOS" or love.system.getOS == "Android" then --idk if it works but touchscreen is touchscreen
+	if love.system.getOS() == "iOS" or love.system.getOS() == "Android" then --idk if it works but touchscreen is touchscreen
 		MobileMode = true
 	else
 		MobileMode = false
@@ -54,8 +56,6 @@ function love.load()
 	Speaker = ""
 	QuestionStart = 0
 	QuestionText = ""
-	TouchStart = 0
-	TouchPos = {0, 1, 2, 3}
 	YesText = ""
 	NoText = ""
 	QuestionFindLine = 0
@@ -66,17 +66,20 @@ function love.load()
 	TouchPositions = {}
 	RequireTouch = false
 	TouchCalcTimes = 0
-
+	TouchScaleNumber = 0
+	UseX=0
+	UseY=0
 	DebugX=""
 	DebugY=""
-
+	XScale=0
+	YScale=0
 
 	DrawNext()
 
 end
 function love.update()
 	CheckMusic()
-	CheckKeyboard()
+	--CheckKeyboard()
 	RewindVideo()
 end
 
@@ -91,92 +94,60 @@ end
 
 function CheckKeyboard()
 	if AskForName then
-		love.keyboard.setTextInput(true)
+		if love.system.getOS() == "Horizon" then
+			--love.keyboard.setTextInput("standard", false, "Please enter your name:")
+			love.keyboard.setTextInput(true)
+		else
+			love.keyboard.setTextInput(true)
+		end
 	else
 		love.keyboard.setTextInput(false)
 	end
 end
 
 function love.mousepressed(x, y, button, istouch, presses)
-if AskForName ~= true then
-	UseX = (x * (Image:getWidth() / ScreenWidth))
-	Usex = (x / ScreenWidth) * Image:getWidth()
-	UseY = (y * (Image:getHeight() / ScreenHeight))
-	
-	if ScreenWidth/ScreenHeight ~= Image:getWidth()/Image:getHeight() then
-		if ScreenWidth/ScreenHeight > Image:getWidth()/Image:getHeight() then -- wider screen
-			local scaleFactor = ScreenHeight / Image:getHeight()
-			local scaledWidth = Image:getWidth() * scaleFactor
-			local blackBars = (ScreenWidth - scaledWidth) / 2
-			UseX = (x - blackBars) / scaleFactor
-		end
-		if ScreenWidth/ScreenHeight < Image:getWidth()/Image:getHeight() then -- slimmer screen
-			local scaleFactor = ScreenWidth / Image:getWidth()
-			local scaledHeight = Image:getHeight() * scaleFactor
-			local blackBars = (ScreenHeight - scaledHeight) / 2
-			UseY = (y - blackBars) / scaleFactor
-		end
-		UseX = math.min(math.max(0, UseX), Image:getWidth())
-		UseY = math.min(math.max(0, UseY), Image:getHeight())
-	end
-	
-	DebugX=UseX
-	DebugY=UseY
-
-
-	if RequireTouch then
-		for i=0,TouchCalcTimes,1 do
-			if tonumber(TouchPositions[1+(i*5)]) < UseX and UseX < tonumber(TouchPositions[2+(i*5)]) and tonumber(TouchPositions[3+(i*5)]) < UseY and UseY < tonumber(TouchPositions[4+(i*5)]) then
-				RequireTouch = false
-				Line = tonumber(TouchPositions[5+(i*5)])
-				DrawNext()
-			end
-		end
-	else
-		if touchscreen then
-			MobileMode = true
-			if 0 < x and x < ScreenWidth/2 and 0 < y and y < ScreenHeight/2 then
-				QuestionAwnser = "yes"
-			end
-			if ScreenWidth/2 < x and x < ScreenWidth and 0 < y and y < ScreenHeight/2 then
-				QuestionAwnser = "no"
-			end
-		end
-		DrawNext()
-	end
-else
-	AskForName = false
-	Line = Line - 1
-	DrawNext()
-end
+	MouseHandeler(x, y, ScreenWidth, ScreenHeight)
 end
 
 function love.touchpressed(id, x, y, dx, dy, pressure)
+	if love.system.getOS() == "Horizon" then 
+		if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
+			MouseHandeler(x, y, BottomScreenWidth, BottomScreenHeight)
+		else
+			MouseHandeler(x, y, ScreenWidth, ScreenHeight)
+		end
+	else
+		MouseHandeler(x, y, ScreenWidth, ScreenHeight)
+	end
+end
+
+function MouseHandeler(x, y, ScreenWide, ScreenHigh)
 if AskForName ~= true then
-	UseX = (x * (Image:getWidth() / ScreenWidth))
-	Usex = (x / ScreenWidth) * Image:getWidth()
-	UseY = (y * (Image:getHeight() / ScreenHeight))
+	UseX = (x * (Image:getWidth() / ScreenWide))
+	UseY = (y * (Image:getHeight() / ScreenHigh))
 	
-	if ScreenWidth/ScreenHeight ~= Image:getWidth()/Image:getHeight() then
-		if ScreenWidth/ScreenHeight > Image:getWidth()/Image:getHeight() then -- wider screen
-			local scaleFactor = ScreenHeight / Image:getHeight()
+	if ScreenWide/ScreenHigh ~= Image:getWidth()/Image:getHeight() then
+		if ScreenWide/ScreenHigh > Image:getWidth()/Image:getHeight() then -- wider screen
+			local scaleFactor = ScreenHigh / Image:getHeight()
 			local scaledWidth = Image:getWidth() * scaleFactor
-			local blackBars = (ScreenWidth - scaledWidth) / 2
+			local blackBars = (ScreenWide - scaledWidth) / 2
 			UseX = (x - blackBars) / scaleFactor
 		end
-		if ScreenWidth/ScreenHeight < Image:getWidth()/Image:getHeight() then -- slimmer screen
-			local scaleFactor = ScreenWidth / Image:getWidth()
+		if ScreenWide/ScreenHigh < Image:getWidth()/Image:getHeight() then -- slimmer screen
+			local scaleFactor = ScreenWide / Image:getWidth()
 			local scaledHeight = Image:getHeight() * scaleFactor
-			local blackBars = (ScreenHeight - scaledHeight) / 2
+			local blackBars = (ScreenHigh - scaledHeight) / 2
 			UseY = (y - blackBars) / scaleFactor
 		end
 		UseX = math.min(math.max(0, UseX), Image:getWidth())
 		UseY = math.min(math.max(0, UseY), Image:getHeight())
 	end
 	
+	UseX = UseX*TouchScaleNumber
+	UseY = UseY*TouchScaleNumber
+
 	DebugX=UseX
 	DebugY=UseY
-
 
 	if RequireTouch then
 		for i=0,TouchCalcTimes,1 do
@@ -202,7 +173,7 @@ else
 	AskForName = false
 	Line = Line - 1
 	DrawNext()
-end
+	end
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -233,9 +204,7 @@ if RequireTouch ~= true then
 			MobileMode = false
 			if key == "n" then
 				AskForName = true
-			end
-			if key == "q" then
-				ScriptScript.SetName()
+				return
 			end
 			if key == "t" then
 				if Song:isPlaying() then
@@ -456,6 +425,7 @@ function TouchList()
 		if TouchContainer[i]:find(" l"..Line.." ") ~= nil then
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = ""; TouchCalcTimesUse = ""
 			s, TouchStuffStart = TouchContainer[i]:find(" l"..Line.." ")
+			TouchScale(i)
 			TouchText = string.sub(TouchContainer[i], TouchStuffStart+1, #TouchContainer[i])
 			TouchRepeatText = TouchText
 			s, RepeatTimes = TouchText:gsub(",", "")
@@ -479,6 +449,19 @@ function TouchList()
 				RequireTouch = true;
 			end
 		end
+	end
+end
+
+function TouchScale(i)
+	if TouchContainer[i]:find(" x") ~= nil and TouchContainer[i]:find(" y") ~= nil then
+		XScale = tonumber(string.sub(TouchContainer[i], TouchContainer[i]:find(" x")+2, TouchContainer[i]:find(" y")-1))
+		YScale = tonumber(string.sub(TouchContainer[i], TouchContainer[i]:find(" y")+2, TouchContainer[i]:find(" l")-1))
+
+		--if XScale/Image:getWidth() == YScale/Image:getHeight() then
+			TouchScaleNumber = XScale/Image:getWidth()
+		--else
+		--	TouchScaleNumber = 1
+		--end
 	end
 end
 
@@ -529,21 +512,25 @@ function CheckMusic()
 		end
 	end
 end
-
-function love.textinput(key)
-	
-end
 	
 function love.draw(Screen)
 if AskForName ~= true then
 	if love.system.getOS() == "Horizon" then 
 		if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
 			if Screen ~= "bottom" then --400*2x240
-				love.graphics.draw(Image, 0, 0)
-				love.graphics.draw(Character, 0, 0+(240-(SecondaryCharacter:getHeight()*0.75)), 0, 0.75, 0.75)
+				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
+				love.graphics.draw(Character, 0, 0+(240-(Character:getHeight()*0.75)), 0, 0.75, 0.75)
 				love.graphics.draw(SecondaryCharacter, 400-(SecondaryCharacter:getWidth()*0.75), 0+(240-(SecondaryCharacter:getHeight()*0.75)), 0, 0.75, 0.75)	
+				if RequireTouch then
+					love.graphics.printf(Speaker, NameFont, 0, 0, 400, "center", 0, 1, 1)
+					love.graphics.printf(ScriptText, font, 0, 40, 400, "center", 0, 1, 1)
+				end
 			end
 			if Screen == "bottom" then --320x240
+				if RequireTouch then
+					love.graphics.draw(Image, (BottomScreenWidth-(math.min(BottomScreenWidth/Image:getWidth(), BottomScreenHeight/Image:getHeight())*Image:getWidth()))/2, (BottomScreenHeight-(math.min(BottomScreenWidth/Image:getWidth(), BottomScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(BottomScreenWidth/Image:getWidth(), BottomScreenHeight/Image:getHeight()))
+					return
+				end
 				love.graphics.printf(Speaker, NameFont, 0, 0, 320, "center", 0, 1, 1)
 				love.graphics.printf(ScriptText, font, 0, 40, 320, "center", 0, 1, 1)
 				if LoadingMusic then
@@ -627,11 +614,24 @@ if AskForName ~= true then
 		end
 	end
 else -- still gotta add 3ds support
-	if screen ~= "bottom" then
-		love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-		love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
-		love.graphics.printf("Before we start, please enter your name.", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-		love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
+	if screen ~= "left" and screen ~= "right" then
+		if love.system.getOS() == "Horizon" then
+			if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
+				love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
+				love.graphics.printf("Before we start, please enter your name.", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
+			else --2/3DS
+				AskForName = false
+				Line = Line - 1
+				DrawNext()
+			end
+		else
+			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
+			love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
+			love.graphics.printf("Before we start, please enter your name.", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
+		end
 	end
 end
 end

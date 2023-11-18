@@ -13,7 +13,7 @@
 
 ## Installing
 
-- 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 5, but should work on all 3.0 or newer release versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
+- 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0.0, but should work on all newer release versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
 
 - switch: To install on the switch put LOVEpotion.nro (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 5, but should work on all 3.0 or newer release versions) into the "/switch/LovePotion" folder on the sd card of the switch (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
 
