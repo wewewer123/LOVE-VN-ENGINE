@@ -15,7 +15,7 @@
 
 - 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0.0, but should work on all newer release versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
 
-- switch: To install on the switch put LOVEpotion.nro (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 5, but should work on all 3.0 or newer release versions) into the "/switch/LovePotion" folder on the sd card of the switch (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
+- switch: To install on the switch put LOVEpotion.nro (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0.0, but should work on all newer release versions) into the "/switch/LovePotion" folder on the sd card of the switch (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
 
 - iOS: To install on iOS you will need a mac with XCode and you will need to build using instructions you can find [here](https://github.com/love2d/love#iOS). Once you have that set up you have to zip all the files in the "game" folder to a .zip file (in a way so that main.lua is on the top layer), and rename that .zip file to .love. Then you can import that file into the iOS application (I will try to make this easier in the future).
 
@@ -56,6 +56,8 @@
 To make your own story copy the "EmptyGame" and rename it to "game" and copy over main.lua and MusicThreading.lua from the original "game" folder.
 
 If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the 3DS needs .t3x files for textures)
+
+If you want to add a new character just add ""(characterimagename.extention) (LineNumber) "," to character.lua. (the 3DS needs .t3x files for textures)
 
 In the script.lua file if you want to add a question type the question followed by " qqq " and then after that the text it should go to if the awnser is no, or the linenumber for if the awnser is no. After that you add " yyy " followed by what yes means and " nnn " followed by what no means (watch out with the yes and no meaning size, as if you make it too large it will display incorrectly on the 3DS).
 If you want to move from one chunk of text to another type " ggg " followed by the exact text from the line you want it to move to, or the linenumber of the text you want to move to.
