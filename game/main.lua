@@ -153,6 +153,12 @@ if AskForName ~= true then
 		for i=0,TouchCalcTimes,1 do
 			if tonumber(TouchPositions[1+(i*5)]) < UseX and UseX < tonumber(TouchPositions[2+(i*5)]) and tonumber(TouchPositions[3+(i*5)]) < UseY and UseY < tonumber(TouchPositions[4+(i*5)]) then
 				RequireTouch = false
+
+				print(TouchCalcTimes)
+				print(#TouchPositions)
+				print(TouchPositions[5+(i*5)])
+
+
 				Line = tonumber(TouchPositions[5+(i*5)])
 				DrawNext()
 			end
@@ -423,9 +429,10 @@ end
 function TouchList()
 	for i = 1,#TouchContainer,1 do
 		if TouchContainer[i]:find(" l"..Line.." ") ~= nil then
-			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = ""; TouchCalcTimesUse = ""
+			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
 			s, TouchStuffStart = TouchContainer[i]:find(" l"..Line.." ")
 			TouchScale(i)
+			--TouchScaleNumber = 1
 			TouchText = string.sub(TouchContainer[i], TouchStuffStart+1, #TouchContainer[i])
 			TouchRepeatText = TouchText
 			s, RepeatTimes = TouchText:gsub(",", "")
