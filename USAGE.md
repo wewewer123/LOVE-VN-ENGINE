@@ -21,7 +21,7 @@ the " l" value defines the line in which you want to trigger this Point&Click, s
 - First 2 values: The first value represents the left most pixel the preson can click. In ms paint hover over the left most pixel you want to include and then in the bottom left of the screen note down the x value (the one before the comma) and then note down the value. Now do the same but for the right most pixel.
 - 3th/4th value: Next up we got the 3th/4th value in the list. There are similar to the first 2, but now instead of left and right we got bottom and top which in ms paint is the value after the comma in the bottom left.
 - 5th value: this one is simply the line in script.lua for it to move you to, similarly to how ggg and qqq work.
-- writing it all down: writing it down is pretty simple after the steps that I just explained, you simple write it down like this 1,2,3,4,5 (left,right,bottom,top,line).
+- writing it all down: writing it down is pretty simple after the steps that I just explained, you simple write it down like this 1,2,3,4,5, (left,right,bottom,top,line,).
 
 ### the ':'
 
