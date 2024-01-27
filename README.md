@@ -12,9 +12,9 @@
 
 ## Installing
 
-- 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 5, but should work on all 3.0 or newer release versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
+- 3DS: To install on the 3DS put LOVEpotion.3dsx (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0.0, but should work on all newer release versions) into the "/3ds/LovePotion" folder on the sd card of the 3DS (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
 
-- switch: To install on the switch put LOVEpotion.nro (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0 Pre-Release 5, but should work on all 3.0 or newer release versions) into the "/switch/LovePotion" folder on the sd card of the switch (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
+- switch: To install on the switch put LOVEpotion.nro (which you can get from [here](https://github.com/lovebrew/lovepotion/releases) this version was tested on 3.0.0, but should work on all newer release versions) into the "/switch/LovePotion" folder on the sd card of the switch (if the LovePotion folder doesn't exist create it) and copy the "game" folder in there.
 
 - iOS: To install on iOS you will need a mac with XCode and you will need to build using instructions you can find [here](https://github.com/love2d/love#iOS). Once you have that set up you have to zip all the files in the "game" folder to a .zip file (in a way so that main.lua is on the top layer), and rename that .zip file to .love. Then you can import that file into the iOS application (I will try to make this easier in the future).
 
@@ -32,8 +32,17 @@
 
 - pc: To run the vn on pc simply drag the game folder or the game .love file onto the exe.
 
+## Issues
+
+- 1: fix music and video so you don't have to change scripts between diffrent system builds (only an issue with web builds)
+- 2: character doesn't auto scale with screen
+- 3: adding name input on mobile/console
+
 ## Future plans
 
+- custom textboxes/ui
+- animations
+- Add a sfx system
 - Add outlines to the choice buttons for touchscreens.
 - Make it easier to create t3x files.
 - Make a github action to build a github pages for web build.
@@ -47,12 +56,16 @@ To make your own story copy the "EmptyGame" and rename it to "game" and copy ove
 
 If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the 3DS needs .t3x files for textures)
 
+If you want to add a new character just add ""(characterimagename.extention) (LineNumber) "," to character.lua. (the 3DS needs .t3x files for textures)
+
 In the script.lua file if you want to add a question type the question followed by " qqq " and then after that the text it should go to if the awnser is no, or the linenumber for if the awnser is no. After that you add " yyy " followed by what yes means and " nnn " followed by what no means (watch out with the yes and no meaning size, as if you make it too large it will display incorrectly on the 3DS).
 If you want to move from one chunk of text to another type " ggg " followed by the exact text from the line you want it to move to, or the linenumber of the text you want to move to.
 If you want to add a name speaking the text, type "(name) .name." where (name) is the name you want to have show up.
 If you type "123quit123" anywhere in a line the program will exit *without* showing that line.
 
 If you want to add custom music just add ""(musicname.extention) (LineNumber) "," to music.lua. (only mp3 files are officially supported)
+
+[using the more compliacated functions](https://github.com/wewewer123/LOVE-VN-ENGINE/blob/main/USAGE.md)
 
 ## Building
 
@@ -64,6 +77,7 @@ If you want to add custom music just add ""(musicname.extention) (LineNumber) ",
 
 - web(automatic): double click BuildTools/BuildServer.bat (don't run as administrator). (make sure you have node.js and 7z installed for this)
 - web(manual): Create an universal build, call it game.love and place it in the "LOVE-VN-ENGINE" folder, then open cmd in that same folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web". (make sure you have node.js installed for this)
+- web(seems more stable and easy, need to test more): [this](https://schellingb.github.io/LoveWebBuilder/package), I also used it for a [jam submission](https://itch.io/jam/cozy-fall-jam-2023/rate/2304227)
 
 - iOS: On iOS it isn't easily possible to build an executable.
 
