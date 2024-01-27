@@ -66,6 +66,8 @@ If you type "123quit123" anywhere in a line the program will exit *without* show
 
 If you want to add custom music just add ""(musicname.extention) (LineNumber) "," to music.lua. (only mp3 files are officially supported)
 
+[using the more compliacated functions](https://github.com/wewewer123/LOVE-VN-ENGINE/blob/main/USAGE.md)
+
 ## Building
 
 - Unviersal: If you want to make a .love file that can run on all supported systems all you have to do is zip all the files in the "game" folder to a .zip file (in a way so that main.lua is on the top layer), and rename that .zip file to .love.
