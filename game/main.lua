@@ -79,7 +79,7 @@ function love.load()
 end
 function love.update()
 	CheckMusic()
-	--CheckKeyboard()
+	CheckKeyboard()
 	RewindVideo()
 end
 
@@ -95,8 +95,10 @@ end
 function CheckKeyboard()
 	if AskForName then
 		if love.system.getOS() == "Horizon" then
-			--love.keyboard.setTextInput("standard", false, "Please enter your name:")
-			love.keyboard.setTextInput(true)
+			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
+				love.keyboard.setTextInput("standard", false, "Please enter your name:")
+				--love.keyboard.setTextInput(true)
+			end
 		else
 			love.keyboard.setTextInput(true)
 		end
