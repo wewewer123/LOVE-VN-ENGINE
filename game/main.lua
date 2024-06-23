@@ -370,6 +370,7 @@ end
 
 function DrawImage()
 	UseLineImage = (Line-1)*6+3
+	
 	if ScriptContainer[UseLineImage] ~= 0 and ScriptContainer[UseLineImage] ~= nil and ScriptContainer[UseLineImage] ~= "" then
 		if love.system.getOS() == "Horizon" then
 			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
