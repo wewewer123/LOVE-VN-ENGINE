@@ -1,10 +1,7 @@
 function love.load()
 	utf8 = require("utf8")
 	ScriptScript, Name, AskForName = unpack(require("script"))
-	ImageScript = require("image")
 	TouchScript = require("TouchList")
-	CharacterScript = require("character")
-	MusicScript = require("music")
 	MusicThreading = require("MusicThreading")
 	MusicThread = love.thread.newThread( MusicThreading )
 	major, minor, revision, codename = love.getVersion( )
@@ -214,7 +211,7 @@ if RequireTouch ~= true then
 				AskForName = true
 				return
 			end
-			if key == "t" then
+			if key == "m" then
 				if Song:isPlaying() then
 					love.audio.stop(Song)
 					PlayingSong = false
@@ -266,6 +263,7 @@ end
 end
 
 function DrawNext()
+	UseLineText = (Line-1)*6+2
 	QuesitonNotfication = false
 	QuestionStart = 0
 	RequireTouch = false
@@ -291,19 +289,19 @@ function DrawNext()
 	NewMusic()
 	TouchList()
 
-	ScriptText = ScriptContainer[Line]
+	ScriptText = ScriptContainer[UseLineText]
 
 	if ScriptText == nil then
 		MusicThread:wait()
 		love.event.quit()
 	end
 
-	if ScriptText:find(" .name. ") ~= nil then
-		Speaker = ScriptText.sub(ScriptText, 1, ScriptText:find(" .name. ")-1)
+	UseLineName = (Line-1)*6+1
+	if ScriptContainer[UseLineName] ~= 0 and ScriptContainer[UseLineName] ~= nil and ScriptContainer[UseLineName] ~= "" then
+		Speaker = ScriptContainer[UseLineName]
 		if Speaker == "Name" then
 			Speaker = Name
 		end
-		ScriptText = ScriptText:sub(ScriptText:find(" .name. ")+7, #ScriptText)
 	else
 		Speaker = ""
 	end
@@ -319,9 +317,11 @@ function DrawNext()
 			QuesitonNotfication = true
 		else
 			for i = 1,#ScriptContainer,1 do
-				if ScriptContainer[i]:find(QuestionText) then
-					QuestionFindLine = i
-					QuesitonNotfication = true
+				if type(ScriptContainer[i]) == "string" then
+					if ScriptContainer[i]:find(QuestionText) then
+						QuestionFindLine = i
+						QuesitonNotfication = true
+					end
 				end
 			end
 		end
@@ -342,14 +342,16 @@ function DrawNext()
 			GotoText = ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)
 			ScriptText = ScriptText:sub(1, GotoStart)
 			for i = 1,#ScriptContainer,1 do
-				if ScriptContainer[i]:find(GotoText) then
-					Line = i
-					ScriptText = ScriptContainer[Line]
-			--DrawImage()
-			--DrawCharacter()
-			--NewMusic()
-			--TouchList()
-			DrawNext()
+				if type(ScriptContainer[i]) == "string" then
+					if ScriptContainer[i]:find(GotoText) then
+						Line = i
+						ScriptText = ScriptContainer[Line]
+						--DrawImage()
+						--DrawCharacter()
+						--NewMusic()
+						--TouchList()
+						DrawNext()
+					end
 				end
 			end
 		end
@@ -367,65 +369,99 @@ function DrawNext()
 end
 
 function DrawImage()
-	for i = 1,#ImageContainer,1 do
-		if ImageContainer[i]:find(" "..Line.." ") ~= nil then
-			if string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1) == "nothing" then
+	UseLineImage = (Line-1)*6+3
+	if ScriptContainer[UseLineImage] ~= 0 and ScriptContainer[UseLineImage] ~= nil and ScriptContainer[UseLineImage] ~= "" then
+		if love.system.getOS() == "Horizon" then
+			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 				if major <= 11 then
-					Image = love.graphics.newText(font, "")
+					Image = love.graphics.newImage(ScriptContainer[UseLineImage]+".t3x")
 				else
-					Image = love.graphics.newTextBatch(font, "")
+					Image = love.graphics.newTexture(ScriptContainer[UseLineImage]+".t3x")
 				end
 			else
-				if string.find(ImageContainer[i], ".ogv") then
-					Image = love.graphics.newVideo(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-					Image:play()
+				if major <= 11 then
+					Image = love.graphics.newImage(ScriptContainer[UseLineImage])
 				else
-					if major <= 11 then
-						Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-					else
-						Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-					end
+					Image = love.graphics.newTexture(ScriptContainer[UseLineImage])
 				end
+			end
+		else
+			if major <= 11 then
+				Image = love.graphics.newImage(ScriptContainer[UseLineImage])
+			else
+				Image = love.graphics.newTexture(ScriptContainer[UseLineImage])
 			end
 		end
 	end
 end
 
 function DrawCharacter()
-	for i = 1,#CharacterContainer,1 do
-		if CharacterContainer[i]:find(" "..Line.." ") ~= nil then
-			if string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1) == "nothing" then
-				if major <= 11 then
-					Character = love.graphics.newText(font, "")
-				else
-					Character = love.graphics.newTextBatch(font, "")
-				end
-			else
-				if major <= 11 then
-					Character = love.graphics.newImage(string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1))
-				else
-					Character = love.graphics.newTexture(string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1))
-				end
-			end
-		end
-	end
-	for i = 1,#SecondaryCharacterContainer,1 do
-		if SecondaryCharacterContainer[i]:find(" "..Line.." ") ~= nil then
-			if string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1) == "nothing" then
-				if major <= 11 then
-					SecondaryCharacter = love.graphics.newText(font, "")
-				else
-					SecondaryCharacter = love.graphics.newTextBatch(font, "")
-				end
-			else
+	UseLineChar = (Line-1)*6+5
+	UseLineCharSec = (Line-1)*6+6
+
+	if ScriptContainer[UseLineChar] ~= 0 and ScriptContainer[UseLineChar] ~= nil and ScriptContainer[UseLineChar] ~= "" then
+		if ScriptContainer[UseLineChar] == "nothing" then
 			if major <= 11 then
-				SecondaryCharacter = love.graphics.newImage(string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1))
+				Character = love.graphics.newText(font, "")
 			else
-				SecondaryCharacter = love.graphics.newTexture(string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1))
+				Character = love.graphics.newTextBatch(font, "")
+			end
+		else
+			if love.system.getOS() == "Horizon" then
+				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
+					if major <= 11 then
+						Character = love.graphics.newImage(ScriptContainer[UseLineChar]+".t3x")
+					else
+						Character = love.graphics.newTexture(ScriptContainer[UseLineChar]+".t3x")
+					end
+				else
+					if major <= 11 then
+						Character = love.graphics.newImage(ScriptContainer[UseLineChar])
+					else
+						Character = love.graphics.newTexture(ScriptContainer[UseLineChar])
+					end
+				end
+			else
+				if major <= 11 then
+					Character = love.graphics.newImage(ScriptContainer[UseLineChar])
+				else
+					Character = love.graphics.newTexture(ScriptContainer[UseLineChar])
+				end
 			end
 		end
 	end
-end
+
+	if ScriptContainer[UseLineCharSec] ~= 0 and ScriptContainer[UseLineCharSec] ~= nil and ScriptContainer[UseLineCharSec] ~= "" then
+		if ScriptContainer[UseLineCharSec] == "nothing" then
+			if major <= 11 then
+				SecondaryCharacter = love.graphics.newText(font, "")
+			else
+				SecondaryCharacter = love.graphics.newTextBatch(font, "")
+			end
+		else
+			if love.system.getOS() == "Horizon" then
+				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
+					if major <= 11 then
+						SecondaryCharacter = love.graphics.newImage(ScriptContainer[UseLineCharSec]+".t3x")
+					else
+						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[UseLineCharSec]+".t3x")
+					end
+				else
+					if major <= 11 then
+						SecondaryCharacter = love.graphics.newImage(ScriptContainer[UseLineCharSec])
+					else
+						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[UseLineCharSec])
+					end
+				end
+			else
+				if major <= 11 then
+					SecondaryCharacter = love.graphics.newImage(ScriptContainer[UseLineCharSec])
+				else
+					SecondaryCharacter = love.graphics.newTexture(ScriptContainer[UseLineCharSec])
+				end
+			end
+		end
+	end
 end
 
 function TouchList()
@@ -484,19 +520,19 @@ function TouchSearch()
 end
 
 function NewMusic()
-	for i = 1,#MusicContainer,1 do
-		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
-			if MusicName ~= string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1) then
-				love.audio.stop(Song)
-				--Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "static")
-				--if PlayingSong then
-				--	love.audio.play(Song)
-				--	Song:setLooping(true)
-				--end
-				MusicThread:wait()
-				MusicThread:start(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1))
-				MusicName = string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1)
-			end
+	UseLineMusc = (Line-1)*6+4
+
+	if ScriptContainer[UseLineMusc] ~= 0 and ScriptContainer[UseLineMusc] ~= nil and ScriptContainer[UseLineMusc] ~= "" then
+		if ScriptContainer[UseLineMusc] ~= MusicName then
+			love.audio.stop(Song)
+			--Song = love.audio.newSource(ScriptContainer[UseLineMusc], "static")
+			--if PlayingSong then
+			--	love.audio.play(Song)
+			--	Song:setLooping(true)
+			--end
+			MusicThread:wait()
+			MusicThread:start(ScriptContainer[UseLineMusc])
+			MusicName = ScriptContainer[UseLineMusc]
 		end
 	end
 end
@@ -551,7 +587,7 @@ if AskForName ~= true then
 			end
 		else --switch
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-			love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+			love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 			love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 1, 1)
 			love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
 			love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
@@ -563,9 +599,9 @@ if AskForName ~= true then
 				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
-	else if(screen) ~= nil then --WiiU
+	else if screen ~= nil then --WiiU
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-			love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+			love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 			love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 1, 1)
 			love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
 			love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
@@ -579,7 +615,7 @@ if AskForName ~= true then
 		end
 		--pc, mobile or web
 		love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-		love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+		love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 0.75, 0.75)
 		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, ScreenWidth/textbox:getWidth(), 2)
 		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
