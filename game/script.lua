@@ -6,7 +6,7 @@ Name = "Sam"; NameChangable = true; ScriptContainer =
     0, "I've had a lot of other thoughts on my mind...thoughts that culminate in a question.", 0, 0, 0, 0,
     0, "It's a question that I've been meaning to ask a certain someone.", 0, 0, 0, 0,
     0, "When we come out of the university, I spot her right away.", "bg_uni.jpg", 0, 0, 0,
-    0, "I've known Sylvie since we were kids. She's got a big heart and she's always been a good friend to me.", 0, 0, "sylvie green normal.png", "sylvie green normal.png",
+    0, "I've known Sylvie since we were kids. She's got a big heart and she's always been a good friend to me.", 0, 0, 0, "sylvie green normal.png",
     0, "But recently... I've felt that I want something more.", 0, 0, 0, 0,
     0, "More than just talking, more than just walking home together when our classes end.", 0, 0, 0, 0,
     0, "As soon as she catches my eye, I decide... qqq 75 yyy To ask her right away. nnn To ask her later.", 0, 0, 0, 0,
