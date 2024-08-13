@@ -2,7 +2,7 @@ Name = "Sam"
 NameChangable = true
 ScriptContainer = {
     --{
-    --    name = 0, 
+    --    Name = 0, 
     --    text = "", 
     --    bg = 0, 
     --    music = 0, 
@@ -44,19 +44,19 @@ ScriptContainer = {
         question = {"To ask her right away.", "To ask her later.", 75}, 
     },
     {
-        name = "Sylvie", 
+        Name = "Sylvie", 
         text = "Hi there! How was class?",   
         char2 = "sylvie green smile.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Good...",   
     },
     { 
         text = "I can't bring myself to admit that it all went in one ear and out the other.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Are you going home now? Wanna walk back with me?",   
     },
     {
@@ -75,7 +75,7 @@ ScriptContainer = {
         text = "When we were children, we played in these meadows a lot, so they're full of memories.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Hey... Umm...",   
     },
     { 
@@ -83,11 +83,11 @@ ScriptContainer = {
         char2 = "sylvie green smile.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Ummm... Will you... ",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Will you be my artist for a visual novel?",   
     },
     { 
@@ -104,7 +104,7 @@ ScriptContainer = {
         char2 = "sylvie green smile.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "It's like an interactive book that you can read on a computer or a console.",   
         char2 = "sylvie green surprised.png"
     },
@@ -113,7 +113,7 @@ ScriptContainer = {
         text = "Interactive?",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "You can make choices that lead to different events and endings in the story.",   
     },
     {
@@ -121,7 +121,7 @@ ScriptContainer = {
         text = "So where does the 'visual' part come in?",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Visual novels have pictures and even music, sound effects, and sometimes voice acting to go along with the text.",   
     },
     {
@@ -130,7 +130,7 @@ ScriptContainer = {
         char2 = "sylvie green smile.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "That's great! So...would you be interested in working with me as an artist?",   
     },
     {
@@ -148,15 +148,15 @@ ScriptContainer = {
         text = "",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "It's a kind of videogame you can play on your computer or a console.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Visual novels tell a story with pictures and music.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Sometimes, you also get to make choices that affect the outcome of the story.",   
     },
     {
@@ -164,16 +164,16 @@ ScriptContainer = {
         text = "So it's like those choose-your-adventure books?",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Exactly! I've got lots of different ideas that I think would work.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "And I thought maybe you could help me...since I know how you like to draw.",   
         char2 = "sylvie green normal.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "It'd be hard for me to make a visual novel alone.",   
     },
     {
@@ -181,7 +181,7 @@ ScriptContainer = {
         text = "Well, sure! I can try. I just hope I don't disappoint you.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "You know you could never disappoint me, Sylvie.",   
     },
     { 
@@ -220,7 +220,7 @@ ScriptContainer = {
         char2 = "sylvie blue normal.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Yes?",   
     },
     {
@@ -229,7 +229,7 @@ ScriptContainer = {
         char2 = "sylvie blue smile.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "What? Where did this come from?",   
     },
     {
@@ -238,7 +238,7 @@ ScriptContainer = {
         char2 = "sylvie blue surprised.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "A while...",   
     },
     {
@@ -251,7 +251,7 @@ ScriptContainer = {
         text = "I've gotten to know you and care about you better than anyone else. And I think the same goes for you, right?",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Sylvie...",   
     },
     {
@@ -265,7 +265,7 @@ ScriptContainer = {
         char2 = "sylvie blue normal.png"
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "Of course I will! I've actually been meaning to propose, honest!",   
     },
     {
@@ -273,7 +273,7 @@ ScriptContainer = {
         text = "I know, I know.",   
     },
     {
-        name = Name, 
+        Name = "Name", 
         text = "I guess... I was too worried about timing. I wanted to ask the right question at the right time.",   
     },
     {

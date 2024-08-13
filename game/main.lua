@@ -89,12 +89,23 @@ function RewindVideo()
 	end
 end
 
+function love.textinput(text)
+	if AskForName and love.system.getOS() == "Horizon" then
+		love.keyboard.setTextInput(false)
+		AskForName = false
+		Name = text
+		Line = Line - 1
+		DrawNext()
+	end
+end
+
 function CheckKeyboard()
 	if AskForName then
 		if love.system.getOS() == "Horizon" then
 			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
-				love.keyboard.setTextInput("standard", false, "Please enter your name:")
-				--love.keyboard.setTextInput(true)
+				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
+				--love.keyboard.setTextInput(true, {hint = "Please enter the mc's name:"}) --type = "basic", 
+				--AskForName = false
 			end
 		else
 			love.keyboard.setTextInput(true)
@@ -362,9 +373,9 @@ function DrawImage()
 		if love.system.getOS() == "Horizon" then
 			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 				if major <= 11 then
-					Image = love.graphics.newImage(ScriptContainer[Line].bg+".t3x")
+					Image = love.graphics.newImage(ScriptContainer[Line].bg..".t3x")
 				else
-					Image = love.graphics.newTexture(ScriptContainer[Line].bg+".t3x")
+					Image = love.graphics.newTexture(ScriptContainer[Line].bg..".t3x")
 				end
 			else
 				if major <= 11 then
@@ -395,9 +406,9 @@ function DrawCharacter()
 			if love.system.getOS() == "Horizon" then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 					if major <= 11 then
-						Character = love.graphics.newImage(ScriptContainer[Line].char1+".t3x")
+						Character = love.graphics.newImage(ScriptContainer[Line].char1..".t3x")
 					else
-						Character = love.graphics.newTexture(ScriptContainer[Line].char1+".t3x")
+						Character = love.graphics.newTexture(ScriptContainer[Line].char1..".t3x")
 					end
 				else
 					if major <= 11 then
@@ -427,9 +438,9 @@ function DrawCharacter()
 			if love.system.getOS() == "Horizon" then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 					if major <= 11 then
-						SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2+".t3x")
+						SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2..".t3x")
 					else
-						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2+".t3x")
+						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2..".t3x")
 					end
 				else
 					if major <= 11 then
