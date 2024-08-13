@@ -55,7 +55,8 @@ function love.load()
 	QuestionText = ""
 	YesText = ""
 	NoText = ""
-	QuestionFindLine = 0
+	QuestionFindLineYes = 0
+	QuestionFindLineNo = 0
 	QuesitonNotfication = false
 	GotoStart = 0
 	GotoText = ""
@@ -280,13 +281,14 @@ function DrawNext()
 	UseX = 0
 	UseY = 0
 
-	if QuestionFindLine ~= 0 then
+	if QuestionFindLineNo ~= 0 and QuestionFindLineYes ~= 0 then
 		if QuestionAwnser == "no" then
-			Line = QuestionFindLine
-			QuestionFindLine = 0
+			Line = QuestionFindLineNo
+			QuestionFindLineNo = 0
 		end
 		if QuestionAwnser == "yes" then
-			QuestionFindLine = 0
+			Line = QuestionFindLineYes
+			QuestionFindLineYes = 0
 		end
 		if QuestionAwnser == "" then
 			QuesitonNotfication = true
@@ -324,15 +326,29 @@ function DrawNext()
 	if ScriptContainer[Line].question ~= nil then
 		YesText = ScriptContainer[Line].question[1]
 		NoText = ScriptContainer[Line].question[2]
-		QuestionText = ScriptContainer[Line].question[3]
-		if tonumber(QuestionText) then
-			QuestionFindLine = tonumber(QuestionText)
+		QuestionTextYes = ScriptContainer[Line].question[3]
+		QuestionTextNo = ScriptContainer[Line].question[4]
+		if tonumber(QuestionTextYes) then
+			QuestionFindLineYes = tonumber(QuestionTextYes)
 			QuesitonNotfication = true
 		else
 			for i = 1,#ScriptContainer,1 do
 				if type(ScriptContainer[i].text) == "string" then
-					if ScriptContainer[i].text:find(QuestionText) and i ~= Line then
-						QuestionFindLine = i
+					if ScriptContainer[i].text:find(QuestionTextYes) and i ~= Line then
+						QuestionFindLineYes = i
+						QuesitonNotfication = true
+					end
+				end
+			end
+		end
+		if tonumber(QuestionTextNo) then
+			QuestionFindLineNo = tonumber(QuestionTextNo)
+			QuesitonNotfication = true
+		else
+			for i = 1,#ScriptContainer,1 do
+				if type(ScriptContainer[i].text) == "string" then
+					if ScriptContainer[i].text:find(QuestionTextNo) and i ~= Line then
+						QuestionFindLineNo = i
 						QuesitonNotfication = true
 					end
 				end

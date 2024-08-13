@@ -41,7 +41,7 @@ ScriptContainer = {
     },
     { 
         text = "As soon as she catches my eye, I decide...",   
-        question = {"To ask her right away.", "To ask her later.", 75}, 
+        question = {"To ask her right away.", "To ask her later.", 10, 75}, 
     },
     {
         Name = "Sylvie", 
@@ -100,7 +100,7 @@ ScriptContainer = {
     {
         name = "Sylvie", 
         text = "Sure, but what is a \"Visual Novel?\"",   
-        question = {"It's an interactive book.", "It's a videogame.", "It's a kind of videogame you can play on your computer or a console."}, 
+        question = {"It's an interactive book.", "It's a videogame.", "It's like an interactive book that you can read on a computer or a console.", "It's a kind of videogame you can play on your computer or a console."}, 
         char2 = "sylvie green smile.png"
     },
     {
