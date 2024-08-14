@@ -6,7 +6,8 @@ ScriptContainer = {
     --    text = "", 
     --    bg = 0, 
     --    music = 0, 
-    --    question = {text yes, text no, goto no}, 
+    --    question = {text yes, goto yes, text no, goto no}, 
+    --    question = {"I'll say yes", "This is where yes will end up", "I'll say no", "This is where no will end up"}, 
     --    move = 0, 
     --    char1 = 0, 
     --    char2 = 0
@@ -41,7 +42,7 @@ ScriptContainer = {
     },
     { 
         text = "As soon as she catches my eye, I decide...",   
-        question = {"To ask her right away.", "To ask her later.", 10, 75}, 
+        question = {"To ask her right away.", 10, "To ask her later.", 75}, 
     },
     {
         Name = "Sylvie", 
@@ -100,7 +101,7 @@ ScriptContainer = {
     {
         name = "Sylvie", 
         text = "Sure, but what is a \"Visual Novel?\"",   
-        question = {"It's an interactive book.", "It's a videogame.", "It's like an interactive book that you can read on a computer or a console.", "It's a kind of videogame you can play on your computer or a console."}, 
+        question = {"It's an interactive book.", "It's like an interactive book that you can read on a computer or a console.", "It's a videogame.", "It's a kind of videogame you can play on your computer or a console."}, 
         char2 = "sylvie green smile.png"
     },
     {

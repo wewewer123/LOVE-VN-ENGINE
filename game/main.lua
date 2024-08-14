@@ -325,8 +325,8 @@ function DrawNext()
 
 	if ScriptContainer[Line].question ~= nil then
 		YesText = ScriptContainer[Line].question[1]
-		NoText = ScriptContainer[Line].question[2]
-		QuestionTextYes = ScriptContainer[Line].question[3]
+		QuestionTextYes = ScriptContainer[Line].question[2]
+		NoText = ScriptContainer[Line].question[3]
 		QuestionTextNo = ScriptContainer[Line].question[4]
 		if tonumber(QuestionTextYes) then
 			QuestionFindLineYes = tonumber(QuestionTextYes)
