@@ -316,7 +316,7 @@ function DrawNext()
 
 	if ScriptContainer[Line].name ~= 0 and ScriptContainer[Line].name ~= nil and ScriptContainer[Line].name ~= "" then
 		Speaker = ScriptContainer[Line].name
-		if Speaker == "Name" or Speaker == "name" then
+		if Speaker == "Name" or Speaker == "name" or Speaker == "MC" or Speaker == "MCi" then
 			Speaker = Name
 		end
 	else
