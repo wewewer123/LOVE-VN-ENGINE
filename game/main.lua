@@ -1,6 +1,8 @@
 function love.load()
+	_debug = true
+
 	utf8 = require("utf8")
-	ScriptScript, Name, AskForName = unpack(require("script"))
+	ScriptScript, NameRead, AskForName = unpack(require("script"))
 	TouchScript = require("TouchList")
 	MusicThreading = require("MusicThreading")
 	MusicThread = love.thread.newThread( MusicThreading )
@@ -46,19 +48,15 @@ function love.load()
 		MobileMode = false
 	end
 
+	Name=NameRead
 	PlayingSong = true
 	LoadingMusic = false
 	Line = 1
 	ScriptText = ""
 	Speaker = ""
-	QuestionStart = 0
-	QuestionText = ""
-	YesText = ""
-	NoText = ""
-	QuestionFindLineYes = 0
-	QuestionFindLineNo = 0
+	QuestionFindLine = {}
+	QuestionOptionText = {}
 	QuesitonNotfication = false
-	GotoStart = 0
 	GotoText = ""
 	MusicName = ""
 	TouchPositions = {}
@@ -275,20 +273,20 @@ end
 end
 
 function DrawNext()
-	QuesitonNotfication = false
-	QuestionStart = 0
 	RequireTouch = false
 	UseX = 0
 	UseY = 0
 
-	if QuestionFindLineNo ~= 0 and QuestionFindLineYes ~= 0 then
+	if QuesitonNotfication then
 		if QuestionAwnser == "no" then
-			Line = QuestionFindLineNo
-			QuestionFindLineNo = 0
+			Line = QuestionFindLine[2]
+			QuestionFindLine = {}
+			QuesitonNotfication = false
 		end
 		if QuestionAwnser == "yes" then
-			Line = QuestionFindLineYes
-			QuestionFindLineYes = 0
+			Line = QuestionFindLine[1]
+			QuestionFindLine = {}
+			QuesitonNotfication = false
 		end
 		if QuestionAwnser == "" then
 			QuesitonNotfication = true
@@ -314,46 +312,33 @@ function DrawNext()
 		--love.event.quit()
 	end
 
-	if ScriptContainer[Line].name ~= 0 and ScriptContainer[Line].name ~= nil and ScriptContainer[Line].name ~= "" then
-		Speaker = ScriptContainer[Line].name
-		if Speaker == "Name" or Speaker == "name" or Speaker == "MC" or Speaker == "MCi" then
+	if ScriptContainer[Line].name ~= nil or Line == 10 then
+		if ScriptContainer[Line].name == "Name" or ScriptContainer[Line].name == "name" or ScriptContainer[Line].name == "MC" or ScriptContainer[Line].name == "MCi" then
 			Speaker = Name
+		else
+			Speaker = ScriptContainer[Line].name
 		end
 	else
 		Speaker = ""
 	end
 
 	if ScriptContainer[Line].question ~= nil then
-		YesText = ScriptContainer[Line].question[1]
-		QuestionTextYes = ScriptContainer[Line].question[2]
-		NoText = ScriptContainer[Line].question[3]
-		QuestionTextNo = ScriptContainer[Line].question[4]
-		if tonumber(QuestionTextYes) then
-			QuestionFindLineYes = tonumber(QuestionTextYes)
-			QuesitonNotfication = true
-		else
-			for i = 1,#ScriptContainer,1 do
-				if type(ScriptContainer[i].text) == "string" then
-					if ScriptContainer[i].text:find(QuestionTextYes) and i ~= Line then
-						QuestionFindLineYes = i
-						QuesitonNotfication = true
+		for i = 1,#ScriptContainer[Line].question/2,1 do
+			QuestionOptionText[i] = ScriptContainer[Line].question[i*2-1] 
+			if tonumber(ScriptContainer[Line].question[i*2]) then
+				QuestionFindLine[i] = tonumber(ScriptContainer[Line].question[i*2])
+				QuesitonNotfication = true
+			else
+				for u = 1,#ScriptContainer,1 do
+					if type(ScriptContainer[u].text) == "string" then
+						if ScriptContainer[u].text:find(ScriptContainer[Line].question[i*2]) and u ~= Line then
+							QuestionFindLine[i] = u
+							QuesitonNotfication = true
+						end
 					end
 				end
 			end
-		end
-		if tonumber(QuestionTextNo) then
-			QuestionFindLineNo = tonumber(QuestionTextNo)
-			QuesitonNotfication = true
-		else
-			for i = 1,#ScriptContainer,1 do
-				if type(ScriptContainer[i].text) == "string" then
-					if ScriptContainer[i].text:find(QuestionTextNo) and i ~= Line then
-						QuestionFindLineNo = i
-						QuesitonNotfication = true
-					end
-				end
-			end
-		end
+		end	
 	end
 
 	if ScriptContainer[Line].move ~= nil and ScriptContainer[Line].move ~= "" then
@@ -381,7 +366,6 @@ function DrawNext()
 	Line = Line + 1
 
 	QuestionAwnser = ""
-	QuestionText = ""
 end
 
 function DrawImage()
@@ -592,7 +576,7 @@ if AskForName ~= true then
 					love.graphics.printf("Loading Song", font, 0, 180, 320, "center", 0, 1, 1)
 				end
 				if QuesitonNotfication == true then
-					love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, 180, 320, "center", 0, 1, 1)
+					love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, 180, 320, "center", 0, 1, 1)
 				end
 			end
 		else --switch
@@ -606,7 +590,7 @@ if AskForName ~= true then
 				love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 			if QuesitonNotfication == true then
-				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 	else if screen ~= nil then --WiiU
@@ -620,7 +604,7 @@ if AskForName ~= true then
 				love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 			if QuesitonNotfication == true then
-				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 		--pc, mobile or web
@@ -631,15 +615,24 @@ if AskForName ~= true then
 		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
 		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 
-		--if DebugX ~= null then
-		--	love.graphics.printf(DebugX, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-		--	love.graphics.printf(DebugY, NameFont, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
-		--end
+		if _debug == true then
+			if QuestionFindLine[1] and QuestionOptionText[1] then
+			love.graphics.printf(QuestionOptionText[1] .. " = " .. QuestionFindLine[1], NameFont, 0, ScreenHeight/1.6, ScreenWidth, "center", 0, 1, 1)
+			end
+			if QuestionFindLine[2] and QuestionOptionText[2] then
+			love.graphics.printf(QuestionOptionText[2] .. " = " .. QuestionFindLine[2], NameFont, 0, ScreenHeight/1.8, ScreenWidth, "center", 0, 1, 1)
+			end
+
+			if DebugX ~= null and DebugY ~= null and DebugX ~= 0 and DebugY ~= 0 then
+				love.graphics.printf(DebugX, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(DebugY, NameFont, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+			end
+		end
 
 		if LoadingMusic then
 			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
-		if QuesitonNotfication == true then
+		if QuesitonNotfication then
 			if MobileMode then
 				love.graphics.setColor(0.10,1.00,0.40, 0.25)
 				love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
@@ -661,10 +654,10 @@ if AskForName ~= true then
 				--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
 
 				love.graphics.setColor(1,1,1)
-				love.graphics.printf(NoText, font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-				love.graphics.printf(YesText, font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(QuestionOptionText[1], font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(QuestionOptionText[2], font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			else
-				love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("Enter = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 	end
