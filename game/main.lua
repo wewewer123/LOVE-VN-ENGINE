@@ -616,11 +616,8 @@ if AskForName ~= true then
 		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 
 		if _debug == true then
-			if QuestionFindLine[1] and QuestionOptionText[1] then
-			love.graphics.printf(QuestionOptionText[1] .. " = " .. QuestionFindLine[1], NameFont, 0, ScreenHeight/1.6, ScreenWidth, "center", 0, 1, 1)
-			end
-			if QuestionFindLine[2] and QuestionOptionText[2] then
-			love.graphics.printf(QuestionOptionText[2] .. " = " .. QuestionFindLine[2], NameFont, 0, ScreenHeight/1.8, ScreenWidth, "center", 0, 1, 1)
+			for i = 1,#QuestionFindLine,1 do
+				love.graphics.printf(QuestionOptionText[i] .. " = " .. QuestionFindLine[i], NameFont, 0, ScreenHeight/1.6-i*50, ScreenWidth, "center", 0, 1, 1)
 			end
 
 			if DebugX ~= null and DebugY ~= null and DebugX ~= 0 and DebugY ~= 0 then
