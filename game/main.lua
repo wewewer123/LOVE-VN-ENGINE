@@ -334,7 +334,17 @@ function DrawNext()
 						if ScriptContainer[u].label:find(ScriptContainer[Line].question[i*2]) then
 							QuestionFindLine[i] = u
 							QuesitonNotfication = true
-							return
+						end
+					end
+				end
+				if QuesitonNotfication == false then
+					for u = 1,#ScriptContainer,1 do
+						if ScriptContainer[u].text then
+							if ScriptContainer[u].text:find(ScriptContainer[Line].question[i*2]) and i ~= Line then
+								QuestionFindLine[i] = u
+								QuesitonNotfication = true
+								return
+							end
 						end
 					end
 				end
@@ -348,6 +358,15 @@ function DrawNext()
 			DrawNext()
 		else
 			GotoText = ScriptContainer[Line].move
+			for i = 1,#ScriptContainer,1 do
+				if ScriptContainer[i].label then
+					if ScriptContainer[i].label:find(GotoText) then
+						Line = i
+						DrawNext()
+						return
+					end
+				end
+			end
 			for i = 1,#ScriptContainer,1 do
 				if type(ScriptContainer[i].text) == "string" then
 					if ScriptContainer[i].text:find(GotoText) and i ~= Line then

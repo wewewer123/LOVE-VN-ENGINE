@@ -2,15 +2,16 @@ Name = "Sam"
 NameChangable = true
 ScriptContainer = {
     --{
-    --    Name = 0, 
+    --    Label = "", 
+     --   Name = "", 
     --    text = "", 
-    --    bg = 0, 
-    --    music = 0, 
+    --    bg = "", 
+    --    music = "", 
     --    question = {text yes, goto yes, text no, goto no}, 
     --    question = {"I'll say yes", "This is where yes will end up", "I'll say no", "This is where no will end up"}, 
-    --    move = 0, 
-    --    char1 = 0, 
-    --    char2 = 0
+    --    move = 0, (label, text or line number)
+    --    char1 = "", 
+    --    char2 = ""
     --},
     { 
         text = "It's only when I hear the sounds of shuffling feet and supplies being put away that I realize that the lecture's over.", 
