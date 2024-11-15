@@ -101,10 +101,11 @@ ScriptContainer = {
     {
         name = "Sylvie", 
         text = "Sure, but what is a \"Visual Novel?\"",   
-        question = {"It's an interactive book.", "It's like an interactive book that you can read on a computer or a console.", "It's a videogame.", "It's a kind of videogame you can play on your computer or a console."}, 
+        question = {"It's an interactive book.", "interactive book", "It's a videogame.", "videogame"}, 
         char2 = "sylvie green smile.png"
     },
     {
+        label = "interactive book",
         name = "Name", 
         text = "It's like an interactive book that you can read on a computer or a console.",   
         char2 = "sylvie green surprised.png"
@@ -149,6 +150,7 @@ ScriptContainer = {
         text = "",   
     },
     {
+        label = "videogame",
         name = "Name", 
         text = "It's a kind of videogame you can play on your computer or a console.",   
     },

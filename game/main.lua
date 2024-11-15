@@ -330,10 +330,11 @@ function DrawNext()
 				QuesitonNotfication = true
 			else
 				for u = 1,#ScriptContainer,1 do
-					if type(ScriptContainer[u].text) == "string" then
-						if ScriptContainer[u].text:find(ScriptContainer[Line].question[i*2]) and u ~= Line then
+					if ScriptContainer[u].label then
+						if ScriptContainer[u].label:find(ScriptContainer[Line].question[i*2]) then
 							QuestionFindLine[i] = u
 							QuesitonNotfication = true
+							return
 						end
 					end
 				end
