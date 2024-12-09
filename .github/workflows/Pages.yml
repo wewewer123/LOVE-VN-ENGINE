@@ -1,0 +1,46 @@
+name: Upload Pages
+on:
+  push:  # Trigger on push to any branch
+    branches: 
+      - main  # All branches
+  pull_request:  # Trigger on pull requests to any branch
+    branches: 
+      - main  # All branches
+
+jobs:
+  package:
+    runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # You can choose a different version if necessary
+          
+      - name: Create the zip file
+        run: |
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
+      - name: Upload game.love as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: game.love
+          path: game.love
+
+      - name: Install love.js
+        run: npm install love.js
+
+      - name: Build game using love.js
+        run: |
+          mkdir output  # Create an output directory for the web version
+          npx love.js game.love output --title "LoveVN"  # Replace "LoveVN" with your desired game title
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: pages  # The branch where the game will be deployed (adjust if necessary)
+          folder: docs  # The folder that contains the built web version
+          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
