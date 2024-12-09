@@ -21,7 +21,7 @@ jobs:
           cd game  # Change to the 'game' directory
           zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
       - name: Upload game.love as an artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: game-love-archive
+          name: game.love
           path: game.love
