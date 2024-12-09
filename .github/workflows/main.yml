@@ -1,0 +1,29 @@
+name: Package Game
+
+on:
+  push:  # Trigger on push to any branch
+    branches: 
+      - '*'  # All branches
+  pull_request:  # Trigger on pull requests to any branch
+    branches: 
+      - '*'  # All branches
+
+jobs:
+  package:
+    runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Zip the contents of the "game" folder and rename it to game.love
+        run: |
+          mkdir -p game_folder
+          cp -r game/* game_folder/  # Copy contents of 'game' folder to a new folder
+          zip -r game.love game_folder  # Create a zip file with .love extension
+
+      - name: Upload game.love as an artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: game-love-archive
+          path: game.love
