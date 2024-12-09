@@ -14,14 +14,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Zip the contents of the "game" folder and rename it to game.love
+      - name: Create the zip file
         run: |
-          mkdir -p game_folder
-          cp -r game/* game_folder/  # Copy contents of 'game' folder to a new folder
-          zip -r game.love game_folder  # Create a zip file with .love extension
-
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
       - name: Upload game.love as an artifact
         uses: actions/upload-artifact@v3
         with:
