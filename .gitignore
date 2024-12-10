@@ -1,8 +1,0 @@
-.vscode
-.vscode/
-package-lock.json
-package.json
-node_modules/
-BuildTools/build
-game/game.love
-*.3dsx

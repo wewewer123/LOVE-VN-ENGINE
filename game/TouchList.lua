@@ -1,5 +1,0 @@
-TouchContainer = 
-{
-    "",
-}
-return TouchContainer

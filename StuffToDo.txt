@@ -1,7 +1,0 @@
-            --1: point&click --(fix up scaling to 3ds conversion cuz now touch doesn't return same values)
-1.1: fix music and video so you don't have to change scripts between diffrent system builds
--2: character auto scale with screen
-2.1: custom textboxes/ui
---2.2: animations
--3: fixing name input on mobile/console(especially 3ds)
-4: sfx?

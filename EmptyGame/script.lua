@@ -1,6 +1,0 @@
-ScriptContainer = 
-{
-    "",
-
-}
-return ScriptContainer
