@@ -32,7 +32,7 @@ jobs:
       - name: Build game using love.js
         run: |
           mkdir output  # Create output directory for the web version
-          npx love.js game.love output --title "LoveVN"  # Use love.js to build the game for web
+          npx love.js game.love output --title "LoveVN" --memory 167772160 # Use love.js to build the game for web. Increase memory if it errors
           touch output/.nojekyll  # Disable Jekyll processing for GitHub Pages
 
       - name: Download coi-serviceworker.js
