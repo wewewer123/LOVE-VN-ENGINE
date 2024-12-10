@@ -35,6 +35,17 @@ jobs:
           npx love.js game.love output --title "LoveVN"  # Use love.js to build the game for web
           touch output/.nojekyll  # Disable Jekyll processing for GitHub Pages
 
+      - name: Download coi-serviceworker.js
+        run: curl -o output/coi-serviceworker.js https://raw.githubusercontent.com/gzuidhof/coi-serviceworker/refs/heads/master/coi-serviceworker.js
+
+      - name: Add script tag to HTML
+        run: |
+          html_file=$(find output -name "*.html")  # Find the main HTML file
+          if [ -f "$html_file" ]; then
+            # Add the script tag to the second last line of the HTML file
+            sed -i '$i<script src="coi-serviceworker.js"></script>' "$html_file"
+          fi
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
