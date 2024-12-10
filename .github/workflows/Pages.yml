@@ -1,4 +1,5 @@
 name: Upload Pages
+
 on:
   push:  # Trigger on push to any branch
     branches: 
@@ -9,7 +10,7 @@ on:
 
 jobs:
   package:
-    runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -18,29 +19,25 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # You can choose a different version if necessary
+          node-version: '16'  # Adjust Node.js version if necessary
           
       - name: Create the zip file
         run: |
-          cd game  # Change to the 'game' directory
-          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
-      - name: Upload game.love as an artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: game.love
-          path: game.love
+          cd game
+          zip -r ../game.love .  # Zip the contents of the 'game' folder into 'game.love'
 
       - name: Install love.js
         run: npm install love.js
 
       - name: Build game using love.js
         run: |
-          mkdir output  # Create an output directory for the web version
-          npx love.js game.love output --title "LoveVN"  # Replace "LoveVN" with your desired game title
+          mkdir output  # Create output directory for the web version
+          npx love.js game.love output --title "LoveVN"  # Use love.js to build the game for web
+          touch output/.nojekyll  # Disable Jekyll processing for GitHub Pages
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: pages  # The branch where the game will be deployed (adjust if necessary)
-          folder: docs  # The folder that contains the built web version
-          token: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
+          branch: pages  # Adjust branch to deploy the game (e.g., 'pages')
+          folder: output  # Correct folder name for the built web version
+          token: ${{ secrets.GITHUB_TOKEN }}
