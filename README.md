@@ -26,7 +26,7 @@
 
 - Switch: To run the vn on the Switch simply startup LovePotion from the homebrew launcher (doesn't work in tablet mode).
 
-- web: Go to [this Github Pages](https://easydoor.mine.bz/server/LoveVN/)
+- web: Go to [this Github Pages](https://wewewer123.github.io/LOVE-VN-ENGINE/)
 
 - iOS: To run the vn on iOS simply run the .love file that you imported into the app.
 
