@@ -100,66 +100,65 @@ jobs:
       - name: Set up dependencies folder
         run: |
           mkdir -p love-dependencies
-          
-      - name: Download and extract LÖVE dependencies
+
+      - name: Download LÖVE dependencies
         run: |
           curl -L -o love-apple-libraries.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-apple-libraries.zip
-          unzip -o -qq love-apple-libraries.zip -d love-dependencies -x "__MACOSX/*"
-
+          unzip -qq love-apple-libraries.zip -d love-dependencies -x "__MACOSX/*"
 
       - name: List LÖVE dependencies after extraction
         run: |
           echo "Contents of love-dependencies after extracting love-apple-libraries.zip:" && ls -R love-dependencies
-  
+
       - name: Download LÖVE iOS source
         run: |
           curl -L -o love-ios-source.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-ios-source.zip
           unzip -qq love-ios-source.zip -d love-dependencies
-  
+
       - name: List LÖVE iOS source after extraction
         run: |
           echo "Contents of love-11.5-ios-source after extracting love-ios-source.zip:" && ls -R love-dependencies/love-11.5-ios-source
-  
+
       - name: Adjust and move iOS libraries into iOS source folder
         run: |
           LIBRARIES_PATH=$(find love-dependencies -type d -name "libraries" | grep iOS || true)
           SHARED_PATH=$(find love-dependencies -type d -name "shared" || true)
-  
+
           if [ -z "$LIBRARIES_PATH" ]; then
             echo "iOS libraries directory not found!" && exit 1
           else
             echo "iOS libraries found at: $LIBRARIES_PATH"
-            mv "$LIBRARIES_PATH" love-dependencies/love-11.5-ios-source/platform/xcode/ios/
+            rsync -a "$LIBRARIES_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/ios/libraries/ --delete
           fi
-  
+
           if [ -z "$SHARED_PATH" ]; then
             echo "Shared directory not found!" && exit 1
           else
             echo "Shared directory found at: $SHARED_PATH"
-            mv "$SHARED_PATH" love-dependencies/love-11.5-ios-source/platform/xcode/
+            rsync -a "$SHARED_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/shared/ --delete
           fi
-  
+
       - name: Add game.love to Copy Bundle Resources
         run: |
           mkdir -p love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources
           cp path/to/your/game.love love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources/
           plutil -insert CFBundleResources -json '[{"name": "game.love", "path": "resources/game.love"}]' love-dependencies/love-11.5-ios-source/platform/xcode/ios/Info.plist
-  
+
       - name: Install Xcode command line tools
         run: |
           sudo xcode-select --install || echo "Xcode command line tools are already installed"
-  
+
       - name: Open Xcode project to ensure proper configuration
         run: |
-            xcodebuild -project love-dependencies/love-11.5-ios-source/platform/xcode/love.xcodeproj -list
-  
+          xcodebuild -project love-dependencies/love-11.5-ios-source/platform/xcode/love.xcodeproj -list
+
       - name: Build the love-ios target
         run: |
           xcodebuild -project love-dependencies/love-11.5-ios-source/platform/xcode/love.xcodeproj \
-          -scheme love-ios \
-          -destination 'generic/platform=iOS' \
-          build
-  
+                     -scheme love-ios \
+                     -destination 'generic/platform=iOS' \
+                     build
+
       - name: Archive Build Artifacts
         uses: actions/upload-artifact@v3
         with:
