@@ -92,6 +92,9 @@ jobs:
           cd game  # Change to the 'game' directory
           zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up dependencies folder
         run: |
           mkdir -p love-dependencies
@@ -101,15 +104,38 @@ jobs:
           curl -L -o love-apple-libraries.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-apple-libraries.zip
           unzip love-apple-libraries.zip -d love-dependencies
 
+
+
+
+
+
+          
+      - name: List LÖVE dependencies
+        run: |
+          echo "Contents of love-dependencies:" && ls -R love-dependencies
+
       - name: Download LÖVE iOS source
         run: |
           curl -L -o love-ios-source.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-ios-source.zip
           unzip love-ios-source.zip -d love-dependencies
 
+      - name: List LÖVE iOS source
+        run: |
+          echo "Contents of love-11.5-ios-source:" && ls -R love-dependencies/love-11.5-ios-source
+
       - name: Move iOS libraries into iOS source folder
         run: |
-          mv love-dependencies/love-11.5-apple-libraries/iOS/libraries love-dependencies/love-11.5-ios-source/platform/xcode/ios/
-          mv love-dependencies/love-11.5-apple-libraries/shared love-dependencies/love-11.5-ios-source/platform/xcode/
+          if [ -d "love-dependencies/love-11.5-apple-libraries/iOS/libraries" ]; then
+            mv love-dependencies/love-11.5-apple-libraries/iOS/libraries love-dependencies/love-11.5-ios-source/platform/xcode/ios/
+          else
+            echo "iOS libraries directory not found!" && exit 1
+          fi
+
+          if [ -d "love-dependencies/love-11.5-apple-libraries/shared" ]; then
+            mv love-dependencies/love-11.5-apple-libraries/shared love-dependencies/love-11.5-ios-source/platform/xcode/
+          else
+            echo "Shared directory not found!" && exit 1
+          fi
 
       - name: Add game.love to Copy Bundle Resources
         run: |
