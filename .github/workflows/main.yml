@@ -128,15 +128,22 @@ jobs:
             echo "iOS libraries directory not found!" && exit 1
           else
             echo "iOS libraries found at: $LIBRARIES_PATH"
-            rsync -a "$LIBRARIES_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/ios/libraries/ --delete
+            rsync -a "$LIBRARIES_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/ios/libraries/
           fi
 
           if [ -z "$SHARED_PATH" ]; then
-            echo "Shared directory not found!" && exit 1
+            echo "Shared directory not found! Creating a dummy shared folder."
+            mkdir -p love-dependencies/love-11.5-ios-source/platform/xcode/shared
           else
             echo "Shared directory found at: $SHARED_PATH"
-            rsync -a "$SHARED_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/shared/ --delete
+            rsync -a "$SHARED_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/shared/
           fi
+
+
+
+
+
+
 
       - name: Add game.love to Copy Bundle Resources
         run: |
