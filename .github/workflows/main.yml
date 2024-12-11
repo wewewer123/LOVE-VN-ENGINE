@@ -139,17 +139,11 @@ jobs:
             rsync -a "$SHARED_PATH/" love-dependencies/love-11.5-ios-source/platform/xcode/shared/
           fi
 
-
-
-
-
-
-
       - name: Add game.love to Copy Bundle Resources
         run: |
           mkdir -p love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources
           cp game.love love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources/
-          plutil -insert CFBundleResources -json '[{"name": "game.love", "path": "resources/game.love"}]' love-dependencies/love-11.5-ios-source/platform/xcode/ios/Info.plist
+          plutil -insert CFBundleResources -json '[{"name": "game.love", "path": "resources/game.love"}]' love-dependencies/love-11.5-ios-source/platform/xcode/ios/love-ios.plist
 
       - name: Install Xcode command line tools
         run: |
