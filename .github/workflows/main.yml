@@ -148,7 +148,7 @@ jobs:
       - name: Add game.love to Copy Bundle Resources
         run: |
           mkdir -p love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources
-          cp path/to/your/game.love love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources/
+          cp game.love love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources/
           plutil -insert CFBundleResources -json '[{"name": "game.love", "path": "resources/game.love"}]' love-dependencies/love-11.5-ios-source/platform/xcode/ios/Info.plist
 
       - name: Install Xcode command line tools
