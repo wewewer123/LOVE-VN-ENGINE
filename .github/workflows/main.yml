@@ -77,7 +77,6 @@ jobs:
   
   iOS:
     runs-on: macos-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -119,8 +118,8 @@ jobs:
           unzip -qq love-apple-libraries.zip -d love-dependencies -x "__MACOSX/*"
 
       - name: List LÖVE dependencies after extraction
-       run: |
-        echo "Contents of love-dependencies after extracting love-apple-libraries.zip:" && ls -R love-dependencies
+        run: |
+          echo "Contents of love-dependencies after extracting love-apple-libraries.zip:" && ls -R love-dependencies
   
       - name: Download LÖVE iOS source
         run: |
