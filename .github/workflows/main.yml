@@ -1,20 +1,25 @@
-name: Package Game
+name: Handle Update
 
 on:
   push:  # Trigger on push to any branch
     branches: 
-      - '*'  # All branches
+      - main  # All branches
   pull_request:  # Trigger on pull requests to any branch
     branches: 
-      - '*'  # All branches
+      - main  # All branches
 
 jobs:
-  package:
+  loveFile:
     runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust Node.js version if necessary
 
       - name: Create the zip file
         run: |
@@ -25,3 +30,115 @@ jobs:
         with:
           name: game.love
           path: game.love
+
+  website:
+    runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust Node.js version if necessary
+
+      - name: Create the zip file
+        run: |
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
+      - name: Upload game.love as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: game.love
+          path: game.love
+      
+      - name: Install love.js
+        run: npm install love.js
+  
+      - name: Build game using love.js
+        run: |
+          mkdir output  # Create output directory for the web version
+          npx love.js game.love output --title "LoveVN" --memory 167772160 -c # Use love.js to build the game for web. Increase memory if it errors
+          touch output/.nojekyll  # Disable Jekyll processing for GitHub Pages
+  
+      - name: Download coi-serviceworker.js
+        run: curl -o output/coi-serviceworker.js https://raw.githubusercontent.com/gzuidhof/coi-serviceworker/refs/heads/master/coi-serviceworker.js
+  
+      - name: Add script tag to HTML
+        run: |
+          html_file=$(find output -name "*.html")  # Find the main HTML file
+          if [ -f "$html_file" ]; then
+            # Add the script tag to the second last line of the HTML file
+            sed -i '$i<script src="coi-serviceworker.js"></script>' "$html_file"
+          fi
+  
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: pages  # Adjust branch to deploy the game (e.g., 'pages')
+          folder: output  # Correct folder name for the built web version
+          token: ${{ secrets.GITHUB_TOKEN }}
+  
+  iOS:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust Node.js version if necessary
+
+      - name: Create the zip file
+        run: |
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
+
+      - name: Set up dependencies folder
+        run: |
+          mkdir -p love-dependencies
+
+      - name: Download LÖVE dependencies
+        run: |
+          curl -L -o love-apple-libraries.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-apple-libraries.zip
+          unzip love-apple-libraries.zip -d love-dependencies
+
+      - name: Download LÖVE iOS source
+        run: |
+          curl -L -o love-ios-source.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-ios-source.zip
+          unzip love-ios-source.zip -d love-dependencies
+
+      - name: Move iOS libraries into iOS source folder
+        run: |
+          mv love-dependencies/love-11.5-apple-libraries/iOS/libraries love-dependencies/love-11.5-ios-source/platform/xcode/ios/
+          mv love-dependencies/love-11.5-apple-libraries/shared love-dependencies/love-11.5-ios-source/platform/xcode/
+
+      - name: Add game.love to Copy Bundle Resources
+        run: |
+          mkdir -p love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources
+          cp path/to/your/game.love love-dependencies/love-11.5-ios-source/platform/xcode/ios/resources/
+          plutil -insert CFBundleResources -json '[{"name": "game.love", "path": "resources/game.love"}]' love-dependencies/love-11.5-ios-source/platform/xcode/ios/Info.plist
+
+      - name: Install Xcode command line tools
+        run: |
+          sudo xcode-select --install || echo "Xcode command line tools are already installed"
+
+      - name: Open Xcode project to ensure proper configuration
+        run: |
+          xcodebuild -project love-dependencies/love-11.5-ios-source/platform/xcode/love.xcodeproj -list
+
+      - name: Build the love-ios target
+        run: |
+          xcodebuild -project love-dependencies/love-11.5-ios-source/platform/xcode/love.xcodeproj \
+                     -scheme love-ios \
+                     -destination 'generic/platform=iOS' \
+                     build
+
+      - name: Archive Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ios-build
+          path: love-dependencies/love-11.5-ios-source/platform/xcode/build

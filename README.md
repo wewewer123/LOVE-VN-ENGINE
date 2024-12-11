@@ -26,7 +26,7 @@
 
 - Switch: To run the vn on the Switch simply startup LovePotion from the homebrew launcher (doesn't work in tablet mode).
 
-- web: Go to [this website](http://easydoor.mine.bz/server/LoveVN/) (if it's online) (some browsers don't work idk why)
+- web: Go to [this Github Pages](https://easydoor.mine.bz/server/LoveVN/)
 
 - iOS: To run the vn on iOS simply run the .love file that you imported into the app.
 
@@ -36,7 +36,6 @@
 
 - 1: fix music and video so you don't have to change scripts between diffrent system builds (only an issue with web builds)
 - 2: character doesn't auto scale with screen
-- 3: adding name input on mobile/console
 
 ## Future plans
 
@@ -45,40 +44,23 @@
 - Add a sfx system
 - Add outlines to the choice buttons for touchscreens.
 - Make it easier to create t3x files.
-- Make a github action to build a github pages for web build.
-- Fix allignment issues between scripts. (namely image.lua/character.lua being one higher compared to script.lua)
 - Automate conversion from renpy to this.
 - More devices!!!
 
 ## Creating custom story
 
-To make your own story copy the "EmptyGame" and rename it to "game" and copy over main.lua and MusicThreading.lua from the original "game" folder.
-
-If you want to add a new image just add ""(imagename.extention) (LineNumber) "," to image.lua. (the 3DS needs .t3x files for textures)
-
-If you want to add a new character just add ""(characterimagename.extention) (LineNumber) "," to character.lua. (the 3DS needs .t3x files for textures)
-
-In the script.lua file if you want to add a question type the question followed by " qqq " and then after that the text it should go to if the awnser is no, or the linenumber for if the awnser is no. After that you add " yyy " followed by what yes means and " nnn " followed by what no means (watch out with the yes and no meaning size, as if you make it too large it will display incorrectly on the 3DS).
-If you want to move from one chunk of text to another type " ggg " followed by the exact text from the line you want it to move to, or the linenumber of the text you want to move to.
-If you want to add a name speaking the text, type "(name) .name." where (name) is the name you want to have show up.
-If you type "123quit123" anywhere in a line the program will exit *without* showing that line.
-
-If you want to add custom music just add ""(musicname.extention) (LineNumber) "," to music.lua. (only mp3 files are officially supported)
-
-[using the more compliacated functions](https://github.com/wewewer123/LOVE-VN-ENGINE/blob/main/USAGE.md)
+`(gonna change this next merge, wrong device rn)`
 
 ## Building
 
 - Unviersal: If you want to make a .love file that can run on all supported systems all you have to do is zip all the files in the "game" folder to a .zip file (in a way so that main.lua is on the top layer), and rename that .zip file to .love.
 
-- 3DS: I'm still working out the specifics for building on the 3ds.
+- 3DS: I'm still working out the specifics for building on the 3ds, for now read [this](https://lovebrew.org/bundler/overview)
 
-- Switch: I'm still working out the specifics for building on the switch.
+- Switch: I'm still working out the specifics for building on the switch, for now read [this](https://lovebrew.org/bundler/overview)
 
-- web(automatic): double click BuildTools/BuildServer.bat (don't run as administrator). (make sure you have node.js and 7z installed for this)
-- web(manual): Create an universal build, call it game.love and place it in the "LOVE-VN-ENGINE" folder, then open cmd in that same folder and then run "npm i love.js" followed by "npx love.js -m 20000000 -c --title LoveVN game.love Buildtools\build\web". (make sure you have node.js installed for this)
-- web(seems more stable and easy, need to test more): [this](https://schellingb.github.io/LoveWebBuilder/package), I also used it for a [jam submission](https://itch.io/jam/cozy-fall-jam-2023/rate/2304227)
+- web(automatic): open a cmd window in the root folder of this project, and then run `BuildTools/BuildServer.bat "game" "[name]" [MaxRam(MB)(optional)]` BuildTools/BuildServer.bat. (make sure you have node.js installed for this)
 
-- iOS: On iOS it isn't easily possible to build an executable.
+- iOS: On iOS it isn't easily possible to build an executable, still working on makeing it easier.
 
 - pc: If you want to build for pc please follow the instructions you can find [here](https://love2d.org/wiki/Game_Distribution#Creating_a_Windows_Executable).
