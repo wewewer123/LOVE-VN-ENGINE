@@ -152,6 +152,12 @@ jobs:
       - name: Open Xcode project to ensure proper configuration
         run: |
           xcodebuild -project love-dependencies/love-11.5-ios-source/platform/xcode/love.xcodeproj -list
+        
+          
+      - name: Update the iOS deployment target in all Xcode project files
+        run: |
+          find love-dependencies -type f -name "project.pbxproj" -exec sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = 8.0;/IPHONEOS_DEPLOYMENT_TARGET = 14.0;/g' {} +
+        
 
       - name: Build the love-ios target
         run: |
