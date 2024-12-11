@@ -91,18 +91,6 @@ jobs:
           cd game  # Change to the 'game' directory
           zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up dependencies folder
-        run: |
-          mkdir -p love-dependencies
-
-      - name: Download LÖVE dependencies
-        run: |
-          curl -L -o love-apple-libraries.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-apple-libraries.zip
-          unzip love-apple-libraries.zip -d love-dependencies
-
 
 
 
@@ -112,10 +100,12 @@ jobs:
       - name: Set up dependencies folder
         run: |
           mkdir -p love-dependencies
-      - name: Download LÖVE dependencies
+          
+      - name: Download and extract LÖVE dependencies
         run: |
           curl -L -o love-apple-libraries.zip https://github.com/love2d/love/releases/download/11.5/love-11.5-apple-libraries.zip
-          unzip -qq love-apple-libraries.zip -d love-dependencies -x "__MACOSX/*"
+          unzip -o -qq love-apple-libraries.zip -d love-dependencies -x "__MACOSX/*"
+
 
       - name: List LÖVE dependencies after extraction
         run: |
