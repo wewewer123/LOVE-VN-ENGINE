@@ -2,16 +2,19 @@ Name = "Sam"
 NameChangable = true
 ScriptContainer = {
     --{
-    --    Label = "", 
-     --   Name = "", 
-    --    text = "", 
-    --    bg = "", 
-    --    music = "", 
+    --    Label = "A quicker move system label", 
+    --   Name = "Speaker", 
+    --    text = "Text that is spoken/thought by the Speaker", 
+    --    bg = "The background image", 
+    --    music = "Music.mp3/.ogg", 
     --    question = {text yes, goto yes, text no, goto no}, 
     --    question = {"I'll say yes", "This is where yes will end up", "I'll say no", "This is where no will end up"}, 
     --    move = 0, (label, text or line number)
-    --    char1 = "", 
-    --    char2 = ""
+    --    char1 = "character1.png", 
+    --    char2 = "character2.png",
+    --    XSize = 0, //Image length
+    --    YSize = 0, //Image height
+    --    Positions = {goto line, left most, right most, top most, bottom most}
     --},
     { 
         text = "It's only when I hear the sounds of shuffling feet and supplies being put away that I realize that the lecture's over.", 

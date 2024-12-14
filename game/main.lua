@@ -3,7 +3,6 @@ function love.load()
 
 	utf8 = require("utf8")
 	ScriptScript, NameRead, AskForName = unpack(require("script"))
-	TouchScript = require("TouchList")
 	MusicThreading = require("MusicThreading")
 	MusicThread = love.thread.newThread( MusicThreading )
 	major, minor, revision, codename = love.getVersion( )
@@ -481,49 +480,31 @@ function DrawCharacter()
 end
 
 function TouchList()
-	for i = 1,#TouchContainer,1 do
-		if TouchContainer[i]:find(" l"..Line.." ") ~= nil then
+		if ScriptContainer[Line].Xsize then
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
-			s, TouchStuffStart = TouchContainer[i]:find(" l"..Line.." ")
-			TouchScale(i)
-			--TouchScaleNumber = 1
-			TouchText = string.sub(TouchContainer[i], TouchStuffStart+1, #TouchContainer[i])
-			TouchRepeatText = TouchText
-			s, RepeatTimes = TouchText:gsub(",", "")
-			s, RepeatRepeatTimes = TouchText:gsub(":", "")
-			if RepeatRepeatTimes ~= 0 then
-				RepeatRepeatTimes = RepeatRepeatTimes + 1
-				TouchSearch()
-				for g = 1,RepeatRepeatTimes-1,1 do
-					TouchRepeatText = string.gsub(TouchRepeatText, ":", "f", 1)
-					TouchRepeatText = string.sub(TouchRepeatText, TouchRepeatText:find("f")+2, #TouchRepeatText)
-					TouchText = TouchRepeatText
-					TouchCalcTimes = g
-					TouchSearch()
-				end
-			else
-				RepeatRepeatTimes = 1
-				TouchCalcTimes = 1
-				TouchSearch()
+			TouchScale(Line)
+			for i = 0,#ScriptContainer[Line].Positions/5,1 do
+				TouchPositions[ScriptContainer[Line].Positions[1+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[2+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[3+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[4+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[5+i*5]]
 			end
 			if #TouchPositions >= 5 then
 				RequireTouch = true;
 			end
 		end
-	end
 end
 
-function TouchScale(i)
-	if TouchContainer[i]:find(" x") ~= nil and TouchContainer[i]:find(" y") ~= nil then
-		XScale = tonumber(string.sub(TouchContainer[i], TouchContainer[i]:find(" x")+2, TouchContainer[i]:find(" y")-1))
-		YScale = tonumber(string.sub(TouchContainer[i], TouchContainer[i]:find(" y")+2, TouchContainer[i]:find(" l")-1))
+function TouchScale(line)
+		XSize = tonumber(ScriptContainer[line].Xsize)
+		YSize = tonumber(ScriptContainer[line].Ysize)
 
 		--if XScale/Image:getWidth() == YScale/Image:getHeight() then
 			TouchScaleNumber = XScale/Image:getWidth()
 		--else
 		--	TouchScaleNumber = 1
 		--end
-	end
 end
 
 function TouchSearch()
