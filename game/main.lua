@@ -1,10 +1,8 @@
 function love.load()
+	_debug = true
+
 	utf8 = require("utf8")
-	ScriptScript, Name, AskForName = unpack(require("script"))
-	ImageScript = require("image")
-	TouchScript = require("TouchList")
-	CharacterScript = require("character")
-	MusicScript = require("music")
+	ScriptScript, NameRead, AskForName = unpack(require("script"))
 	MusicThreading = require("MusicThreading")
 	MusicThread = love.thread.newThread( MusicThreading )
 	major, minor, revision, codename = love.getVersion( )
@@ -49,18 +47,15 @@ function love.load()
 		MobileMode = false
 	end
 
+	Name=NameRead
 	PlayingSong = true
 	LoadingMusic = false
 	Line = 1
 	ScriptText = ""
 	Speaker = ""
-	QuestionStart = 0
-	QuestionText = ""
-	YesText = ""
-	NoText = ""
-	QuestionFindLine = 0
+	QuestionFindLine = {}
+	QuestionOptionText = {}
 	QuesitonNotfication = false
-	GotoStart = 0
 	GotoText = ""
 	MusicName = ""
 	TouchPositions = {}
@@ -92,12 +87,23 @@ function RewindVideo()
 	end
 end
 
+function love.textinput(text)
+	if AskForName and love.system.getOS() == "Horizon" then
+		love.keyboard.setTextInput(false)
+		AskForName = false
+		Name = text
+		Line = Line - 1
+		DrawNext()
+	end
+end
+
 function CheckKeyboard()
 	if AskForName then
 		if love.system.getOS() == "Horizon" then
 			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
-				love.keyboard.setTextInput("standard", false, "Please enter your name:")
-				--love.keyboard.setTextInput(true)
+				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
+				--love.keyboard.setTextInput(true, {hint = "Please enter the mc's name:"}) --type = "basic", 
+				--AskForName = false
 			end
 		else
 			love.keyboard.setTextInput(true)
@@ -214,7 +220,7 @@ if RequireTouch ~= true then
 				AskForName = true
 				return
 			end
-			if key == "t" then
+			if key == "m" then
 				if Song:isPlaying() then
 					love.audio.stop(Song)
 					PlayingSong = false
@@ -240,7 +246,7 @@ function love.gamepadpressed(joystick, button)
 if RequireTouch ~= true and AskForName ~= true then
 	MobileMode = false
 	if button == "y" then
-		if PlayingSong then
+		if Song:isPlaying() then
 			love.audio.stop(Song)
 			PlayingSong = false
 		else
@@ -266,19 +272,20 @@ end
 end
 
 function DrawNext()
-	QuesitonNotfication = false
-	QuestionStart = 0
 	RequireTouch = false
 	UseX = 0
 	UseY = 0
 
-	if QuestionFindLine ~= 0 then
+	if QuesitonNotfication then
 		if QuestionAwnser == "no" then
-			Line = QuestionFindLine
-			QuestionFindLine = 0
+			Line = QuestionFindLine[2]
+			QuestionFindLine = {}
+			QuesitonNotfication = false
 		end
 		if QuestionAwnser == "yes" then
-			QuestionFindLine = 0
+			Line = QuestionFindLine[1]
+			QuestionFindLine = {}
+			QuesitonNotfication = false
 		end
 		if QuestionAwnser == "" then
 			QuesitonNotfication = true
@@ -286,70 +293,84 @@ function DrawNext()
 		end
 	end
 
+	if Line > #ScriptContainer then
+		MusicThread:wait()
+		love.event.quit()
+	end
+
 	DrawImage()
 	DrawCharacter()
 	NewMusic()
 	TouchList()
 
-	ScriptText = ScriptContainer[Line]
+	ScriptText = ScriptContainer[Line].text
 
 	if ScriptText == nil then
-		MusicThread:wait()
-		love.event.quit()
+		ScriptText = " "
+		--MusicThread:wait()
+		--love.event.quit()
 	end
 
-	if ScriptText:find(" .name. ") ~= nil then
-		Speaker = ScriptText.sub(ScriptText, 1, ScriptText:find(" .name. ")-1)
-		if Speaker == "Name" then
+	if ScriptContainer[Line].name ~= nil or Line == 10 then
+		if ScriptContainer[Line].name == "Name" or ScriptContainer[Line].name == "name" or ScriptContainer[Line].name == "MC" or ScriptContainer[Line].name == "MCi" then
 			Speaker = Name
+		else
+			Speaker = ScriptContainer[Line].name
 		end
-		ScriptText = ScriptText:sub(ScriptText:find(" .name. ")+7, #ScriptText)
 	else
 		Speaker = ""
 	end
 
-	if ScriptText:find(" qqq ") ~= nil then
-		QuestionStart = ScriptText:find(" qqq ")
-		QuestionText = ScriptText.sub(ScriptText, QuestionStart+5, ScriptText:find(" yyy ")-1)
-		YesText = ScriptText.sub(ScriptText, ScriptText:find(" yyy ")+5, ScriptText:find(" nnn ")-1)
-		NoText = ScriptText.sub(ScriptText, ScriptText:find(" nnn ")+5, #ScriptText)
-		ScriptText = ScriptText:sub(1, QuestionStart)
-		if tonumber(QuestionText) then
-			QuestionFindLine = tonumber(QuestionText)
-			QuesitonNotfication = true
-		else
-			for i = 1,#ScriptContainer,1 do
-				if ScriptContainer[i]:find(QuestionText) then
-					QuestionFindLine = i
-					QuesitonNotfication = true
+	if ScriptContainer[Line].question ~= nil then
+		for i = 1,#ScriptContainer[Line].question/2,1 do
+			QuestionOptionText[i] = ScriptContainer[Line].question[i*2-1] 
+			if tonumber(ScriptContainer[Line].question[i*2]) then
+				QuestionFindLine[i] = tonumber(ScriptContainer[Line].question[i*2])
+				QuesitonNotfication = true
+			else
+				for u = 1,#ScriptContainer,1 do
+					if ScriptContainer[u].label then
+						if ScriptContainer[u].label:find(ScriptContainer[Line].question[i*2]) then
+							QuestionFindLine[i] = u
+							QuesitonNotfication = true
+						end
+					end
+				end
+				if QuesitonNotfication == false then
+					for u = 1,#ScriptContainer,1 do
+						if ScriptContainer[u].text then
+							if ScriptContainer[u].text:find(ScriptContainer[Line].question[i*2]) and i ~= Line then
+								QuestionFindLine[i] = u
+								QuesitonNotfication = true
+							end
+						end
+					end
 				end
 			end
-		end
+		end	
 	end
 
-	if ScriptText:find(" ggg ") ~= nil then
-		GotoStart = ScriptText:find(" ggg ")
-		if tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)) then
-			Line = tonumber(ScriptText.sub(ScriptText, GotoStart+5, #ScriptText))
-			ScriptText = ScriptContainer[Line]
-			--DrawImage()
-			--DrawCharacter()
-			--NewMusic()
-			--TouchList()
+	if ScriptContainer[Line].move ~= nil and ScriptContainer[Line].move ~= "" then
+		if tonumber(ScriptContainer[Line].move) then
+			Line = tonumber(ScriptContainer[Line].move)
 			DrawNext()
 		else
-			GotoStart = ScriptText:find(" ggg ")
-			GotoText = ScriptText.sub(ScriptText, GotoStart+5, #ScriptText)
-			ScriptText = ScriptText:sub(1, GotoStart)
+			GotoText = ScriptContainer[Line].move
 			for i = 1,#ScriptContainer,1 do
-				if ScriptContainer[i]:find(GotoText) then
-					Line = i
-					ScriptText = ScriptContainer[Line]
-			--DrawImage()
-			--DrawCharacter()
-			--NewMusic()
-			--TouchList()
-			DrawNext()
+				if ScriptContainer[i].label then
+					if ScriptContainer[i].label:find(GotoText) then
+						Line = i
+						DrawNext()
+						return
+					end
+				end
+			end
+			for i = 1,#ScriptContainer,1 do
+				if type(ScriptContainer[i].text) == "string" then
+					if ScriptContainer[i].text:find(GotoText) and i ~= Line then
+						Line = i
+						DrawNext()
+					end
 				end
 			end
 		end
@@ -363,115 +384,126 @@ function DrawNext()
 	Line = Line + 1
 
 	QuestionAwnser = ""
-	QuestionText = ""
 end
 
 function DrawImage()
-	for i = 1,#ImageContainer,1 do
-		if ImageContainer[i]:find(" "..Line.." ") ~= nil then
-			if string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1) == "nothing" then
+	if ScriptContainer[Line].bg ~= 0 and ScriptContainer[Line].bg ~= nil and ScriptContainer[Line].bg ~= "" then
+		if love.system.getOS() == "Horizon" then
+			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 				if major <= 11 then
-					Image = love.graphics.newText(font, "")
+					Image = love.graphics.newImage(ScriptContainer[Line].bg..".t3x")
 				else
-					Image = love.graphics.newTextBatch(font, "")
+					Image = love.graphics.newTexture(ScriptContainer[Line].bg..".t3x")
 				end
 			else
-				if string.find(ImageContainer[i], ".ogv") then
-					Image = love.graphics.newVideo(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-					Image:play()
+				if major <= 11 then
+					Image = love.graphics.newImage(ScriptContainer[Line].bg)
 				else
-					if major <= 11 then
-						Image = love.graphics.newImage(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-					else
-						Image = love.graphics.newTexture(string.sub(ImageContainer[i], 1, ImageContainer[i]:find(" "..Line.." ")-1))
-					end
+					Image = love.graphics.newTexture(ScriptContainer[Line].bg)
 				end
+			end
+		else
+			if major <= 11 then
+				Image = love.graphics.newImage(ScriptContainer[Line].bg)
+			else
+				Image = love.graphics.newTexture(ScriptContainer[Line].bg)
 			end
 		end
 	end
 end
 
 function DrawCharacter()
-	for i = 1,#CharacterContainer,1 do
-		if CharacterContainer[i]:find(" "..Line.." ") ~= nil then
-			if string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1) == "nothing" then
-				if major <= 11 then
-					Character = love.graphics.newText(font, "")
-				else
-					Character = love.graphics.newTextBatch(font, "")
-				end
-			else
-				if major <= 11 then
-					Character = love.graphics.newImage(string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1))
-				else
-					Character = love.graphics.newTexture(string.sub(CharacterContainer[i], 1, CharacterContainer[i]:find(" "..Line.." ")-1))
-				end
-			end
-		end
-	end
-	for i = 1,#SecondaryCharacterContainer,1 do
-		if SecondaryCharacterContainer[i]:find(" "..Line.." ") ~= nil then
-			if string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1) == "nothing" then
-				if major <= 11 then
-					SecondaryCharacter = love.graphics.newText(font, "")
-				else
-					SecondaryCharacter = love.graphics.newTextBatch(font, "")
-				end
-			else
+	if ScriptContainer[Line].char1 ~= 0 and ScriptContainer[Line].char1 ~= nil and ScriptContainer[Line].char1 ~= "" then
+		if ScriptContainer[Line].char1 == "nothing" then
 			if major <= 11 then
-				SecondaryCharacter = love.graphics.newImage(string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1))
+				Character = love.graphics.newText(font, "")
 			else
-				SecondaryCharacter = love.graphics.newTexture(string.sub(SecondaryCharacterContainer[i], 1, SecondaryCharacterContainer[i]:find(" "..Line.." ")-1))
+				Character = love.graphics.newTextBatch(font, "")
+			end
+		else
+			if love.system.getOS() == "Horizon" then
+				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
+					if major <= 11 then
+						Character = love.graphics.newImage(ScriptContainer[Line].char1..".t3x")
+					else
+						Character = love.graphics.newTexture(ScriptContainer[Line].char1..".t3x")
+					end
+				else
+					if major <= 11 then
+						Character = love.graphics.newImage(ScriptContainer[Line].char1)
+					else
+						Character = love.graphics.newTexture(ScriptContainer[Line].char1)
+					end
+				end
+			else
+				if major <= 11 then
+					Character = love.graphics.newImage(ScriptContainer[Line].char1)
+				else
+					Character = love.graphics.newTexture(ScriptContainer[Line].char1)
+				end
 			end
 		end
 	end
-end
+
+	if ScriptContainer[Line].char2 ~= 0 and ScriptContainer[Line].char2 ~= nil and ScriptContainer[Line].char2 ~= "" then
+		if ScriptContainer[Line].char2 == "nothing" then
+			if major <= 11 then
+				SecondaryCharacter = love.graphics.newText(font, "")
+			else
+				SecondaryCharacter = love.graphics.newTextBatch(font, "")
+			end
+		else
+			if love.system.getOS() == "Horizon" then
+				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
+					if major <= 11 then
+						SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2..".t3x")
+					else
+						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2..".t3x")
+					end
+				else
+					if major <= 11 then
+						SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2)
+					else
+						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2)
+					end
+				end
+			else
+				if major <= 11 then
+					SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2)
+				else
+					SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2)
+				end
+			end
+		end
+	end
 end
 
 function TouchList()
-	for i = 1,#TouchContainer,1 do
-		if TouchContainer[i]:find(" l"..Line.." ") ~= nil then
+		if ScriptContainer[Line].Xsize then
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
-			s, TouchStuffStart = TouchContainer[i]:find(" l"..Line.." ")
-			TouchScale(i)
-			--TouchScaleNumber = 1
-			TouchText = string.sub(TouchContainer[i], TouchStuffStart+1, #TouchContainer[i])
-			TouchRepeatText = TouchText
-			s, RepeatTimes = TouchText:gsub(",", "")
-			s, RepeatRepeatTimes = TouchText:gsub(":", "")
-			if RepeatRepeatTimes ~= 0 then
-				RepeatRepeatTimes = RepeatRepeatTimes + 1
-				TouchSearch()
-				for g = 1,RepeatRepeatTimes-1,1 do
-					TouchRepeatText = string.gsub(TouchRepeatText, ":", "f", 1)
-					TouchRepeatText = string.sub(TouchRepeatText, TouchRepeatText:find("f")+2, #TouchRepeatText)
-					TouchText = TouchRepeatText
-					TouchCalcTimes = g
-					TouchSearch()
-				end
-			else
-				RepeatRepeatTimes = 1
-				TouchCalcTimes = 1
-				TouchSearch()
+			TouchScale(Line)
+			for i = 0,#ScriptContainer[Line].Positions/5,1 do
+				TouchPositions[ScriptContainer[Line].Positions[1+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[2+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[3+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[4+i*5]]
+				TouchPositions[ScriptContainer[Line].Positions[5+i*5]]
 			end
 			if #TouchPositions >= 5 then
 				RequireTouch = true;
 			end
 		end
-	end
 end
 
-function TouchScale(i)
-	if TouchContainer[i]:find(" x") ~= nil and TouchContainer[i]:find(" y") ~= nil then
-		XScale = tonumber(string.sub(TouchContainer[i], TouchContainer[i]:find(" x")+2, TouchContainer[i]:find(" y")-1))
-		YScale = tonumber(string.sub(TouchContainer[i], TouchContainer[i]:find(" y")+2, TouchContainer[i]:find(" l")-1))
+function TouchScale(line)
+		XSize = tonumber(ScriptContainer[line].Xsize)
+		YSize = tonumber(ScriptContainer[line].Ysize)
 
 		--if XScale/Image:getWidth() == YScale/Image:getHeight() then
 			TouchScaleNumber = XScale/Image:getWidth()
 		--else
 		--	TouchScaleNumber = 1
 		--end
-	end
 end
 
 function TouchSearch()
@@ -484,19 +516,17 @@ function TouchSearch()
 end
 
 function NewMusic()
-	for i = 1,#MusicContainer,1 do
-		if MusicContainer[i]:find(" "..Line.." ") ~= nil then
-			if MusicName ~= string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1) then
-				love.audio.stop(Song)
-				--Song = love.audio.newSource(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1), "static")
-				--if PlayingSong then
-				--	love.audio.play(Song)
-				--	Song:setLooping(true)
-				--end
-				MusicThread:wait()
-				MusicThread:start(string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1))
-				MusicName = string.sub(MusicContainer[i], 1, MusicContainer[i]:find(" "..Line.." ")-1)
-			end
+	if ScriptContainer[Line].music ~= 0 and ScriptContainer[Line].music ~= nil and ScriptContainer[Line].music ~= "" then
+		if ScriptContainer[Line].music ~= MusicName then
+			love.audio.stop(Song)
+			--Song = love.audio.newSource(ScriptContainer[Line].music, "static")
+			--if PlayingSong then
+			--	love.audio.play(Song)
+			--	Song:setLooping(true)
+			--end
+			MusicThread:wait()
+			MusicThread:start(ScriptContainer[Line].music)
+			MusicName = ScriptContainer[Line].music
 		end
 	end
 end
@@ -546,12 +576,12 @@ if AskForName ~= true then
 					love.graphics.printf("Loading Song", font, 0, 180, 320, "center", 0, 1, 1)
 				end
 				if QuesitonNotfication == true then
-					love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, 180, 320, "center", 0, 1, 1)
+					love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, 180, 320, "center", 0, 1, 1)
 				end
 			end
 		else --switch
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-			love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+			love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 			love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 1, 1)
 			love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
 			love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
@@ -560,12 +590,12 @@ if AskForName ~= true then
 				love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 			if QuesitonNotfication == true then
-				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
-	else if(screen) ~= nil then --WiiU
+	else if screen ~= nil then --WiiU
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-			love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+			love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 			love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 1, 1)
 			love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
 			love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
@@ -574,26 +604,32 @@ if AskForName ~= true then
 				love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 			if QuesitonNotfication == true then
-				love.graphics.printf("A = " .. YesText .. "\nB = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 		--pc, mobile or web
 		love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-		love.graphics.draw(Character, 0, (ScreenHeight/7), 0, 1, 1)
+		love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 0.75, 0.75)
 		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, ScreenWidth/textbox:getWidth(), 2)
 		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
 		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
 
-		--if DebugX ~= null then
-		--	love.graphics.printf(DebugX, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-		--	love.graphics.printf(DebugY, NameFont, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
-		--end
+		if _debug == true then
+			for i = 1,#QuestionFindLine,1 do
+				love.graphics.printf(QuestionOptionText[i] .. " = " .. QuestionFindLine[i], NameFont, 0, ScreenHeight/1.6-i*50, ScreenWidth, "center", 0, 1, 1)
+			end
+
+			if DebugX ~= null and DebugY ~= null and DebugX ~= 0 and DebugY ~= 0 then
+				love.graphics.printf(DebugX, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(DebugY, NameFont, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+			end
+		end
 
 		if LoadingMusic then
 			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
-		if QuesitonNotfication == true then
+		if QuesitonNotfication then
 			if MobileMode then
 				love.graphics.setColor(0.10,1.00,0.40, 0.25)
 				love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
@@ -615,10 +651,10 @@ if AskForName ~= true then
 				--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
 
 				love.graphics.setColor(1,1,1)
-				love.graphics.printf(NoText, font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-				love.graphics.printf(YesText, font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(QuestionOptionText[1], font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(QuestionOptionText[2], font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			else
-				love.graphics.printf("Enter = " .. YesText .. "\nSpace = " .. NoText, font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("Enter = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 	end
