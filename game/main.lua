@@ -342,7 +342,6 @@ function DrawNext()
 							if ScriptContainer[u].text:find(ScriptContainer[Line].question[i*2]) and i ~= Line then
 								QuestionFindLine[i] = u
 								QuesitonNotfication = true
-								return
 							end
 						end
 					end
