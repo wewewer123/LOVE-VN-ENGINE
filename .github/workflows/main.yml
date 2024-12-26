@@ -87,16 +87,16 @@ jobs:
         with:
           node-version: '16'  # Adjust Node.js version if necessary
 
-      - name: Install Love (latest stable)
+      - name: Install Love and xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install love -y
-
+          sudo apt-get install love xvfb -y
+  
       - name: Create the zip file
         run: |
-          cd game  # Change to the 'game' directory
-          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
+          cd game
+          zip -r ../game.love .
 
-      - name: Run Love game
+      - name: Run Love game with xvfb
         run: |
-          love game.love  # If this errors it should have the entire action error
+          xvfb-run --auto-servernum love game.love
