@@ -75,28 +75,28 @@ jobs:
           folder: output  # Correct folder name for the built web version
           token: ${{ secrets.GITHUB_TOKEN }}
   
-  LoveTest:
+  LoveBuild:
     runs-on: ubuntu-latest  # Run the job on Ubuntu
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'  # Adjust Node.js version if necessary
-
-      - name: Install Love and xvfb
-        run: |
-          sudo apt-get update
-          sudo apt-get install love xvfb -y
-  
-      - name: Create the zip file
-        run: |
-          cd game
-          zip -r ../game.love .
-
-      - name: Run Love game with xvfb
-        run: |
-          xvfb-run --auto-servernum love game.love
+    #- name: move info.plist
+    #  run: mv Buildtools/info.plist game/info.plist #it's not done yet so commenting this out for now
+    - uses: actions/checkout@v3
+    - uses: nhartland/love-build@master
+      id: love-build
+      with:
+        app_name: 'Love VN Engine'
+        love_version: '11.4'
+        source_dir: 'game'
+    - uses: actions/upload-artifact@v1
+      with:
+        name: macos-build
+        path: ${{ steps.love-build.outputs.macos-filename }}
+    - uses: actions/upload-artifact@v1
+      with:
+        name: win32-build
+        path: ${{ steps.love-build.outputs.win32-filename }}
+    - uses: actions/upload-artifact@v1
+      with:
+        name: win64-build
+        path: ${{ steps.love-build.outputs.win64-filename }}
