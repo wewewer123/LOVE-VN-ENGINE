@@ -37,7 +37,9 @@ jobs:
       - name: Download game.love
         uses: actions/download-artifact@v3
         with:
-          name: game.love
+          name: game.love.zip
+      - name: rename to correct name
+        run: mv game.love.zip game.love
       - name: Install love.js
         run: npm install love.js
       - name: Build game using love.js
@@ -75,7 +77,10 @@ jobs:
       - name: Download game.love
         uses: actions/download-artifact@v3
         with:
-          name: game.love
+          name: game.love.zip
+      
+      - name: rename to correct name
+        run: mv game.love.zip game.love
 
       - name: Unzip game.love
         run: unzip game.love -d game
