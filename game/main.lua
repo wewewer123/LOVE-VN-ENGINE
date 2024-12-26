@@ -1,5 +1,5 @@
 function love.load()
-	_debug = true
+	_debug = false
 
 	utf8 = require("utf8")
 	ScriptScript, NameRead, AskForName = unpack(require("script"))
