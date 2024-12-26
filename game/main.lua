@@ -483,11 +483,11 @@ function TouchList()
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
 			TouchScale(Line)
 			for i = 0,#ScriptContainer[Line].Positions/5,1 do
-				TouchPositions[ScriptContainer[Line].Positions[1+i*5]]
-				TouchPositions[ScriptContainer[Line].Positions[2+i*5]]
-				TouchPositions[ScriptContainer[Line].Positions[3+i*5]]
-				TouchPositions[ScriptContainer[Line].Positions[4+i*5]]
-				TouchPositions[ScriptContainer[Line].Positions[5+i*5]]
+				TouchPositions[1+i*5] = ScriptContainer[Line].Positions[1+i*5]
+				TouchPositions[2+i*5] = ScriptContainer[Line].Positions[2+i*5]
+				TouchPositions[3+i*5] = ScriptContainer[Line].Positions[3+i*5]
+				TouchPositions[4+i*5] = ScriptContainer[Line].Positions[4+i*5]
+				TouchPositions[5+i*5] = ScriptContainer[Line].Positions[5+i*5]
 			end
 			if #TouchPositions >= 5 then
 				RequireTouch = true;
@@ -504,15 +504,6 @@ function TouchScale(line)
 		--else
 		--	TouchScaleNumber = 1
 		--end
-end
-
-function TouchSearch()
-	TouchCalcTimesUse = TouchCalcTimes*5
-	for u = 1,RepeatTimes/RepeatRepeatTimes,1 do
-		TouchText = string.gsub(TouchText, ",", "g", 1)
-		TouchPositions[u+TouchCalcTimesUse] = string.sub(TouchText, 1, TouchText:find("g")-1)
-		TouchText = string.sub(TouchText, TouchText:find("g")+1, #TouchText)
-	end
 end
 
 function NewMusic()
