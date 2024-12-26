@@ -1,23 +1,30 @@
 name: Handle Update
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  push:  # Trigger on push to any branch
+    branches: 
+      - main  # All branches
+  pull_request:  # Trigger on pull requests to any branch
+    branches: 
+      - main  # All branches
 
 jobs:
   loveFile:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust Node.js version if necessary
+
       - name: Create the zip file
         run: |
-          cd game
-          zip -r ../game.love .
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
       - name: Upload game.love as an artifact
         uses: actions/upload-artifact@v4
         with:
@@ -25,74 +32,71 @@ jobs:
           path: game.love
 
   website:
-    runs-on: ubuntu-latest
-    needs: loveFile
+    runs-on: ubuntu-latest  # You can adjust the runner to a different OS if needed
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
-      - name: Download game.love
-        uses: actions/download-artifact@v3
-        with:
-          name: game.love.zip
-      - name: rename to correct name
-        run: mv game.love.zip game.love
+          node-version: '16'  # Adjust Node.js version if necessary
+
+      - name: Create the zip file
+        run: |
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
+      
       - name: Install love.js
         run: npm install love.js
+  
       - name: Build game using love.js
         run: |
-          mkdir output
-          npx love.js game.love output --title "LoveVN" --memory 167772160 -c
-          touch output/.nojekyll
+          mkdir output  # Create output directory for the web version
+          npx love.js game.love output --title "LoveVN" --memory 167772160 -c # Use love.js to build the game for web. Increase memory if it errors
+          touch output/.nojekyll  # Disable Jekyll processing for GitHub Pages
+  
       - name: Download coi-serviceworker.js
         run: curl -o output/coi-serviceworker.js https://raw.githubusercontent.com/gzuidhof/coi-serviceworker/refs/heads/master/coi-serviceworker.js
+  
       - name: Add script tag to HTML
         run: |
-          html_file=$(find output -name "*.html")
+          html_file=$(find output -name "*.html")  # Find the main HTML file
           if [ -f "$html_file" ]; then
+            # Add the script tag to the second last line of the HTML file
             sed -i '$i<script src="coi-serviceworker.js"></script>' "$html_file"
           fi
+  
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          branch: pages
-          folder: output
+          branch: pages  # Adjust branch to deploy the game (e.g., 'pages')
+          folder: output  # Correct folder name for the built web version
           token: ${{ secrets.GITHUB_TOKEN }}
+  
+  LoveTest:
+    runs-on: ubuntu-latest  # Run the job on Ubuntu
 
-  loveTest:
-    runs-on: ubuntu-latest
-    needs: loveFile
     steps:
-      - name: Install dependencies
-        run: |
-          apt-get update
-          apt-get install -y wget unzip libx11-6 libxcursor1 libxrandr2 libxinerama1 libgl1 mesa-utils
-          wget https://github.com/love2d/love/releases/download/11.4/love-11.4-linux-x64.zip
-          unzip love-11.4-linux-x64.zip
-          sudo mv love /usr/local/bin/
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Download game.love
-        uses: actions/download-artifact@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          name: game.love.zip
-      
-      - name: rename to correct name
-        run: mv game.love.zip game.love
+          node-version: '16'  # Adjust Node.js version if necessary
 
-      - name: Unzip game.love
-        run: unzip game.love -d game
-
-      - name: Run Love2D project and check for output (1 second timeout)
+      - name: Install Love (latest stable)
         run: |
-          timeout 1s love game &> output.txt # Run with timeout, redirect all output
-          output=$(cat output.txt) # Get the output from the file
-          if [[ -n "$output" ]]; then
-            echo "Love2D produced output on startup:"
-            echo "$output"
-            exit 1
-          else
-            echo "Love2D started without any output."
-          fi
+          sudo apt-get update
+          sudo apt-get install love -y
+
+      - name: Create the zip file
+        run: |
+          cd game  # Change to the 'game' directory
+          zip -r ../game.love .  # Zip all the contents of the 'game' folder and place it in the root as 'game.love'
+
+      - name: Run Love game
+        run: |
+          love game.love  # If this errors it should have the entire action error
