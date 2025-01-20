@@ -482,12 +482,8 @@ function TouchList()
 		if ScriptContainer[Line].Xsize then
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
 			TouchScale(Line)
-			for i = 0,#ScriptContainer[Line].Positions/5,1 do
-				TouchPositions[1+i*5] = ScriptContainer[Line].Positions[1+i*5]
-				TouchPositions[2+i*5] = ScriptContainer[Line].Positions[2+i*5]
-				TouchPositions[3+i*5] = ScriptContainer[Line].Positions[3+i*5]
-				TouchPositions[4+i*5] = ScriptContainer[Line].Positions[4+i*5]
-				TouchPositions[5+i*5] = ScriptContainer[Line].Positions[5+i*5]
+			for i = 1,#ScriptContainer[Line].Positions,1 do
+				TouchPositions[i] = ScriptContainer[Line].Positions[i]
 			end
 			if #TouchPositions >= 5 then
 				RequireTouch = true;
@@ -542,7 +538,59 @@ function CheckMusic()
 		end
 	end
 end
-	
+
+
+
+function GeneralDraw(Screen)
+	love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
+	love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
+	love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 0.75, 0.75)
+	love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, ScreenWidth/textbox:getWidth(), 2)
+	love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
+
+	if _debug == true then
+		for i = 1,#QuestionFindLine,1 do
+			love.graphics.printf(QuestionOptionText[i] .. " = " .. QuestionFindLine[i], NameFont, 0, ScreenHeight/1.6-i*50, ScreenWidth, "center", 0, 1, 1)
+		end
+
+		if DebugX ~= null and DebugY ~= null and DebugX ~= 0 and DebugY ~= 0 then
+			love.graphics.printf(DebugX, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(DebugY, NameFont, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
+		end
+	end
+
+	if LoadingMusic then
+		love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		end
+	if QuesitonNotfication then
+		if MobileMode then
+			love.graphics.setColor(0.10,1.00,0.40, 0.25)
+			love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
+
+			love.graphics.setColor(0,0,0)
+			--love.graphics.polygon("line", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
+			--love.graphics.polygon("line", 10,10, ScreenWidth/2-10,10, ScreenWidth/2-10,ScreenHeight/2-10, 10,ScreenHeight/2-10)
+			--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
+			--love.graphics.polygon("line", i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, i,ScreenHeight/2-i)
+			--end
+
+			love.graphics.setColor(1.00,0.20,0.20, 0.25)
+			love.graphics.polygon("fill", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
+
+			--love.graphics.setColor(0,0,0)
+			--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
+			--	love.graphics.polygon("line", ScreenWidth-i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, ScreenWidth-i,ScreenHeight/2-i)
+			--end
+			--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
+
+			love.graphics.setColor(1,1,1)
+			love.graphics.printf(QuestionOptionText[1], font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(QuestionOptionText[2], font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+		end
+	end
+end
+
 function love.draw(Screen)
 if AskForName ~= true then
 	if love.system.getOS() == "Horizon" then 
@@ -571,82 +619,21 @@ if AskForName ~= true then
 				end
 			end
 		else --switch
-			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-			love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
-			love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 1, 1)
-			love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
-			love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-			love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
-			if LoadingMusic then
-				love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-			end
-			if QuesitonNotfication == true then
+			GeneralDraw(Screen)
+			if QuesitonNotfication == true and MobileMode == false then
 				love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 	else if screen ~= nil then --WiiU
-			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-			love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
-			love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 1, 1)
-			love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, 1, 2)
-			love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-			love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
-			if LoadingMusic then
-				love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-			end
-			if QuesitonNotfication == true then
+			GeneralDraw(Screen)
+			if QuesitonNotfication == true and MobileMode == false then
 				love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			end
 		end
 		--pc, mobile or web
-		love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
-		love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
-		love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 0.75, 0.75)
-		love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, ScreenWidth/textbox:getWidth(), 2)
-		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
-
-		if _debug == true then
-			for i = 1,#QuestionFindLine,1 do
-				love.graphics.printf(QuestionOptionText[i] .. " = " .. QuestionFindLine[i], NameFont, 0, ScreenHeight/1.6-i*50, ScreenWidth, "center", 0, 1, 1)
-			end
-
-			if DebugX ~= null and DebugY ~= null and DebugX ~= 0 and DebugY ~= 0 then
-				love.graphics.printf(DebugX, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-				love.graphics.printf(DebugY, NameFont, 0, ScreenHeight/1.5, ScreenWidth, "center", 0, 1, 1)
-			end
-		end
-
-		if LoadingMusic then
-			love.graphics.printf("Loading Song", font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-		end
-		if QuesitonNotfication then
-			if MobileMode then
-				love.graphics.setColor(0.10,1.00,0.40, 0.25)
-				love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
-
-				love.graphics.setColor(0,0,0)
-				--love.graphics.polygon("line", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
-				--love.graphics.polygon("line", 10,10, ScreenWidth/2-10,10, ScreenWidth/2-10,ScreenHeight/2-10, 10,ScreenHeight/2-10)
-				--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
-				--love.graphics.polygon("line", i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, i,ScreenHeight/2-i)
-				--end
-
-				love.graphics.setColor(1.00,0.20,0.20, 0.25)
-				love.graphics.polygon("fill", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
-
-				--love.graphics.setColor(0,0,0)
-				--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
-				--	love.graphics.polygon("line", ScreenWidth-i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, ScreenWidth-i,ScreenHeight/2-i)
-				--end
-				--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
-
-				love.graphics.setColor(1,1,1)
-				love.graphics.printf(QuestionOptionText[1], font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-				love.graphics.printf(QuestionOptionText[2], font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-			else
-				love.graphics.printf("Enter = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
-			end
+		GeneralDraw(Screen)
+		if QuesitonNotfication == true and MobileMode == false then
+			love.graphics.printf("Enter = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
 	end
 else -- still gotta add 3ds support
@@ -655,7 +642,7 @@ else -- still gotta add 3ds support
 			if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
 				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 				love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
-				love.graphics.printf("Before we start, please enter your name.", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 				love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
 			else --2/3DS
 				AskForName = false
@@ -665,7 +652,7 @@ else -- still gotta add 3ds support
 		else
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 			love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
-			love.graphics.printf("Before we start, please enter your name.", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
 		end
 	end
