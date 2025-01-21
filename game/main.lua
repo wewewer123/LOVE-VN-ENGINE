@@ -102,8 +102,8 @@ function CheckKeyboard()
 		if love.system.getOS() == "Horizon" then
 			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
 				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
-				--love.keyboard.setTextInput(true, {hint = "Please enter the mc's name:"}) --type = "basic", 
-				--AskForName = false
+				love.keyboard.setTextInput(true, {hint = "Please enter the mc's name:", type = "basic"}) --type = "basic", 
+				AskForName = false
 			end
 		else
 			love.keyboard.setTextInput(true)
@@ -244,7 +244,7 @@ end
 
 function love.gamepadpressed(joystick, button)
 if RequireTouch ~= true and AskForName ~= true then
-	MobileMode = false
+	--MobileMode = false
 	if button == "y" then
 		if Song:isPlaying() then
 			love.audio.stop(Song)
@@ -540,6 +540,32 @@ function CheckMusic()
 end
 
 
+function drawGrid(numSquares, screen, baseWidth1, baseHeight1)
+    local baseWidth, baseHeight = baseWidth1, baseHeight1 or love.graphics.getDimensions(screen)
+    local cols = math.ceil(math.sqrt(numSquares)) -- get number of squares with square root (DONT CHANGE)
+    local rows = math.ceil(numSquares / cols)
+    local cellWidth = baseWidth / cols
+    local cellHeight = baseHeight / rows
+
+    for row = 0, rows - 1 do
+        for col = 0, cols - 1 do
+            local boxIndex = row * cols + col + 1
+            if boxIndex <= numSquares then
+                local x = col * cellWidth
+                local y = row * cellHeight
+                love.graphics.rectangle("line", x, y, cellWidth, cellHeight)
+				love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.25)
+				love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
+				love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.25)
+				love.graphics.polygon("fill", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
+
+                local text = QuestionOptionText[boxIndex] or ""
+                love.graphics.printf(text, x, y + cellHeight / 2 - 10, cellWidth, "center")
+            end
+        end
+    end
+end
+
 
 function GeneralDraw(Screen)
 	love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
@@ -565,28 +591,18 @@ function GeneralDraw(Screen)
 		end
 	if QuesitonNotfication then
 		if MobileMode then
+			love.graphics.setColor(0,0,0)
+			drawGrid(#QuestionOptionText, nil, ScreenWidth, ScreenHeight/2)
+			love.graphics.setColor(1,1,1)
+			if false then
 			love.graphics.setColor(0.10,1.00,0.40, 0.25)
 			love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
-
-			love.graphics.setColor(0,0,0)
-			--love.graphics.polygon("line", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
-			--love.graphics.polygon("line", 10,10, ScreenWidth/2-10,10, ScreenWidth/2-10,ScreenHeight/2-10, 10,ScreenHeight/2-10)
-			--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
-			--love.graphics.polygon("line", i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, i,ScreenHeight/2-i)
-			--end
-
 			love.graphics.setColor(1.00,0.20,0.20, 0.25)
 			love.graphics.polygon("fill", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
-
-			--love.graphics.setColor(0,0,0)
-			--for i = 1,10,1 do --def gotta change this but the headaches that it produces makes me be fine with waiting.
-			--	love.graphics.polygon("line", ScreenWidth-i,i, ScreenWidth/2-i,i, ScreenWidth/2-i,ScreenHeight/2-i, ScreenWidth-i,ScreenHeight/2-i)
-			--end
-			--love.graphics.polygon("line", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
-
 			love.graphics.setColor(1,1,1)
 			love.graphics.printf(QuestionOptionText[1], font, 0-ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 			love.graphics.printf(QuestionOptionText[2], font, ScreenWidth/4, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			end
 		end
 	end
 end
