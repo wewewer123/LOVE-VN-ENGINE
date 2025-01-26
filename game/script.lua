@@ -3,7 +3,7 @@ NameChangable = true
 ScriptContainer = {
     --{
     --    Label = "A quicker move system label", 
-    --   Name = "Speaker", 
+    --    name = "Speaker", 
     --    text = "Text that is spoken/thought by the Speaker", 
     --    bg = "The background image", 
     --    music = "Music.mp3/.ogg", 
@@ -14,7 +14,7 @@ ScriptContainer = {
     --    char2 = "character2.png",
     --    XSize = 0, //Image length
     --    YSize = 0, //Image height
-    --    Positions = {goto line, left most, right most, top most, bottom most}
+    --    positions = {goto line, left most, right most, top most, bottom most}
     --},
     { 
         text = "It's only when I hear the sounds of shuffling feet and supplies being put away that I realize that the lecture's over.", 
@@ -80,7 +80,7 @@ ScriptContainer = {
         text = "When we were children, we played in these meadows a lot, so they're full of memories.",   
     },
     {
-        name = "Name", 
+        name = true, 
         text = "Hey... Umm...",   
     },
     { 
@@ -105,7 +105,7 @@ ScriptContainer = {
     {
         name = "Sylvie", 
         text = "Sure, but what is a \"Visual Novel?\"",   
-        question = {"It's an interactive book.", "interactive book", "It's a videogame.", "videogame"}, 
+        question = {"It's an interactive book.", "interactive book", "It's a videogame.", "videogame", "2", "videogame", "1", "interactive book"}, 
         char2 = "sylvie green smile.png"
     },
     {

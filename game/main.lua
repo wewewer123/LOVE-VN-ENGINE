@@ -11,7 +11,6 @@ function love.load()
 	NameFont = love.graphics.newFont(30)
 	AnnounceFont = love.graphics.newFont(35)
 
-	--major = 11
 	if love.system.getOS() ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 		textbox = love.graphics.newImage("textbox.png")
@@ -22,24 +21,15 @@ function love.load()
 		else
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions("left")
 			BottomScreenWidth, BottomScreenHeight = love.graphics.getDimensions("bottom")
-			if major <= 11 then
-				textbox = love.graphics.newText(font, "")
-			else
-				textbox = love.graphics.newTextBatch(font, "")
-			end
+			textbox = love.graphics.newText(font, "")
 		end
 	end
 
 	Song = love.audio.newSource("silent.mp3", "stream")
-	if major <= 11 then
-		Image = love.graphics.newText(font, "")
-		Character = love.graphics.newText(font, "")
-		SecondaryCharacter = love.graphics.newText(font, "")
-	else
-		Image = love.graphics.newTextBatch(font, "")
-		Character = love.graphics.newTextBatch(font, "")
-		SecondaryCharacter = love.graphics.newTextBatch(font, "")
-	end
+
+	Image = love.graphics.newText(font, "")
+	Character = love.graphics.newText(font, "")
+	SecondaryCharacter = love.graphics.newText(font, "")
 
 	if love.system.getOS() == "iOS" or love.system.getOS() == "Android" then --idk if it works but touchscreen is touchscreen
 		MobileMode = true
@@ -68,6 +58,13 @@ function love.load()
 	DebugY=""
 	XScale=0
 	YScale=0
+
+	canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
+	if love._console then
+		if love._console == "3DS" then
+			canvasBottom = love.graphics.newCanvas(BottomScreenWidth, BottomScreenHeight)
+		end
+	end
 
 	DrawNext()
 
@@ -102,8 +99,9 @@ function CheckKeyboard()
 		if love.system.getOS() == "Horizon" then
 			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
 				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
-				love.keyboard.setTextInput(true, {hint = "Please enter the mc's name:", type = "basic"}) --type = "basic", 
+				--love.keyboard.setTextInput(true, {type = "basic", hint = "Please enter the mc's name:"}) --type = "basic", 
 				AskForName = false
+				Line=Line-1
 			end
 		else
 			love.keyboard.setTextInput(true)
@@ -174,11 +172,10 @@ if AskForName ~= true then
 	else
 		if love.system.getOS() ~= "Horizon" and love.system.getOS() ~= "Cafe" then
 			MobileMode = true
-			if 0 < x and x < ScreenWidth/2 and 0 < y and y < ScreenHeight/2 then
-				QuestionAwnser = "yes"
-			end
-			if ScreenWidth/2 < x and x < ScreenWidth and 0 < y and y < ScreenHeight/2 then
-				QuestionAwnser = "no"
+			if ScriptContainer[Line] then
+				if ScriptContainer[Line].question then
+					QuestionAwnser = getBoxNumber(#ScriptContainer[Line].question/2, x, y, nil, ScreenWidth, ScreenHeight)
+				end
 			end
 		end
 		DrawNext()
@@ -188,6 +185,25 @@ else
 	Line = Line - 1
 	DrawNext()
 	end
+end
+
+function getBoxNumber(numSquares, x, y, screen, baseWidth1, baseHeight1)
+	local baseWidth, baseHeight = baseWidth1, baseHeight1 or love.graphics.getDimensions(screen)
+	baseHeight = baseHeight/2
+    local cols = math.ceil(math.sqrt(numSquares))
+    local rows = math.ceil(numSquares / cols)
+    local cellWidth = baseWidth / cols
+    local cellHeight = baseHeight / rows
+
+    local col = math.floor(x / cellWidth)
+    local row = math.floor(y / cellHeight)
+    local boxNumber = row * cols + col + 1
+
+    if boxNumber > numSquares then
+        return nil -- Click outside the valid boxes
+    end
+
+    return boxNumber
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -229,11 +245,20 @@ if RequireTouch ~= true then
 					PlayingSong = true
 				end
 			else
+				if ScriptContainer[Line] then
+					if ScriptContainer[Line].question then
+						if tonumber(key) then
+							if tonumber(key) <= #ScriptContainer[Line].question/2 then
+								QuestionAwnser = tonumber(key)
+							end
+						end
+					end
+				end
 				if key == "return" then
-					QuestionAwnser = "yes"
+					QuestionAwnser = 1
 				end
 				if key == "space" then
-					QuestionAwnser = "no"
+					QuestionAwnser = 2
 				end
 				DrawNext()
 			end
@@ -244,7 +269,7 @@ end
 
 function love.gamepadpressed(joystick, button)
 if RequireTouch ~= true and AskForName ~= true then
-	--MobileMode = false
+	MobileMode = false
 	if button == "y" then
 		if Song:isPlaying() then
 			love.audio.stop(Song)
@@ -255,10 +280,10 @@ if RequireTouch ~= true and AskForName ~= true then
 		end
 	else
 		if button == "a" then
-			QuestionAwnser = "yes"
+			QuestionAwnser = 1
 		end
 		if button == "b" then
-			QuestionAwnser = "no"
+			QuestionAwnser = 2
 		end
 		DrawNext()
 	end
@@ -277,13 +302,8 @@ function DrawNext()
 	UseY = 0
 
 	if QuesitonNotfication then
-		if QuestionAwnser == "no" then
-			Line = QuestionFindLine[2]
-			QuestionFindLine = {}
-			QuesitonNotfication = false
-		end
-		if QuestionAwnser == "yes" then
-			Line = QuestionFindLine[1]
+		if QuestionAwnser ~= "" and QuestionAwnser ~= nil then
+			Line = QuestionFindLine[QuestionAwnser]
 			QuestionFindLine = {}
 			QuesitonNotfication = false
 		end
@@ -298,10 +318,9 @@ function DrawNext()
 		love.event.quit()
 	end
 
-	DrawImage()
-	DrawCharacter()
-	NewMusic()
-	TouchList()
+	if Line <= 0 then
+		Line = 1
+	end
 
 	ScriptText = ScriptContainer[Line].text
 
@@ -311,8 +330,13 @@ function DrawNext()
 		--love.event.quit()
 	end
 
+	DrawImage()
+	DrawCharacter()
+	NewMusic()
+	TouchList()
+
 	if ScriptContainer[Line].name ~= nil or Line == 10 then
-		if ScriptContainer[Line].name == "Name" or ScriptContainer[Line].name == "name" or ScriptContainer[Line].name == "MC" or ScriptContainer[Line].name == "MCi" then
+		if ScriptContainer[Line].name == "Name" or ScriptContainer[Line].name == "name" or ScriptContainer[Line].name == "MC" or ScriptContainer[Line].name == "MCi" or ScriptContainer[Line].name == true then
 			Speaker = Name
 		else
 			Speaker = ScriptContainer[Line].name
@@ -380,34 +404,33 @@ function DrawNext()
 		MusicThread:wait()
 		love.event.quit()
 	end
+	if love._console then
+		
+	else
+		love.graphics.setCanvas(canvas)
+		love.graphics.clear(0, 0, 0, 0)
+		love.graphics.setBlendMode("alpha")
+		DrawScreen()
+		love.graphics.setCanvas()
+	end
 
-	Line = Line + 1
+	if QuesitonNotfication == false then
+		Line = Line + 1
+	end
 
 	QuestionAwnser = ""
 end
 
 function DrawImage()
 	if ScriptContainer[Line].bg ~= 0 and ScriptContainer[Line].bg ~= nil and ScriptContainer[Line].bg ~= "" then
-		if love.system.getOS() == "Horizon" then
-			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
-				if major <= 11 then
-					Image = love.graphics.newImage(ScriptContainer[Line].bg..".t3x")
-				else
-					Image = love.graphics.newTexture(ScriptContainer[Line].bg..".t3x")
-				end
+		if love._console then
+			if love._console == "3DS" then
+				Image = love.graphics.newImage(ScriptContainer[Line].bg..".t3x")
 			else
-				if major <= 11 then
-					Image = love.graphics.newImage(ScriptContainer[Line].bg)
-				else
-					Image = love.graphics.newTexture(ScriptContainer[Line].bg)
-				end
+				Image = love.graphics.newImage(ScriptContainer[Line].bg)
 			end
 		else
-			if major <= 11 then
-				Image = love.graphics.newImage(ScriptContainer[Line].bg)
-			else
-				Image = love.graphics.newTexture(ScriptContainer[Line].bg)
-			end
+			Image = love.graphics.newImage(ScriptContainer[Line].bg)
 		end
 	end
 end
@@ -415,64 +438,32 @@ end
 function DrawCharacter()
 	if ScriptContainer[Line].char1 ~= 0 and ScriptContainer[Line].char1 ~= nil and ScriptContainer[Line].char1 ~= "" then
 		if ScriptContainer[Line].char1 == "nothing" then
-			if major <= 11 then
-				Character = love.graphics.newText(font, "")
-			else
-				Character = love.graphics.newTextBatch(font, "")
-			end
+			Character = love.graphics.newText(font, "")
 		else
 			if love.system.getOS() == "Horizon" then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
-					if major <= 11 then
-						Character = love.graphics.newImage(ScriptContainer[Line].char1..".t3x")
-					else
-						Character = love.graphics.newTexture(ScriptContainer[Line].char1..".t3x")
-					end
+					Character = love.graphics.newImage(ScriptContainer[Line].char1..".t3x")
 				else
-					if major <= 11 then
-						Character = love.graphics.newImage(ScriptContainer[Line].char1)
-					else
-						Character = love.graphics.newTexture(ScriptContainer[Line].char1)
-					end
+					Character = love.graphics.newImage(ScriptContainer[Line].char1)
 				end
 			else
-				if major <= 11 then
-					Character = love.graphics.newImage(ScriptContainer[Line].char1)
-				else
-					Character = love.graphics.newTexture(ScriptContainer[Line].char1)
-				end
+				Character = love.graphics.newImage(ScriptContainer[Line].char1)
 			end
 		end
 	end
 
 	if ScriptContainer[Line].char2 ~= 0 and ScriptContainer[Line].char2 ~= nil and ScriptContainer[Line].char2 ~= "" then
 		if ScriptContainer[Line].char2 == "nothing" then
-			if major <= 11 then
-				SecondaryCharacter = love.graphics.newText(font, "")
-			else
-				SecondaryCharacter = love.graphics.newTextBatch(font, "")
-			end
+			SecondaryCharacter = love.graphics.newText(font, "")
 		else
 			if love.system.getOS() == "Horizon" then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
-					if major <= 11 then
-						SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2..".t3x")
-					else
-						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2..".t3x")
-					end
+					SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2..".t3x")
 				else
-					if major <= 11 then
-						SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2)
-					else
-						SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2)
-					end
+					SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2)
 				end
 			else
-				if major <= 11 then
-					SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2)
-				else
-					SecondaryCharacter = love.graphics.newTexture(ScriptContainer[Line].char2)
-				end
+				SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2)
 			end
 		end
 	end
@@ -482,8 +473,8 @@ function TouchList()
 		if ScriptContainer[Line].Xsize then
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
 			TouchScale(Line)
-			for i = 1,#ScriptContainer[Line].Positions,1 do
-				TouchPositions[i] = ScriptContainer[Line].Positions[i]
+			for i = 1,#ScriptContainer[Line].positions,1 do
+				TouchPositions[i] = ScriptContainer[Line].positions[i]
 			end
 			if #TouchPositions >= 5 then
 				RequireTouch = true;
@@ -554,12 +545,11 @@ function drawGrid(numSquares, screen, baseWidth1, baseHeight1)
                 local x = col * cellWidth
                 local y = row * cellHeight
                 love.graphics.rectangle("line", x, y, cellWidth, cellHeight)
-				love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.25)
-				love.graphics.polygon("fill", 0,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, 0,ScreenHeight/2)
-				love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.25)
-				love.graphics.polygon("fill", ScreenWidth,0, ScreenWidth/2,0, ScreenWidth/2,ScreenHeight/2, ScreenWidth,ScreenHeight/2)
+				--love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.25)
+				--love.graphics.polygon("fill", x,y, cellWidth,x, cellHeight,y)
 
                 local text = QuestionOptionText[boxIndex] or ""
+				love.graphics.setColor(0, 0, 0, 1)
                 love.graphics.printf(text, x, y + cellHeight / 2 - 10, cellWidth, "center")
             end
         end
@@ -607,7 +597,7 @@ function GeneralDraw(Screen)
 	end
 end
 
-function love.draw(Screen)
+function DrawScreen(Screen)
 if AskForName ~= true then
 	if love.system.getOS() == "Horizon" then 
 		if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
@@ -649,7 +639,10 @@ if AskForName ~= true then
 		--pc, mobile or web
 		GeneralDraw(Screen)
 		if QuesitonNotfication == true and MobileMode == false then
-			love.graphics.printf("Enter = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			for i = 1,#QuestionFindLine,1 do
+				love.graphics.printf(i .. " = " .. QuestionOptionText[i], font, 0, ScreenHeight/(5)+i*50, ScreenWidth, "center", 0, 1, 1)
+			end
+			--love.graphics.printf(#ScriptContainer[Line].question/2 .. " = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
 	end
 else -- still gotta add 3ds support
@@ -661,9 +654,9 @@ else -- still gotta add 3ds support
 				love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 				love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
 			else --2/3DS
-				AskForName = false
-				Line = Line - 1
-				DrawNext()
+				--AskForName = false
+				--Line = Line - 1
+				--DrawNext()
 			end
 		else
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
@@ -673,4 +666,53 @@ else -- still gotta add 3ds support
 		end
 	end
 end
+end
+
+
+function love.draw(screen)
+if AskForName == true then
+	if screen ~= "left" and screen ~= "right" then
+		if love.system.getOS() == "Horizon" then
+			if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
+				love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
+				love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+				love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
+			else --2/3DS
+				--AskForName = false
+				--Line = Line - 1
+				--DrawNext()
+			end
+		else
+			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
+			love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
+			love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+			love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
+		end
+	end
+else
+	if love._console then
+		if love._console == "3DS" then
+			if screen ~= "bottom" then
+				DrawScreen()
+				--love.graphics.setBlendMode("alpha", "premultiplied")
+				--love.graphics.setColor(1, 1, 1, 1)
+				--love.graphics.draw(canvas, 0,0)
+			else
+				--love.graphics.setBlendMode("alpha")
+				DrawScreen("bottom")
+				--love.graphics.draw(canvasBottom, 0,0)
+			end
+		else
+			--love.graphics.setBlendMode("alpha", "premultiplied")
+   			--love.graphics.setColor(1, 1, 1, 1)
+    		--love.graphics.draw(canvas, 0,0)
+			DrawScreen()
+		end
+	else
+		love.graphics.setBlendMode("alpha", "premultiplied")
+    	love.graphics.setColor(1, 1, 1, 1)
+    	love.graphics.draw(canvas, 0,0)
+	end
+end	
 end
