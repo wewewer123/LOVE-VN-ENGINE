@@ -422,7 +422,7 @@ function DrawNext()
 end
 
 function DrawImage()
-	if ScriptContainer[Line].bg ~= 0 and ScriptContainer[Line].bg ~= nil and ScriptContainer[Line].bg ~= "" then
+	if ScriptContainer[Line].bg ~= 0 and ScriptContainer[Line].bg ~= nil and ScriptContainer[Line].bg ~= "" and love.filesystem.getInfo ~= nil then
 		if love._console then
 			if love._console == "3DS" then
 				Image = love.graphics.newImage(ScriptContainer[Line].bg..".t3x")
@@ -436,11 +436,11 @@ function DrawImage()
 end
 
 function DrawCharacter()
-	if ScriptContainer[Line].char1 ~= 0 and ScriptContainer[Line].char1 ~= nil and ScriptContainer[Line].char1 ~= "" then
+	if ScriptContainer[Line].char1 ~= 0 and ScriptContainer[Line].char1 ~= nil and ScriptContainer[Line].char1 ~= "" and love.filesystem.getInfo(ScriptContainer[Line].char1) ~= nil then
 		if ScriptContainer[Line].char1 == "nothing" then
 			Character = love.graphics.newText(font, "")
 		else
-			if love.system.getOS() == "Horizon" then
+			if love.system.getOS() == "Horizon" and love.filesystem.getInfo(ScriptContainer[Line].char1 .. ".t3x") ~= nil then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 					Character = love.graphics.newImage(ScriptContainer[Line].char1..".t3x")
 				else
@@ -452,11 +452,11 @@ function DrawCharacter()
 		end
 	end
 
-	if ScriptContainer[Line].char2 ~= 0 and ScriptContainer[Line].char2 ~= nil and ScriptContainer[Line].char2 ~= "" then
+	if ScriptContainer[Line].char2 ~= 0 and ScriptContainer[Line].char2 ~= nil and ScriptContainer[Line].char2 ~= "" and love.filesystem.getInfo(ScriptContainer[Line].char2) ~= nil then
 		if ScriptContainer[Line].char2 == "nothing" then
 			SecondaryCharacter = love.graphics.newText(font, "")
 		else
-			if love.system.getOS() == "Horizon" then
+			if love.system.getOS() == "Horizon" and love.filesystem.getInfo(ScriptContainer[Line].char1 .. ".t3x") ~= nil then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
 					SecondaryCharacter = love.graphics.newImage(ScriptContainer[Line].char2..".t3x")
 				else
