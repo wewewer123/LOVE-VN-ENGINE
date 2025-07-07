@@ -21,15 +21,15 @@ function love.load()
 		else
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions("left")
 			BottomScreenWidth, BottomScreenHeight = love.graphics.getDimensions("bottom")
-			textbox = love.graphics.newText(font, "")
+			textbox = love.graphics.newTextBatch(font, "")
 		end
 	end
 
 	Song = love.audio.newSource("silent.mp3", "stream")
 
-	Image = love.graphics.newText(font, "")
-	Character = love.graphics.newText(font, "")
-	SecondaryCharacter = love.graphics.newText(font, "")
+	Image = love.graphics.newTextBatch(font, "")
+	Character = love.graphics.newTextBatch(font, "")
+	SecondaryCharacter = love.graphics.newTextBatch(font, "")
 
 	if love.system.getOS() == "iOS" or love.system.getOS() == "Android" then --idk if it works but touchscreen is touchscreen
 		MobileMode = true
@@ -61,7 +61,7 @@ function love.load()
 
 	canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
 	if love._console then
-		if love._console == "3DS" then
+		if love._console == "3DS" or love._console == "WiiU" then
 			canvasBottom = love.graphics.newCanvas(BottomScreenWidth, BottomScreenHeight)
 		end
 	end
@@ -285,6 +285,9 @@ if RequireTouch ~= true and AskForName ~= true then
 		if button == "b" then
 			QuestionAwnser = 2
 		end
+		if button == "x" then
+			QuestionAwnser = 3
+		end
 		DrawNext()
 	end
 else
@@ -438,7 +441,7 @@ end
 function DrawCharacter()
 	if ScriptContainer[Line].char1 ~= 0 and ScriptContainer[Line].char1 ~= nil and ScriptContainer[Line].char1 ~= "" and love.filesystem.getInfo(ScriptContainer[Line].char1) ~= nil then
 		if ScriptContainer[Line].char1 == "nothing" then
-			Character = love.graphics.newText(font, "")
+			Character = love.graphics.newTextBatch(font, "")
 		else
 			if love.system.getOS() == "Horizon" and love.filesystem.getInfo(ScriptContainer[Line].char1 .. ".t3x") ~= nil then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models
@@ -454,7 +457,7 @@ function DrawCharacter()
 
 	if ScriptContainer[Line].char2 ~= 0 and ScriptContainer[Line].char2 ~= nil and ScriptContainer[Line].char2 ~= "" and love.filesystem.getInfo(ScriptContainer[Line].char2) ~= nil then
 		if ScriptContainer[Line].char2 == "nothing" then
-			SecondaryCharacter = love.graphics.newText(font, "")
+			SecondaryCharacter = love.graphics.newTextBatch(font, "")
 		else
 			if love.system.getOS() == "Horizon" and love.filesystem.getInfo(ScriptContainer[Line].char1 .. ".t3x") ~= nil then
 				if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the supported ds models

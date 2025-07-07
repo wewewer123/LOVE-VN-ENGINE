@@ -6,3 +6,4 @@ node_modules/
 BuildTools/build
 game/game.love
 *.3dsx
+bin/
