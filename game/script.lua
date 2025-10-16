@@ -14,7 +14,9 @@ ScriptContainer = {
     --    char2 = "character2.png",
     --    XSize = 0, //Image length
     --    YSize = 0, //Image height
-    --    positions = {goto line, left most, right most, top most, bottom most}
+    --    positions = {goto line, left most, right most, top most, bottom most},
+    --    VarSet = {{"VariableName", "Value"}, {"VariableName2", "Value2"}},
+    --    VarCheck = {{"VariableName", "Value", "GotoLabelIfTrue", "GotoLabelIfFalse"}, {"VariableName2", "Value2", "GotoLabelIfTrue2", "GotoLabelIfFalse2"}},
     --},
     { 
         text = "It's only when I hear the sounds of shuffling feet and supplies being put away that I realize that the lecture's over.", 

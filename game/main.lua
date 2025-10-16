@@ -21,15 +21,15 @@ function love.load()
 		else
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions("left")
 			BottomScreenWidth, BottomScreenHeight = love.graphics.getDimensions("bottom")
-			textbox = love.graphics.newTextBatch(font, "")
+			textbox = love.graphics.newText(font, "")
 		end
 	end
 
 	Song = love.audio.newSource("silent.mp3", "stream")
 
-	Image = love.graphics.newTextBatch(font, "")
-	Character = love.graphics.newTextBatch(font, "")
-	SecondaryCharacter = love.graphics.newTextBatch(font, "")
+	Image = love.graphics.newText(font, "")
+	Character = love.graphics.newText(font, "")
+	SecondaryCharacter = love.graphics.newText(font, "")
 
 	if love.system.getOS() == "iOS" or love.system.getOS() == "Android" then --idk if it works but touchscreen is touchscreen
 		MobileMode = true
@@ -58,6 +58,7 @@ function love.load()
 	DebugY=""
 	XScale=0
 	YScale=0
+	SetVars = {}
 
 	canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
 	if love._console then
@@ -402,6 +403,75 @@ function DrawNext()
 			end
 		end
 	end
+
+	if ScriptContainer[Line].VarSet ~= nil then
+        for i = 1,#ScriptContainer[Line].VarSet,1 do
+            local varName = ScriptContainer[Line].VarSet[i][1]
+            local varValue = ScriptContainer[Line].VarSet[i][2]
+            SetVars[varName] = varValue
+        end
+    end
+
+    if ScriptContainer[Line].VarCheck ~= nil then
+        for u = 1,#ScriptContainer[Line].VarCheck,1 do
+            local varName = ScriptContainer[Line].VarCheck[u][1]
+            local varValue = ScriptContainer[Line].VarCheck[u][2]
+            local gotoLineTrue = ScriptContainer[Line].VarCheck[u][3]
+            local gotoLineFalse = ScriptContainer[Line].VarCheck[u][4]
+
+            if SetVars[varName] == varValue then
+                if tonumber(gotoLineTrue) then
+                    Line = tonumber(gotoLineTrue)
+                    DrawNext()
+                    return
+                else
+                    for i = 1,#ScriptContainer,1 do
+                        if ScriptContainer[i].label then
+                            if ScriptContainer[i].label:find(gotoLineTrue) then
+                                Line = i
+                                DrawNext()
+                                return
+                            end
+                        end
+                    end
+                    for i = 1,#ScriptContainer,1 do
+                        if type(ScriptContainer[i].text) == "string" then
+                            if ScriptContainer[i].text:find(gotoLineTrue) and i ~= Line then
+                                Line = i
+                                DrawNext()
+                                return
+                            end
+                        end
+                    end
+                end
+            else
+                if tonumber(gotoLineFalse) then
+                    Line = tonumber(gotoLineFalse)
+                    DrawNext()
+                    return
+                else
+                    for i = 1,#ScriptContainer,1 do
+                        if ScriptContainer[i].label then
+                            if ScriptContainer[i].label:find(gotoLineFalse) then
+                                Line = i
+                                DrawNext()
+                                return
+                            end
+                        end
+                    end
+                    for i = 1,#ScriptContainer,1 do
+                        if type(ScriptContainer[i].text) == "string" then
+                            if ScriptContainer[i].text:find(gotoLineFalse) and i ~= Line then
+                                Line = i
+                                DrawNext()
+                                return
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
 
 	if ScriptText:find("123quit123") ~= nil then
 		MusicThread:wait()
