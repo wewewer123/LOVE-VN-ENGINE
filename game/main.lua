@@ -11,11 +11,11 @@ function love.load()
 	NameFont = love.graphics.newFont(30)
 	AnnounceFont = love.graphics.newFont(35)
 	
-	if love._os ~= "Horizon" then
+	if love._os ~= "horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 		textbox = love.graphics.newImage("textbox.png")
 	else
-		if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+		if love._console ~= "3ds" then --love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 			textbox = love.graphics.newImage("textbox.png")
 		else
@@ -62,7 +62,7 @@ function love.load()
 
 	canvas = love.graphics.newCanvas(ScreenWidth, ScreenHeight)
 	if love._console then
-		if love._console == "3DS" or love._console == "WiiU" then
+		if love._console == "3ds" or love._console == "wiiu" then
 			canvasBottom = love.graphics.newCanvas(BottomScreenWidth, BottomScreenHeight)
 		end
 	end
@@ -70,6 +70,12 @@ function love.load()
 	DrawNext()
 
 end
+
+--oldNewText = love.graphics.newText
+function love.graphics.newText(font, text)
+	return love.graphics.newTextBatch(font, text)
+end
+
 function love.update()
 	CheckMusic()
 	CheckKeyboard()
@@ -497,7 +503,7 @@ end
 function DrawImage()
 	if ScriptContainer[Line].bg ~= 0 and ScriptContainer[Line].bg ~= nil and ScriptContainer[Line].bg ~= "" and love.filesystem.getInfo ~= nil then
 		if love._console then
-			if love._console == "3DS" then
+			if love._console == "3ds" then
 				Image = love.graphics.newImage(ScriptContainer[Line].bg..".t3x")
 			else
 				Image = love.graphics.newImage(ScriptContainer[Line].bg)
@@ -752,9 +758,9 @@ if AskForName == true then
 				love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 				love.graphics.printf(Name, NameFont, 0, ScreenHeight/3.5, ScreenWidth, "center", 0, 1, 1)
 			else --2/3DS
-				--AskForName = false
-				--Line = Line - 1
-				--DrawNext()
+				AskForName = false
+				Line = Line - 1
+				DrawNext()
 			end
 		else
 			love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
@@ -765,7 +771,7 @@ if AskForName == true then
 	end
 else
 	if love._console then
-		if love._console == "3DS" then
+		if love._console == "3ds" then
 			if screen ~= "bottom" then
 				DrawScreen()
 				--love.graphics.setBlendMode("alpha", "premultiplied")
