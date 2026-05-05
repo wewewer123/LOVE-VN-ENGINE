@@ -10,8 +10,8 @@ function love.load()
 	font = love.graphics.newFont(28)
 	NameFont = love.graphics.newFont(30)
 	AnnounceFont = love.graphics.newFont(35)
-
-	if love.system.getOS() ~= "Horizon" then
+	
+	if love._os ~= "Horizon" then
 		ScreenWidth, ScreenHeight = love.graphics.getDimensions( )
 		textbox = love.graphics.newImage("textbox.png")
 	else
@@ -618,12 +618,12 @@ function drawGrid(numSquares, screen, baseWidth1, baseHeight1)
                 local x = col * cellWidth
                 local y = row * cellHeight
                 love.graphics.rectangle("line", x, y, cellWidth, cellHeight)
-				--love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.25)
-				--love.graphics.polygon("fill", x,y, cellWidth,x, cellHeight,y)
+				love.graphics.setColor(love.math.random(),love.math.random(),love.math.random(), 0.5)
+				love.graphics.rectangle("fill", x, y, cellWidth, cellHeight)
 
                 local text = QuestionOptionText[boxIndex] or ""
 				love.graphics.setColor(0, 0, 0, 1)
-                love.graphics.printf(text, x, y + cellHeight / 2 - 10, cellWidth, "center")
+                love.graphics.printf(text, AnnounceFont, x, y + cellHeight / 2 - 10, cellWidth, "center")
             end
         end
     end
