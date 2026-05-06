@@ -104,8 +104,14 @@ end
 
 function CheckKeyboard()
 	if AskForName then
+<<<<<<< HEAD
 		if love._os ~= "horizon" then
 			if love._console ~= "3ds" then --All of the 2/3DS models
+=======
+		if love.system.getOS() == "Horizon" then
+			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
+				love.keyboard.setTextInput(True)
+>>>>>>> a66e94d1ac3b5cfaf7c0e1dc6e6f1b6d1312de4b
 				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
 				--love.keyboard.setTextInput(true, {type = "basic", hint = "Please enter the mc's name:"}) --type = "basic", 
 				AskForName = false
@@ -485,7 +491,15 @@ function DrawNext()
 		love.event.quit()
 	end
 	if love._console then
-		
+		love.graphics.setCanvas(canvas)
+		love.graphics.clear(0, 0, 0, 0)
+		love.graphics.setBlendMode("alpha")
+		DrawScreen("left")
+		love.graphics.setCanvas(canvasBottom)
+		love.graphics.clear(0, 0, 0, 0)
+		love.graphics.setBlendMode("alpha")
+		DrawScreen("bottom")
+		love.graphics.setCanvas()
 	else
 		love.graphics.setCanvas(canvas)
 		love.graphics.clear(0, 0, 0, 0)
@@ -550,7 +564,7 @@ function DrawCharacter()
 end
 
 function TouchList()
-		if ScriptContainer[Line].Xsize then
+		if ScriptContainer[Line].positions then
 			TouchCalcTimes = 0; TouchStuffStart = 0; TouchText = ""; RepeatTimes = 0; RepeatRepeatTimes = 0; TouchCalcTimesUse = ""
 			TouchScale(Line)
 			for i = 1,#ScriptContainer[Line].positions,1 do
