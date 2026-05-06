@@ -105,7 +105,7 @@ end
 function CheckKeyboard()
 	if AskForName then
 		if love._os ~= "horizon" then
-			if love._console ~= "3ds" then --All of the 2/3DS models
+			if love._console == "3ds" then --All of the 2/3DS models
 				love.keyboard.setTextInput(True)
 				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
 				--love.keyboard.setTextInput(true, {type = "basic", hint = "Please enter the mc's name:"}) --type = "basic", 
