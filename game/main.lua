@@ -71,9 +71,10 @@ function love.load()
 
 end
 
---oldNewText = love.graphics.newText
-function love.graphics.newText(font, text)
-	return love.graphics.newTextBatch(font, text)
+if love.getVersion() >= 12 then
+	function love.graphics.newText(font, text)
+		return love.graphics.newTextBatch(font, text)
+	end
 end
 
 function love.update()
@@ -103,8 +104,8 @@ end
 
 function CheckKeyboard()
 	if AskForName then
-		if love.system.getOS() == "Horizon" then
-			if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --All of the 2/3DS models
+		if love._os ~= "horizon" then
+			if love._console ~= "3ds" then --All of the 2/3DS models
 				--love.keyboard.setTextInput("basic", false, "Please enter your name:")
 				--love.keyboard.setTextInput(true, {type = "basic", hint = "Please enter the mc's name:"}) --type = "basic", 
 				AskForName = false
@@ -611,7 +612,7 @@ end
 
 
 function drawGrid(numSquares, screen, baseWidth1, baseHeight1)
-    local baseWidth, baseHeight = baseWidth1, baseHeight1 or love.graphics.getDimensions(screen)
+    local baseWidth, baseHeight = love.graphics.getDimensions(screen) or baseWidth1, baseHeight1
     local cols = math.ceil(math.sqrt(numSquares)) -- get number of squares with square root (DONT CHANGE)
     local rows = math.ceil(numSquares / cols)
     local cellWidth = baseWidth / cols
@@ -636,14 +637,17 @@ function drawGrid(numSquares, screen, baseWidth1, baseHeight1)
 end
 
 
+
+
 function GeneralDraw(Screen)
 	love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 	love.graphics.draw(Character, 0, (ScreenHeight/3), 0, 0.75, 0.75)
 	love.graphics.draw(SecondaryCharacter, ScreenWidth-(SecondaryCharacter:getDimensions()), (ScreenHeight/3), 0, 0.75, 0.75)
 	love.graphics.draw(textbox, 0, ScreenHeight/1.4, 0, ScreenWidth/textbox:getWidth(), 2)
-	love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
-	love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
-
+	if Screen ~= "bottom" then
+		love.graphics.printf(Speaker, NameFont, 0, ScreenHeight/1.4, ScreenWidth, "center", 0, 1, 1)
+		love.graphics.printf(ScriptText, font, 0, ScreenHeight/1.25, ScreenWidth, "center", 0, 1, 1)
+	end
 	if _debug == true then
 		for i = 1,#QuestionFindLine,1 do
 			love.graphics.printf(QuestionOptionText[i] .. " = " .. QuestionFindLine[i], NameFont, 0, ScreenHeight/1.6-i*50, ScreenWidth, "center", 0, 1, 1)
@@ -661,7 +665,7 @@ function GeneralDraw(Screen)
 	if QuesitonNotfication then
 		if MobileMode then
 			love.graphics.setColor(0,0,0)
-			drawGrid(#QuestionOptionText, nil, ScreenWidth, ScreenHeight/2)
+			drawGrid(#QuestionOptionText, Screen, ScreenWidth, ScreenHeight/2)
 			love.graphics.setColor(1,1,1)
 			if false then
 			love.graphics.setColor(0.10,1.00,0.40, 0.25)
@@ -678,8 +682,8 @@ end
 
 function DrawScreen(Screen)
 if AskForName ~= true then
-	if love.system.getOS() == "Horizon" then 
-		if love.system.getModel() == "RED" or love.system.getModel() == "CTR" or love.system.getModel() == "SPR" or love.system.getModel() == "KTR" or love.system.getModel() == "FTR" or love.system.getModel() == "JAN" then --Any of the 2/3DS models
+	if love._os == "horizon" then 
+		if love._console == "3ds" then --Any of the 2/3DS models
 			if Screen ~= "bottom" then --400*2x240
 				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 				love.graphics.draw(Character, 0, 0+(240-(Character:getHeight()*0.75)), 0, 0.75, 0.75)
@@ -700,7 +704,14 @@ if AskForName ~= true then
 					love.graphics.printf("Loading Song", font, 0, 180, 320, "center", 0, 1, 1)
 				end
 				if QuesitonNotfication == true then
-					love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, 180, 320, "center", 0, 1, 1)
+					GeneralDraw(Screen)
+					if QuesitonNotfication == true and MobileMode == false then
+						for i = 1,#QuestionFindLine,1 do
+							love.graphics.printf(i .. " = " .. QuestionOptionText[i], font, 0, ScreenHeight/(5)+i*50, ScreenWidth, "center", 0, 1, 1)
+						end
+						--love.graphics.printf(#ScriptContainer[Line].question/2 .. " = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
+					end
+					--love.graphics.printf("A = " .. QuestionOptionText[1] .. "\nB = " .. QuestionOptionText[2], font, 0, 180, 320, "center", 0, 1, 1)
 				end
 			end
 		else --switch
@@ -724,10 +735,10 @@ if AskForName ~= true then
 			--love.graphics.printf(#ScriptContainer[Line].question/2 .. " = " .. QuestionOptionText[1] .. "\nSpace = " .. QuestionOptionText[2], font, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
 		end
 	end
-else -- still gotta add 3ds support
+else -- still gotta add 3ds support (still gotta implement this in its entirity)
 	if screen ~= "left" and screen ~= "right" then
-		if love.system.getOS() == "Horizon" then
-			if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+		if love._os == "horizon" then
+			if love._console ~= "3ds" then --None of the 2/3DS models
 				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 				love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
 				love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
@@ -751,8 +762,8 @@ end
 function love.draw(screen)
 if AskForName == true then
 	if screen ~= "left" and screen ~= "right" then
-		if love.system.getOS() == "Horizon" then
-			if love.system.getModel() ~= "RED" and love.system.getModel() ~= "CTR" and love.system.getModel() ~= "SPR" and love.system.getModel() ~= "KTR" and love.system.getModel() ~= "FTR" and love.system.getModel() ~= "JAN" then --None of the 2/3DS models
+		if love._os == "horizon" then
+			if love._console ~= "3ds" then --None of the 2/3DS models
 				love.graphics.draw(Image, (ScreenWidth-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight())*Image:getHeight()))/2, 0, math.min(ScreenWidth/Image:getWidth(), ScreenHeight/Image:getHeight()))
 				love.graphics.draw(textbox, (ScreenWidth-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getWidth()))/2, (ScreenHeight-(math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight())*textbox:getHeight()))/6, 0, math.min(ScreenWidth/textbox:getWidth(), ScreenHeight/textbox:getHeight()))
 				love.graphics.printf("Before we start, please enter your name:", AnnounceFont, 0, ScreenHeight/4, ScreenWidth, "center", 0, 1, 1)
@@ -772,12 +783,12 @@ if AskForName == true then
 else
 	if love._console then
 		if love._console == "3ds" then
-			if screen ~= "bottom" then
-				DrawScreen()
+			if screen == "left" or screen == "right" then
+				DrawScreen("left")
 				--love.graphics.setBlendMode("alpha", "premultiplied")
 				--love.graphics.setColor(1, 1, 1, 1)
 				--love.graphics.draw(canvas, 0,0)
-			else
+			elseif screen == "bottom" then
 				--love.graphics.setBlendMode("alpha")
 				DrawScreen("bottom")
 				--love.graphics.draw(canvasBottom, 0,0)
