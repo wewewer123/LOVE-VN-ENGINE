@@ -20,7 +20,7 @@ function love.load()
 			textbox = love.graphics.newImage("textbox.png")
 		else
 			ScreenWidth, ScreenHeight = love.graphics.getDimensions("left")
-			BottomScreenWidth, BottomScreenHeight = love.graphics.getDimensions("bottom")
+			BottomScreenWidth, BottomScreenHeight = 320, 240 --hardcoded cause detection doesn't work (anymore?)
 			textbox = love.graphics.newText(font, "")
 		end
 	end
@@ -179,12 +179,10 @@ if AskForName ~= true then
 			end
 		end
 	else
-		if love.system.getOS() ~= "Horizon" and love.system.getOS() ~= "Cafe" then
-			MobileMode = true
-			if ScriptContainer[Line] then
-				if ScriptContainer[Line].question then
-					QuestionAwnser = getBoxNumber(#ScriptContainer[Line].question/2, x, y, nil, ScreenWidth, ScreenHeight)
-				end
+		MobileMode = true
+		if ScriptContainer[Line] then
+			if ScriptContainer[Line].question then
+				QuestionAwnser = getBoxNumber(#ScriptContainer[Line].question/2, x, y, nil, ScreenWidth, ScreenHeight)
 			end
 		end
 		DrawNext()
@@ -197,8 +195,11 @@ else
 end
 
 function getBoxNumber(numSquares, x, y, screen, baseWidth1, baseHeight1)
-	local baseWidth, baseHeight = baseWidth1, baseHeight1 or love.graphics.getDimensions(screen)
+	local baseWidth, baseHeight = baseWidth1, baseHeight1
 	baseHeight = baseHeight/2
+	if love._console == "3ds" then
+		baseWidth, baseHeight = BottomScreenWidth, BottomScreenHeight
+	end
     local cols = math.ceil(math.sqrt(numSquares))
     local rows = math.ceil(numSquares / cols)
     local cellWidth = baseWidth / cols
@@ -621,7 +622,10 @@ end
 
 
 function drawGrid(numSquares, screen, baseWidth1, baseHeight1)
-    local baseWidth, baseHeight = love.graphics.getDimensions(screen) or baseWidth1, baseHeight1
+    local baseWidth, baseHeight = baseWidth1, baseHeight1
+	if love._console == "3ds" then
+		baseWidth, baseHeight = BottomScreenWidth, BottomScreenHeight
+	end
     local cols = math.ceil(math.sqrt(numSquares)) -- get number of squares with square root (DONT CHANGE)
     local rows = math.ceil(numSquares / cols)
     local cellWidth = baseWidth / cols
