@@ -52,23 +52,24 @@
 ## Creating custom story
 
 This is a sample of what a singular line could look like:
-`{
+```{
         Label = "A quicker move system label", 
-        name = "Speaker", 
-        text = "Text that is spoken/thought by the Speaker", 
+        !name = "Speaker", 
+        !text = "Text that is spoken/thought by the Speaker", 
         bg = "The background image", 
         music = "Music.mp3/.ogg", 
-        question = {text yes, goto yes, text no, goto no}, 
-        question = {"I'll say yes", "This is where yes will end up", "I'll say no", "This is where no will end up"}, 
+        question = {"Option 1", "I picked option 1", "I'll say 2", "Label2", "I'll say line 3", 3}, 
         move = 0, (label, text or line number)
         char1 = "character1.png", 
         char2 = "character2.png",
-        XSize = 0, //Image length
-        YSize = 0, //Image height
-        positions = {goto line, left most, right most, top most, bottom most},
+        XSize = Image width (width of the image, only needs to be supplied when positions is used)
+        YSize = Image height (height of the image, only needs to be supplied when positions is used)
+        positions = {goto line, left most, right most, top most, bottom most}, (this is combined with the above two to add a point&click system)
         VarSet = {{"VariableName", "Value"}, {"VariableName2", "Value2"}},
         VarCheck = {{"VariableName", "Value", "GotoLabelIfTrue", "GotoLabelIfFalse"}, {"VariableName2", "Value2", "GotoLabelIfTrue2", "GotoLabelIfFalse2"}},
-    },`
+    },
+```
+Everything with an exclamationmark in front of it is required at every line.
 
 ## Building
 
